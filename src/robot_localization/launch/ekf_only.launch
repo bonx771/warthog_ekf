@@ -30,8 +30,8 @@
         output="screen"
         clear_params="true">
 
-    <param name="wait_for_datum" value="true"/>
-    <rosparam param="datum">[21.03, 105.85, 0.0]</rosparam>
+    <param name="wait_for_datum" value="false"/>
+    <!-- <rosparam param="datum">[21.03, 105.85, 0.0]</rosparam> -->
     <rosparam command="load" file="$(find robot_localization)/params/navsat_transform.yaml" />
     <remap from="imu/data" to="/imu/data"/>
     <remap from="gps/fix" to="/gps/fix"/>

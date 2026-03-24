@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/coordinates_test"
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/coordinates_test.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/coordinates_test"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/coordinates_test.pdb"
   "CMakeFiles/coordinates_test.dir/test/coordinates_test.cpp.o"
 )
 

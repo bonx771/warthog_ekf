@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/share/gennodejs/ros/warthog_msgs/msg/Lights.js"
-  "/home/cuong/warthog_original/devel/share/gennodejs/ros/warthog_msgs/msg/RGB.js"
-  "/home/cuong/warthog_original/devel/share/gennodejs/ros/warthog_msgs/msg/Status.js"
+  "/home/cuong/warthog_ekf/devel/share/gennodejs/ros/warthog_msgs/msg/Lights.js"
+  "/home/cuong/warthog_ekf/devel/share/gennodejs/ros/warthog_msgs/msg/RGB.js"
+  "/home/cuong/warthog_ekf/devel/share/gennodejs/ros/warthog_msgs/msg/Status.js"
   "CMakeFiles/warthog_msgs_generate_messages_nodejs"
 )
 

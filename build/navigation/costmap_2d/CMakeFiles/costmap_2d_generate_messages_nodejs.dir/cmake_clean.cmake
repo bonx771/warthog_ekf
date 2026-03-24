@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/share/gennodejs/ros/costmap_2d/msg/VoxelGrid.js"
+  "/home/cuong/warthog_ekf/devel/share/gennodejs/ros/costmap_2d/msg/VoxelGrid.js"
   "CMakeFiles/costmap_2d_generate_messages_nodejs"
 )
 

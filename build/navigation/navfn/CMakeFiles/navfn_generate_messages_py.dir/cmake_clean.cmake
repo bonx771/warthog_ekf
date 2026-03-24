@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/python3/dist-packages/navfn/srv/_MakeNavPlan.py"
-  "/home/cuong/warthog_original/devel/lib/python3/dist-packages/navfn/srv/_SetCostmap.py"
-  "/home/cuong/warthog_original/devel/lib/python3/dist-packages/navfn/srv/__init__.py"
+  "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/navfn/srv/_MakeNavPlan.py"
+  "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/navfn/srv/_SetCostmap.py"
+  "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/navfn/srv/__init__.py"
   "CMakeFiles/navfn_generate_messages_py"
 )
 

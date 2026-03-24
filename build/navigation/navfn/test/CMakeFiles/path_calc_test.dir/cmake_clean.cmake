@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/navfn/path_calc_test"
-  "/home/cuong/warthog_original/devel/lib/navfn/path_calc_test.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/navfn/path_calc_test"
+  "/home/cuong/warthog_ekf/devel/lib/navfn/path_calc_test.pdb"
   "CMakeFiles/path_calc_test.dir/__/src/read_pgm_costmap.cpp.o"
   "CMakeFiles/path_calc_test.dir/path_calc_test.cpp.o"
 )

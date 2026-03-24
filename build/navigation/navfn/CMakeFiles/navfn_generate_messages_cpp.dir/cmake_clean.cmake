@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/include/navfn/MakeNavPlan.h"
-  "/home/cuong/warthog_original/devel/include/navfn/SetCostmap.h"
+  "/home/cuong/warthog_ekf/devel/include/navfn/MakeNavPlan.h"
+  "/home/cuong/warthog_ekf/devel/include/navfn/SetCostmap.h"
   "CMakeFiles/navfn_generate_messages_cpp"
 )
 

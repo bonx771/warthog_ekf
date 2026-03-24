@@ -1,4 +1,4 @@
-prefix=/home/cuong/warthog_original/devel
+prefix=/home/cuong/warthog_ekf/devel
 
 Name: warthog_dual_gen3_moveit_config
 Description: Description of warthog_dual_gen3_moveit_config

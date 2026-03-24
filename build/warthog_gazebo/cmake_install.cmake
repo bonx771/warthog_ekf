@@ -1,8 +1,8 @@
-# Install script for directory: /home/cuong/warthog_original/src/warthog_gazebo
+# Install script for directory: /home/cuong/warthog_ekf/src/warthog_gazebo
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_original/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_ekf/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,18 +38,18 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_original/build/warthog_gazebo/catkin_generated/installspace/warthog_gazebo.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_ekf/build/warthog_gazebo/catkin_generated/installspace/warthog_gazebo.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_gazebo/cmake" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/warthog_gazebo/catkin_generated/installspace/warthog_gazeboConfig.cmake"
-    "/home/cuong/warthog_original/build/warthog_gazebo/catkin_generated/installspace/warthog_gazeboConfig-version.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_gazebo/catkin_generated/installspace/warthog_gazeboConfig.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_gazebo/catkin_generated/installspace/warthog_gazeboConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_gazebo" TYPE FILE FILES "/home/cuong/warthog_original/src/warthog_gazebo/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_gazebo" TYPE FILE FILES "/home/cuong/warthog_ekf/src/warthog_gazebo/package.xml")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -59,7 +59,7 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libwarthog_suspension_plugin.so"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES "/home/cuong/warthog_original/devel/lib/libwarthog_suspension_plugin.so")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE SHARED_LIBRARY FILES "/home/cuong/warthog_ekf/devel/lib/libwarthog_suspension_plugin.so")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libwarthog_suspension_plugin.so" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/libwarthog_suspension_plugin.so")
     file(RPATH_CHANGE
@@ -77,8 +77,8 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_gazebo" TYPE DIRECTORY FILES
-    "/home/cuong/warthog_original/src/warthog_gazebo/launch"
-    "/home/cuong/warthog_original/src/warthog_gazebo/worlds"
+    "/home/cuong/warthog_ekf/src/warthog_gazebo/launch"
+    "/home/cuong/warthog_ekf/src/warthog_gazebo/worlds"
     )
 endif()
 

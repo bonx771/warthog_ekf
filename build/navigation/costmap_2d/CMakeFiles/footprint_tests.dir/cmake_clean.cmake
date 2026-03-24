@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/footprint_tests"
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/footprint_tests.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/footprint_tests"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/footprint_tests.pdb"
   "CMakeFiles/footprint_tests.dir/test/footprint_tests.cpp.o"
 )
 

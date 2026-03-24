@@ -1,8 +1,8 @@
-# Install script for directory: /home/cuong/warthog_original/src/warthog_manipulation/warthog_iiwa_description
+# Install script for directory: /home/cuong/warthog_ekf/src/warthog_manipulation/warthog_iiwa_description
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_original/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_ekf/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,25 +38,25 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_original/build/warthog_manipulation/warthog_iiwa_description/catkin_generated/installspace/warthog_iiwa_description.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_iiwa_description/catkin_generated/installspace/warthog_iiwa_description.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_iiwa_description/cmake" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/warthog_manipulation/warthog_iiwa_description/catkin_generated/installspace/warthog_iiwa_descriptionConfig.cmake"
-    "/home/cuong/warthog_original/build/warthog_manipulation/warthog_iiwa_description/catkin_generated/installspace/warthog_iiwa_descriptionConfig-version.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_iiwa_description/catkin_generated/installspace/warthog_iiwa_descriptionConfig.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_iiwa_description/catkin_generated/installspace/warthog_iiwa_descriptionConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_iiwa_description" TYPE FILE FILES "/home/cuong/warthog_original/src/warthog_manipulation/warthog_iiwa_description/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_iiwa_description" TYPE FILE FILES "/home/cuong/warthog_ekf/src/warthog_manipulation/warthog_iiwa_description/package.xml")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_iiwa_description" TYPE DIRECTORY FILES "/home/cuong/warthog_original/src/warthog_manipulation/warthog_iiwa_description/urdf")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_iiwa_description" TYPE DIRECTORY FILES "/home/cuong/warthog_ekf/src/warthog_manipulation/warthog_iiwa_description/urdf")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/warthog_iiwa_description" TYPE DIRECTORY FILES "/home/cuong/warthog_original/src/warthog_manipulation/warthog_iiwa_description/scripts")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/warthog_iiwa_description" TYPE DIRECTORY FILES "/home/cuong/warthog_ekf/src/warthog_manipulation/warthog_iiwa_description/scripts")
 endif()
 

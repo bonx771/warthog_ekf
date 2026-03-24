@@ -1,8 +1,8 @@
-prefix=/home/cuong/warthog_original/devel
+prefix=/home/cuong/warthog_ekf/devel
 
 Name: warthog_msgs
 Description: Description of warthog_msgs
 Version: 0.1.9
-Cflags: -I/home/cuong/warthog_original/devel/include
+Cflags: -I/home/cuong/warthog_ekf/devel/include
 Libs: -L${prefix}/lib 
 Requires: std_msgs message_runtime

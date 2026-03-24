@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/map_server/map_saver"
-  "/home/cuong/warthog_original/devel/lib/map_server/map_saver.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/map_server/map_saver"
+  "/home/cuong/warthog_ekf/devel/lib/map_server/map_saver.pdb"
   "CMakeFiles/map_server-map_saver.dir/src/map_saver.cpp.o"
 )
 

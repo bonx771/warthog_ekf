@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/global_planner/planner"
-  "/home/cuong/warthog_original/devel/lib/global_planner/planner.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/global_planner/planner"
+  "/home/cuong/warthog_ekf/devel/lib/global_planner/planner.pdb"
   "CMakeFiles/planner.dir/src/plan_node.cpp.o"
 )
 

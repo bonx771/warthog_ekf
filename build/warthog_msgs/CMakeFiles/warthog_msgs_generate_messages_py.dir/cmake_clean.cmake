@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/python3/dist-packages/warthog_msgs/msg/_Lights.py"
-  "/home/cuong/warthog_original/devel/lib/python3/dist-packages/warthog_msgs/msg/_RGB.py"
-  "/home/cuong/warthog_original/devel/lib/python3/dist-packages/warthog_msgs/msg/_Status.py"
-  "/home/cuong/warthog_original/devel/lib/python3/dist-packages/warthog_msgs/msg/__init__.py"
+  "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/warthog_msgs/msg/_Lights.py"
+  "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/warthog_msgs/msg/_RGB.py"
+  "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/warthog_msgs/msg/_Status.py"
+  "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/warthog_msgs/msg/__init__.py"
   "CMakeFiles/warthog_msgs_generate_messages_py"
 )
 

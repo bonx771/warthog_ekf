@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/share/gennodejs/ros/base_local_planner/msg/Position2DInt.js"
+  "/home/cuong/warthog_ekf/devel/share/gennodejs/ros/base_local_planner/msg/Position2DInt.js"
   "CMakeFiles/base_local_planner_generate_messages_nodejs"
 )
 

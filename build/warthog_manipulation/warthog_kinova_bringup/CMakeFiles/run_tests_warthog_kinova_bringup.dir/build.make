@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cuong/warthog_original/src
+CMAKE_SOURCE_DIR = /home/cuong/warthog_ekf/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cuong/warthog_original/build
+CMAKE_BINARY_DIR = /home/cuong/warthog_ekf/build
 
 # Utility rule file for run_tests_warthog_kinova_bringup.
 
@@ -63,10 +63,10 @@ warthog_manipulation/warthog_kinova_bringup/CMakeFiles/run_tests_warthog_kinova_
 .PHONY : warthog_manipulation/warthog_kinova_bringup/CMakeFiles/run_tests_warthog_kinova_bringup.dir/build
 
 warthog_manipulation/warthog_kinova_bringup/CMakeFiles/run_tests_warthog_kinova_bringup.dir/clean:
-	cd /home/cuong/warthog_original/build/warthog_manipulation/warthog_kinova_bringup && $(CMAKE_COMMAND) -P CMakeFiles/run_tests_warthog_kinova_bringup.dir/cmake_clean.cmake
+	cd /home/cuong/warthog_ekf/build/warthog_manipulation/warthog_kinova_bringup && $(CMAKE_COMMAND) -P CMakeFiles/run_tests_warthog_kinova_bringup.dir/cmake_clean.cmake
 .PHONY : warthog_manipulation/warthog_kinova_bringup/CMakeFiles/run_tests_warthog_kinova_bringup.dir/clean
 
 warthog_manipulation/warthog_kinova_bringup/CMakeFiles/run_tests_warthog_kinova_bringup.dir/depend:
-	cd /home/cuong/warthog_original/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_original/src /home/cuong/warthog_original/src/warthog_manipulation/warthog_kinova_bringup /home/cuong/warthog_original/build /home/cuong/warthog_original/build/warthog_manipulation/warthog_kinova_bringup /home/cuong/warthog_original/build/warthog_manipulation/warthog_kinova_bringup/CMakeFiles/run_tests_warthog_kinova_bringup.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cuong/warthog_ekf/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_ekf/src /home/cuong/warthog_ekf/src/warthog_manipulation/warthog_kinova_bringup /home/cuong/warthog_ekf/build /home/cuong/warthog_ekf/build/warthog_manipulation/warthog_kinova_bringup /home/cuong/warthog_ekf/build/warthog_manipulation/warthog_kinova_bringup/CMakeFiles/run_tests_warthog_kinova_bringup.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : warthog_manipulation/warthog_kinova_bringup/CMakeFiles/run_tests_warthog_kinova_bringup.dir/depend
 

@@ -1,4 +1,4 @@
-prefix=/home/cuong/warthog_original/devel
+prefix=/home/cuong/warthog_ekf/devel
 
 Name: explore_lite
 Description: Description of explore_lite

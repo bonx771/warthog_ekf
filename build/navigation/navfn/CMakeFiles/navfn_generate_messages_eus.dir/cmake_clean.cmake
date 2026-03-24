@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/share/roseus/ros/navfn/manifest.l"
-  "/home/cuong/warthog_original/devel/share/roseus/ros/navfn/srv/MakeNavPlan.l"
-  "/home/cuong/warthog_original/devel/share/roseus/ros/navfn/srv/SetCostmap.l"
+  "/home/cuong/warthog_ekf/devel/share/roseus/ros/navfn/manifest.l"
+  "/home/cuong/warthog_ekf/devel/share/roseus/ros/navfn/srv/MakeNavPlan.l"
+  "/home/cuong/warthog_ekf/devel/share/roseus/ros/navfn/srv/SetCostmap.l"
   "CMakeFiles/navfn_generate_messages_eus"
 )
 

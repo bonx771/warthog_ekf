@@ -1,8 +1,8 @@
-# Install script for directory: /home/cuong/warthog_original/src/rf2o_laser_odometry
+# Install script for directory: /home/cuong/warthog_ekf/src/rf2o_laser_odometry
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_original/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_ekf/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,17 +38,17 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_original/build/rf2o_laser_odometry/catkin_generated/installspace/rf2o_laser_odometry.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_ekf/build/rf2o_laser_odometry/catkin_generated/installspace/rf2o_laser_odometry.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/rf2o_laser_odometry/cmake" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/rf2o_laser_odometry/catkin_generated/installspace/rf2o_laser_odometryConfig.cmake"
-    "/home/cuong/warthog_original/build/rf2o_laser_odometry/catkin_generated/installspace/rf2o_laser_odometryConfig-version.cmake"
+    "/home/cuong/warthog_ekf/build/rf2o_laser_odometry/catkin_generated/installspace/rf2o_laser_odometryConfig.cmake"
+    "/home/cuong/warthog_ekf/build/rf2o_laser_odometry/catkin_generated/installspace/rf2o_laser_odometryConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/rf2o_laser_odometry" TYPE FILE FILES "/home/cuong/warthog_original/src/rf2o_laser_odometry/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/rf2o_laser_odometry" TYPE FILE FILES "/home/cuong/warthog_ekf/src/rf2o_laser_odometry/package.xml")
 endif()
 

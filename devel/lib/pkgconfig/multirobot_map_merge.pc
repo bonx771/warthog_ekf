@@ -1,4 +1,4 @@
-prefix=/home/cuong/warthog_original/devel
+prefix=/home/cuong/warthog_ekf/devel
 
 Name: multirobot_map_merge
 Description: Description of multirobot_map_merge

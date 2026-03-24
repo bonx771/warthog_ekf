@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/voxel_grid/voxel_grid_tests"
-  "/home/cuong/warthog_original/devel/lib/voxel_grid/voxel_grid_tests.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/voxel_grid/voxel_grid_tests"
+  "/home/cuong/warthog_ekf/devel/lib/voxel_grid/voxel_grid_tests.pdb"
   "CMakeFiles/voxel_grid_tests.dir/test/voxel_grid_tests.cpp.o"
 )
 

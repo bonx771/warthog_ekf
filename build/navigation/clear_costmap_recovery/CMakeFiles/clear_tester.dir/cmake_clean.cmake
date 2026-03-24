@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/clear_costmap_recovery/clear_tester"
-  "/home/cuong/warthog_original/devel/lib/clear_costmap_recovery/clear_tester.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/clear_costmap_recovery/clear_tester"
+  "/home/cuong/warthog_ekf/devel/lib/clear_costmap_recovery/clear_tester.pdb"
   "CMakeFiles/clear_tester.dir/test/clear_tester.cpp.o"
 )
 

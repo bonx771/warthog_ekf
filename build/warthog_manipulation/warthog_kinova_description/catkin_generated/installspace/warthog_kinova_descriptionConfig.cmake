@@ -67,14 +67,14 @@ set(warthog_kinova_description_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(warthog_kinova_description_SOURCE_PREFIX /home/cuong/warthog_original/src/warthog_manipulation/warthog_kinova_description)
-  set(warthog_kinova_description_DEVEL_PREFIX /home/cuong/warthog_original/devel)
+  set(warthog_kinova_description_SOURCE_PREFIX /home/cuong/warthog_ekf/src/warthog_manipulation/warthog_kinova_description)
+  set(warthog_kinova_description_DEVEL_PREFIX /home/cuong/warthog_ekf/devel)
   set(warthog_kinova_description_INSTALL_PREFIX "")
   set(warthog_kinova_description_PREFIX ${warthog_kinova_description_DEVEL_PREFIX})
 else()
   set(warthog_kinova_description_SOURCE_PREFIX "")
   set(warthog_kinova_description_DEVEL_PREFIX "")
-  set(warthog_kinova_description_INSTALL_PREFIX /home/cuong/warthog_original/install)
+  set(warthog_kinova_description_INSTALL_PREFIX /home/cuong/warthog_ekf/install)
   set(warthog_kinova_description_PREFIX ${warthog_kinova_description_INSTALL_PREFIX})
 endif()
 
@@ -156,7 +156,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/cuong/warthog_original/install/lib;/home/cuong/warthog_original/devel/lib;/home/cuong/warthog_full/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/cuong/warthog_ekf/install/lib;/home/cuong/warthog_ekf/devel/lib;/home/cuong/warthog_original/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

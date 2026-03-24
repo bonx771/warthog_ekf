@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/share/common-lisp/ros/base_local_planner/msg/Position2DInt.lisp"
+  "/home/cuong/warthog_ekf/devel/share/common-lisp/ros/base_local_planner/msg/Position2DInt.lisp"
   "CMakeFiles/base_local_planner_generate_messages_lisp"
 )
 

@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cuong/warthog_original/src
+CMAKE_SOURCE_DIR = /home/cuong/warthog_ekf/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cuong/warthog_original/build
+CMAKE_BINARY_DIR = /home/cuong/warthog_ekf/build
 
 # Utility rule file for tests.
 
@@ -67,6 +67,6 @@ CMakeFiles/tests.dir/clean:
 .PHONY : CMakeFiles/tests.dir/clean
 
 CMakeFiles/tests.dir/depend:
-	cd /home/cuong/warthog_original/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_original/src /home/cuong/warthog_original/src /home/cuong/warthog_original/build /home/cuong/warthog_original/build /home/cuong/warthog_original/build/CMakeFiles/tests.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cuong/warthog_ekf/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_ekf/src /home/cuong/warthog_ekf/src /home/cuong/warthog_ekf/build /home/cuong/warthog_ekf/build /home/cuong/warthog_ekf/build/CMakeFiles/tests.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/tests.dir/depend
 

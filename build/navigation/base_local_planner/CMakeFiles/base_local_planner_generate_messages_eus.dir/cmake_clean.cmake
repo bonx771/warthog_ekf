@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/share/roseus/ros/base_local_planner/manifest.l"
-  "/home/cuong/warthog_original/devel/share/roseus/ros/base_local_planner/msg/Position2DInt.l"
+  "/home/cuong/warthog_ekf/devel/share/roseus/ros/base_local_planner/manifest.l"
+  "/home/cuong/warthog_ekf/devel/share/roseus/ros/base_local_planner/msg/Position2DInt.l"
   "CMakeFiles/base_local_planner_generate_messages_eus"
 )
 

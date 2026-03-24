@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/amcl/amcl"
-  "/home/cuong/warthog_original/devel/lib/amcl/amcl.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/amcl/amcl"
+  "/home/cuong/warthog_ekf/devel/lib/amcl/amcl.pdb"
   "CMakeFiles/amcl.dir/src/amcl_node.cpp.o"
 )
 

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/share/common-lisp/ros/navfn/srv/MakeNavPlan.lisp"
-  "/home/cuong/warthog_original/devel/share/common-lisp/ros/navfn/srv/SetCostmap.lisp"
+  "/home/cuong/warthog_ekf/devel/share/common-lisp/ros/navfn/srv/MakeNavPlan.lisp"
+  "/home/cuong/warthog_ekf/devel/share/common-lisp/ros/navfn/srv/SetCostmap.lisp"
   "CMakeFiles/navfn_generate_messages_lisp"
 )
 

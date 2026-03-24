@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/multirobot_map_merge/map_merge"
-  "/home/cuong/warthog_original/devel/lib/multirobot_map_merge/map_merge.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/multirobot_map_merge/map_merge"
+  "/home/cuong/warthog_ekf/devel/lib/multirobot_map_merge/map_merge.pdb"
   "CMakeFiles/map_merge.dir/src/map_merge.cpp.o"
 )
 

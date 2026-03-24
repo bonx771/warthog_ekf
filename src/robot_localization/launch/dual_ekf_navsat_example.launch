@@ -1,66 +1,27 @@
-# Copyright 2018 Open Source Robotics Foundation, Inc.
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
+<!--
+     This launch file provides an example of how to work with GPS data using robot_localization. It runs three nodes:
+       (1) An EKF instance that fuses odometry and IMU data and outputs an odom-frame state estimate
+       (2) A second EKF instance that fuses the same data, but also fuses the transformed GPS data from (3)
+       (3) An instance of navsat_transform_node, which takes in GPS data and produces pose data that has been
+           transformed into your robot's world frame (here, map). The node produces a map-frame state estimate.
 
-from launch import LaunchDescription
-import launch_ros.actions
-import os
-import yaml
-from launch.substitutions import EnvironmentVariable
-import pathlib
-import launch.actions
-from launch.actions import DeclareLaunchArgument
-from ament_index_python.packages import get_package_share_directory
+       The first EKF instance produces the odom->base_link transform. The second EKF produces the map->odom transform,
+       but requires the odom->base_link transform from the first instance in order to do so. See the
+       params/dual_ekf_navsat_example.yaml file for parameter specification.
+-->
 
-def generate_launch_description():
-    robot_localization_dir = get_package_share_directory('robot_localization')
-    parameters_file_dir = os.path.join(robot_localization_dir, 'params')
-    parameters_file_path = os.path.join(parameters_file_dir, 'dual_ekf_navsat_example.yaml')
-    os.environ['FILE_PATH'] = str(parameters_file_dir)
-    return LaunchDescription([
-        launch.actions.DeclareLaunchArgument(
-            'output_final_position',
-            default_value='false'),
-        launch.actions.DeclareLaunchArgument(
-            'output_location',
-	    default_value='~/dual_ekf_navsat_example_debug.txt'),
-	
-    launch_ros.actions.Node(
-            package='robot_localization', 
-            executable='ekf_node', 
-            name='ekf_filter_node_odom',
-	        output='screen',
-            parameters=[parameters_file_path],
-            remappings=[('odometry/filtered', 'odometry/local')]           
-           ),
-    launch_ros.actions.Node(
-            package='robot_localization', 
-            executable='ekf_node', 
-            name='ekf_filter_node_map',
-	        output='screen',
-            parameters=[parameters_file_path],
-            remappings=[('odometry/filtered', 'odometry/global')]
-           ),           
-    launch_ros.actions.Node(
-            package='robot_localization', 
-            executable='navsat_transform_node', 
-            name='navsat_transform',
-	        output='screen',
-            parameters=[parameters_file_path],
-            remappings=[('imu', 'imu/data'),
-                        ('gps/fix', 'gps/fix'), 
-                        ('gps/filtered', 'gps/filtered'),
-                        ('odometry/gps', 'odometry/gps'),
-                        ('odometry/filtered', 'odometry/global')]           
+<launch>
 
-           )           
-])
+  <rosparam command="load" file="$(find robot_localization)/params/dual_ekf_navsat_example.yaml" />
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true"/>
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+  </node>
+
+  <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+  </node>
+
+</launch>

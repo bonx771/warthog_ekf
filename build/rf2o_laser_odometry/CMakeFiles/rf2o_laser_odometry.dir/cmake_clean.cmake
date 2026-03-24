@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/librf2o_laser_odometry.pdb"
-  "/home/cuong/warthog_original/devel/lib/librf2o_laser_odometry.so"
+  "/home/cuong/warthog_ekf/devel/lib/librf2o_laser_odometry.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/librf2o_laser_odometry.so"
   "CMakeFiles/rf2o_laser_odometry.dir/src/CLaserOdometry2D.cpp.o"
 )
 

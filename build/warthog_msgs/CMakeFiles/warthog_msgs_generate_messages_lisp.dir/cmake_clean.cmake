@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/share/common-lisp/ros/warthog_msgs/msg/Lights.lisp"
-  "/home/cuong/warthog_original/devel/share/common-lisp/ros/warthog_msgs/msg/RGB.lisp"
-  "/home/cuong/warthog_original/devel/share/common-lisp/ros/warthog_msgs/msg/Status.lisp"
+  "/home/cuong/warthog_ekf/devel/share/common-lisp/ros/warthog_msgs/msg/Lights.lisp"
+  "/home/cuong/warthog_ekf/devel/share/common-lisp/ros/warthog_msgs/msg/RGB.lisp"
+  "/home/cuong/warthog_ekf/devel/share/common-lisp/ros/warthog_msgs/msg/Status.lisp"
   "CMakeFiles/warthog_msgs_generate_messages_lisp"
 )
 

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/libamcl_sensors.pdb"
-  "/home/cuong/warthog_original/devel/lib/libamcl_sensors.so"
+  "/home/cuong/warthog_ekf/devel/lib/libamcl_sensors.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/libamcl_sensors.so"
   "CMakeFiles/amcl_sensors.dir/src/amcl/sensors/amcl_laser.cpp.o"
   "CMakeFiles/amcl_sensors.dir/src/amcl/sensors/amcl_odom.cpp.o"
   "CMakeFiles/amcl_sensors.dir/src/amcl/sensors/amcl_sensor.cpp.o"

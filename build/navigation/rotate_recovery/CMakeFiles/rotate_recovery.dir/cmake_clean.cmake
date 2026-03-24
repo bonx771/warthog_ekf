@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/librotate_recovery.pdb"
-  "/home/cuong/warthog_original/devel/lib/librotate_recovery.so"
+  "/home/cuong/warthog_ekf/devel/lib/librotate_recovery.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/librotate_recovery.so"
   "CMakeFiles/rotate_recovery.dir/src/rotate_recovery.cpp.o"
 )
 

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/move_base/move_base"
-  "/home/cuong/warthog_original/devel/lib/move_base/move_base.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/move_base/move_base"
+  "/home/cuong/warthog_ekf/devel/lib/move_base/move_base.pdb"
   "CMakeFiles/move_base_node.dir/src/move_base_node.cpp.o"
 )
 

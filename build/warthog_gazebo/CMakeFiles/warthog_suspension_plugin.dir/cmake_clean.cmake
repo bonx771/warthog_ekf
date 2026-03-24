@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/libwarthog_suspension_plugin.pdb"
-  "/home/cuong/warthog_original/devel/lib/libwarthog_suspension_plugin.so"
+  "/home/cuong/warthog_ekf/devel/lib/libwarthog_suspension_plugin.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/libwarthog_suspension_plugin.so"
   "CMakeFiles/warthog_suspension_plugin.dir/src/warthog_suspension_plugin.cpp.o"
 )
 

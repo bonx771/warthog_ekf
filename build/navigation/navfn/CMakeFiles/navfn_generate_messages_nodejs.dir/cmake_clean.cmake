@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/share/gennodejs/ros/navfn/srv/MakeNavPlan.js"
-  "/home/cuong/warthog_original/devel/share/gennodejs/ros/navfn/srv/SetCostmap.js"
+  "/home/cuong/warthog_ekf/devel/share/gennodejs/ros/navfn/srv/MakeNavPlan.js"
+  "/home/cuong/warthog_ekf/devel/share/gennodejs/ros/navfn/srv/SetCostmap.js"
   "CMakeFiles/navfn_generate_messages_nodejs"
 )
 

@@ -67,14 +67,14 @@ set(fake_localization_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(fake_localization_SOURCE_PREFIX /home/cuong/warthog_original/src/navigation/fake_localization)
-  set(fake_localization_DEVEL_PREFIX /home/cuong/warthog_original/devel)
+  set(fake_localization_SOURCE_PREFIX /home/cuong/warthog_ekf/src/navigation/fake_localization)
+  set(fake_localization_DEVEL_PREFIX /home/cuong/warthog_ekf/devel)
   set(fake_localization_INSTALL_PREFIX "")
   set(fake_localization_PREFIX ${fake_localization_DEVEL_PREFIX})
 else()
   set(fake_localization_SOURCE_PREFIX "")
   set(fake_localization_DEVEL_PREFIX "")
-  set(fake_localization_INSTALL_PREFIX /home/cuong/warthog_original/install)
+  set(fake_localization_INSTALL_PREFIX /home/cuong/warthog_ekf/install)
   set(fake_localization_PREFIX ${fake_localization_INSTALL_PREFIX})
 endif()
 
@@ -156,7 +156,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/cuong/warthog_original/install/lib;/home/cuong/warthog_original/devel/lib;/home/cuong/warthog_full/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/cuong/warthog_ekf/install/lib;/home/cuong/warthog_ekf/devel/lib;/home/cuong/warthog_original/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

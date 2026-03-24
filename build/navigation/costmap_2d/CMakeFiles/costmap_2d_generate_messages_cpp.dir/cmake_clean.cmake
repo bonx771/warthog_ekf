@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/include/costmap_2d/VoxelGrid.h"
+  "/home/cuong/warthog_ekf/devel/include/costmap_2d/VoxelGrid.h"
   "CMakeFiles/costmap_2d_generate_messages_cpp"
 )
 

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/libcarrot_planner.pdb"
-  "/home/cuong/warthog_original/devel/lib/libcarrot_planner.so"
+  "/home/cuong/warthog_ekf/devel/lib/libcarrot_planner.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/libcarrot_planner.so"
   "CMakeFiles/carrot_planner.dir/src/carrot_planner.cpp.o"
 )
 

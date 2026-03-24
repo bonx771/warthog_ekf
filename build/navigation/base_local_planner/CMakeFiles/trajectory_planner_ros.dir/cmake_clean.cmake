@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/libtrajectory_planner_ros.pdb"
-  "/home/cuong/warthog_original/devel/lib/libtrajectory_planner_ros.so"
+  "/home/cuong/warthog_ekf/devel/lib/libtrajectory_planner_ros.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/libtrajectory_planner_ros.so"
   "CMakeFiles/trajectory_planner_ros.dir/src/trajectory_planner.cpp.o"
   "CMakeFiles/trajectory_planner_ros.dir/src/trajectory_planner_ros.cpp.o"
 )

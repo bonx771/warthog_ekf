@@ -25,11 +25,10 @@
   <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
   
   <!-- Warthog Control -->
-  <include file="$(find warthog_control)/launch/control.launch">
-    <arg name="enable_ekf"  value="$(arg ekf_localization)" />
-  </include>
+  <include file="$(find warthog_control)/launch/control.launch" />
+
   <include file="$(find warthog_control)/launch/teleop.launch" />
-  <rosparam command="load" file="$(find warthog_simulation)/params/ekf.yaml" />
+  <!-- <rosparam command="load" file="$(find warthog_simulation)/params/ekf.yaml" /> -->
 
   <!-- Spawn Warthog -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model"

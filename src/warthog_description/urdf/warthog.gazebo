@@ -32,7 +32,7 @@
       <updateRate>20</updateRate>
       <bodyName>base_link</bodyName>
       <frameId>base_link</frameId>
-      <topicName>/navsat/fix</topicName>
+      <topicName>/gps/fix</topicName>
       <velocityTopicName>/navsat/vel</velocityTopicName>
       <referenceLatitude>$(optenv GAZEBO_WORLD_LAT 49.9)</referenceLatitude>
       <referenceLongitude>$(optenv GAZEBO_WORLD_LON 8.9)</referenceLongitude>

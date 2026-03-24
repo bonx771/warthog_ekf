@@ -1,8 +1,8 @@
-# Install script for directory: /home/cuong/warthog_original/src/navigation/navfn/test
+# Install script for directory: /home/cuong/warthog_ekf/src/navigation/navfn/test
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_original/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_ekf/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/static_tests"
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/static_tests.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/static_tests"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/static_tests.pdb"
   "CMakeFiles/static_tests.dir/test/static_tests.cpp.o"
 )
 

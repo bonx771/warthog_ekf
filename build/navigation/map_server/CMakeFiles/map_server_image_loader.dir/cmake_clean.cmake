@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/libmap_server_image_loader.pdb"
-  "/home/cuong/warthog_original/devel/lib/libmap_server_image_loader.so"
+  "/home/cuong/warthog_ekf/devel/lib/libmap_server_image_loader.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/libmap_server_image_loader.so"
   "CMakeFiles/map_server_image_loader.dir/src/image_loader.cpp.o"
 )
 

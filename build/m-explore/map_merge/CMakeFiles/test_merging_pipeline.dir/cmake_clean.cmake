@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/multirobot_map_merge/test_merging_pipeline"
-  "/home/cuong/warthog_original/devel/lib/multirobot_map_merge/test_merging_pipeline.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/multirobot_map_merge/test_merging_pipeline"
+  "/home/cuong/warthog_ekf/devel/lib/multirobot_map_merge/test_merging_pipeline.pdb"
   "CMakeFiles/test_merging_pipeline.dir/test/test_merging_pipeline.cpp.o"
 )
 

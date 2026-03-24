@@ -1,8 +1,8 @@
-# Install script for directory: /home/cuong/warthog_original/src/warthog_desktop/warthog_viz
+# Install script for directory: /home/cuong/warthog_ekf/src/warthog_desktop/warthog_viz
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_original/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_ekf/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,25 +38,25 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_original/build/warthog_desktop/warthog_viz/catkin_generated/installspace/warthog_viz.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_ekf/build/warthog_desktop/warthog_viz/catkin_generated/installspace/warthog_viz.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_viz/cmake" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/warthog_desktop/warthog_viz/catkin_generated/installspace/warthog_vizConfig.cmake"
-    "/home/cuong/warthog_original/build/warthog_desktop/warthog_viz/catkin_generated/installspace/warthog_vizConfig-version.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_desktop/warthog_viz/catkin_generated/installspace/warthog_vizConfig.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_desktop/warthog_viz/catkin_generated/installspace/warthog_vizConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_viz" TYPE FILE FILES "/home/cuong/warthog_original/src/warthog_desktop/warthog_viz/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_viz" TYPE FILE FILES "/home/cuong/warthog_ekf/src/warthog_desktop/warthog_viz/package.xml")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_viz" TYPE DIRECTORY FILES
-    "/home/cuong/warthog_original/src/warthog_desktop/warthog_viz/launch"
-    "/home/cuong/warthog_original/src/warthog_desktop/warthog_viz/rqt"
-    "/home/cuong/warthog_original/src/warthog_desktop/warthog_viz/rviz"
+    "/home/cuong/warthog_ekf/src/warthog_desktop/warthog_viz/launch"
+    "/home/cuong/warthog_ekf/src/warthog_desktop/warthog_viz/rqt"
+    "/home/cuong/warthog_ekf/src/warthog_desktop/warthog_viz/rviz"
     )
 endif()
 

@@ -1,8 +1,8 @@
-# Install script for directory: /home/cuong/warthog_original/src/warthog_control
+# Install script for directory: /home/cuong/warthog_ekf/src/warthog_control
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_original/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_ekf/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,24 +38,24 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_original/build/warthog_control/catkin_generated/installspace/warthog_control.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_ekf/build/warthog_control/catkin_generated/installspace/warthog_control.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_control/cmake" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/warthog_control/catkin_generated/installspace/warthog_controlConfig.cmake"
-    "/home/cuong/warthog_original/build/warthog_control/catkin_generated/installspace/warthog_controlConfig-version.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_control/catkin_generated/installspace/warthog_controlConfig.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_control/catkin_generated/installspace/warthog_controlConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_control" TYPE FILE FILES "/home/cuong/warthog_original/src/warthog_control/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_control" TYPE FILE FILES "/home/cuong/warthog_ekf/src/warthog_control/package.xml")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_control" TYPE DIRECTORY FILES
-    "/home/cuong/warthog_original/src/warthog_control/config"
-    "/home/cuong/warthog_original/src/warthog_control/launch"
+    "/home/cuong/warthog_ekf/src/warthog_control/config"
+    "/home/cuong/warthog_ekf/src/warthog_control/launch"
     )
 endif()
 

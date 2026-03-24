@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/costmap_2d_node"
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/costmap_2d_node.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/costmap_2d_node"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/costmap_2d_node.pdb"
   "CMakeFiles/costmap_2d_node.dir/src/costmap_2d_node.cpp.o"
 )
 

@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "${prefix}/include;/usr/include/eigen3".split(
 PROJECT_CATKIN_DEPENDS = "nav_msgs;roscpp;sensor_msgs;std_msgs;tf".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "-lrf2o_laser_odometry".split(';') if "-lrf2o_laser_odometry" != "" else []
 PROJECT_NAME = "rf2o_laser_odometry"
-PROJECT_SPACE_DIR = "/home/cuong/warthog_original/install"
+PROJECT_SPACE_DIR = "/home/cuong/warthog_ekf/install"
 PROJECT_VERSION = "1.0.0"

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/libcostmap_2d.pdb"
-  "/home/cuong/warthog_original/devel/lib/libcostmap_2d.so"
+  "/home/cuong/warthog_ekf/devel/lib/libcostmap_2d.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/libcostmap_2d.so"
   "CMakeFiles/costmap_2d.dir/src/array_parser.cpp.o"
   "CMakeFiles/costmap_2d.dir/src/costmap_2d.cpp.o"
   "CMakeFiles/costmap_2d.dir/src/costmap_2d_publisher.cpp.o"

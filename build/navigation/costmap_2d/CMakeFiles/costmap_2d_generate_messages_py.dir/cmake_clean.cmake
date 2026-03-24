@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/python3/dist-packages/costmap_2d/msg/_VoxelGrid.py"
-  "/home/cuong/warthog_original/devel/lib/python3/dist-packages/costmap_2d/msg/__init__.py"
+  "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/costmap_2d/msg/_VoxelGrid.py"
+  "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/costmap_2d/msg/__init__.py"
   "CMakeFiles/costmap_2d_generate_messages_py"
 )
 

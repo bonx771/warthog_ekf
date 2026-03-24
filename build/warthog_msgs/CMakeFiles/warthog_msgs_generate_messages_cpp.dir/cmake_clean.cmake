@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/include/warthog_msgs/Lights.h"
-  "/home/cuong/warthog_original/devel/include/warthog_msgs/RGB.h"
-  "/home/cuong/warthog_original/devel/include/warthog_msgs/Status.h"
+  "/home/cuong/warthog_ekf/devel/include/warthog_msgs/Lights.h"
+  "/home/cuong/warthog_ekf/devel/include/warthog_msgs/RGB.h"
+  "/home/cuong/warthog_ekf/devel/include/warthog_msgs/Status.h"
   "CMakeFiles/warthog_msgs_generate_messages_cpp"
 )
 

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/inflation_tests"
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/inflation_tests.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/inflation_tests"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/inflation_tests.pdb"
   "CMakeFiles/inflation_tests.dir/test/inflation_tests.cpp.o"
 )
 

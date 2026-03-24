@@ -1,4 +1,4 @@
-prefix=/home/cuong/warthog_original/devel
+prefix=/home/cuong/warthog_ekf/devel
 
 Name: fake_localization
 Description: Description of fake_localization

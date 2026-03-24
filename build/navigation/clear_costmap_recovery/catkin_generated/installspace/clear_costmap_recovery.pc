@@ -1,4 +1,4 @@
-prefix=/home/cuong/warthog_original/install
+prefix=/home/cuong/warthog_ekf/install
 
 Name: clear_costmap_recovery
 Description: Description of clear_costmap_recovery

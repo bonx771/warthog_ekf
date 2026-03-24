@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/libmove_slow_and_clear.pdb"
-  "/home/cuong/warthog_original/devel/lib/libmove_slow_and_clear.so"
+  "/home/cuong/warthog_ekf/devel/lib/libmove_slow_and_clear.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/libmove_slow_and_clear.so"
   "CMakeFiles/move_slow_and_clear.dir/src/move_slow_and_clear.cpp.o"
 )
 

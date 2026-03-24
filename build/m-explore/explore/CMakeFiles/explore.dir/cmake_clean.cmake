@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/explore_lite/explore"
-  "/home/cuong/warthog_original/devel/lib/explore_lite/explore.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/explore_lite/explore"
+  "/home/cuong/warthog_ekf/devel/lib/explore_lite/explore.pdb"
   "CMakeFiles/explore.dir/src/costmap_client.cpp.o"
   "CMakeFiles/explore.dir/src/explore.cpp.o"
   "CMakeFiles/explore.dir/src/frontier_search.cpp.o"

@@ -1,8 +1,8 @@
-# Install script for directory: /home/cuong/warthog_original/src/m-explore/explore
+# Install script for directory: /home/cuong/warthog_ekf/src/m-explore/explore
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_original/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_ekf/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,18 +38,18 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_original/build/m-explore/explore/catkin_generated/installspace/explore_lite.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_ekf/build/m-explore/explore/catkin_generated/installspace/explore_lite.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/explore_lite/cmake" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/m-explore/explore/catkin_generated/installspace/explore_liteConfig.cmake"
-    "/home/cuong/warthog_original/build/m-explore/explore/catkin_generated/installspace/explore_liteConfig-version.cmake"
+    "/home/cuong/warthog_ekf/build/m-explore/explore/catkin_generated/installspace/explore_liteConfig.cmake"
+    "/home/cuong/warthog_ekf/build/m-explore/explore/catkin_generated/installspace/explore_liteConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/explore_lite" TYPE FILE FILES "/home/cuong/warthog_original/src/m-explore/explore/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/explore_lite" TYPE FILE FILES "/home/cuong/warthog_ekf/src/m-explore/explore/package.xml")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
@@ -59,12 +59,12 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/explore_lite/explore"
          RPATH "")
   endif()
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/explore_lite" TYPE EXECUTABLE FILES "/home/cuong/warthog_original/devel/lib/explore_lite/explore")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/explore_lite" TYPE EXECUTABLE FILES "/home/cuong/warthog_ekf/devel/lib/explore_lite/explore")
   if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/explore_lite/explore" AND
      NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/explore_lite/explore")
     file(RPATH_CHANGE
          FILE "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/explore_lite/explore"
-         OLD_RPATH "/home/cuong/warthog_original/devel/lib:/opt/ros/noetic/lib:"
+         OLD_RPATH "/home/cuong/warthog_ekf/devel/lib:/opt/ros/noetic/lib:"
          NEW_RPATH "")
     if(CMAKE_INSTALL_DO_STRIP)
       execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/explore_lite/explore")
@@ -73,6 +73,6 @@ if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/explore_lite/launch" TYPE DIRECTORY FILES "/home/cuong/warthog_original/src/m-explore/explore/launch/")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/explore_lite/launch" TYPE DIRECTORY FILES "/home/cuong/warthog_ekf/src/m-explore/explore/launch/")
 endif()
 

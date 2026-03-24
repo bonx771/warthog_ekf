@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/share/common-lisp/ros/costmap_2d/msg/VoxelGrid.lisp"
+  "/home/cuong/warthog_ekf/devel/share/common-lisp/ros/costmap_2d/msg/VoxelGrid.lisp"
   "CMakeFiles/costmap_2d_generate_messages_lisp"
 )
 

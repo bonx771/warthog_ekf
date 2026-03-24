@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/fake_localization/fake_localization"
-  "/home/cuong/warthog_original/devel/lib/fake_localization/fake_localization.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/fake_localization/fake_localization"
+  "/home/cuong/warthog_ekf/devel/lib/fake_localization/fake_localization.pdb"
   "CMakeFiles/fake_localization.dir/fake_localization.cpp.o"
 )
 

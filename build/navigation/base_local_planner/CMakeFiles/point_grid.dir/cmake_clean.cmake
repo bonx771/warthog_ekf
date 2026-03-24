@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/base_local_planner/point_grid"
-  "/home/cuong/warthog_original/devel/lib/base_local_planner/point_grid.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/base_local_planner/point_grid"
+  "/home/cuong/warthog_ekf/devel/lib/base_local_planner/point_grid.pdb"
   "CMakeFiles/point_grid.dir/src/point_grid_node.cpp.o"
 )
 

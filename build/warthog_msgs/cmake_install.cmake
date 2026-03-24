@@ -1,8 +1,8 @@
-# Install script for directory: /home/cuong/warthog_original/src/warthog_msgs
+# Install script for directory: /home/cuong/warthog_ekf/src/warthog_msgs
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_original/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_ekf/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -39,56 +39,56 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_msgs/msg" TYPE FILE FILES
-    "/home/cuong/warthog_original/src/warthog_msgs/msg/Lights.msg"
-    "/home/cuong/warthog_original/src/warthog_msgs/msg/RGB.msg"
-    "/home/cuong/warthog_original/src/warthog_msgs/msg/Status.msg"
+    "/home/cuong/warthog_ekf/src/warthog_msgs/msg/Lights.msg"
+    "/home/cuong/warthog_ekf/src/warthog_msgs/msg/RGB.msg"
+    "/home/cuong/warthog_ekf/src/warthog_msgs/msg/Status.msg"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_msgs/cmake" TYPE FILE FILES "/home/cuong/warthog_original/build/warthog_msgs/catkin_generated/installspace/warthog_msgs-msg-paths.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_msgs/cmake" TYPE FILE FILES "/home/cuong/warthog_ekf/build/warthog_msgs/catkin_generated/installspace/warthog_msgs-msg-paths.cmake")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE DIRECTORY FILES "/home/cuong/warthog_original/devel/include/warthog_msgs")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE DIRECTORY FILES "/home/cuong/warthog_ekf/devel/include/warthog_msgs")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/roseus/ros" TYPE DIRECTORY FILES "/home/cuong/warthog_original/devel/share/roseus/ros/warthog_msgs")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/roseus/ros" TYPE DIRECTORY FILES "/home/cuong/warthog_ekf/devel/share/roseus/ros/warthog_msgs")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/common-lisp/ros" TYPE DIRECTORY FILES "/home/cuong/warthog_original/devel/share/common-lisp/ros/warthog_msgs")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/common-lisp/ros" TYPE DIRECTORY FILES "/home/cuong/warthog_ekf/devel/share/common-lisp/ros/warthog_msgs")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gennodejs/ros" TYPE DIRECTORY FILES "/home/cuong/warthog_original/devel/share/gennodejs/ros/warthog_msgs")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gennodejs/ros" TYPE DIRECTORY FILES "/home/cuong/warthog_ekf/devel/share/gennodejs/ros/warthog_msgs")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  execute_process(COMMAND "/usr/bin/python3" -m compileall "/home/cuong/warthog_original/devel/lib/python3/dist-packages/warthog_msgs")
+  execute_process(COMMAND "/usr/bin/python3" -m compileall "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/warthog_msgs")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python3/dist-packages" TYPE DIRECTORY FILES "/home/cuong/warthog_original/devel/lib/python3/dist-packages/warthog_msgs")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python3/dist-packages" TYPE DIRECTORY FILES "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/warthog_msgs")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_original/build/warthog_msgs/catkin_generated/installspace/warthog_msgs.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_ekf/build/warthog_msgs/catkin_generated/installspace/warthog_msgs.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_msgs/cmake" TYPE FILE FILES "/home/cuong/warthog_original/build/warthog_msgs/catkin_generated/installspace/warthog_msgs-msg-extras.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_msgs/cmake" TYPE FILE FILES "/home/cuong/warthog_ekf/build/warthog_msgs/catkin_generated/installspace/warthog_msgs-msg-extras.cmake")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_msgs/cmake" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/warthog_msgs/catkin_generated/installspace/warthog_msgsConfig.cmake"
-    "/home/cuong/warthog_original/build/warthog_msgs/catkin_generated/installspace/warthog_msgsConfig-version.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_msgs/catkin_generated/installspace/warthog_msgsConfig.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_msgs/catkin_generated/installspace/warthog_msgsConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_msgs" TYPE FILE FILES "/home/cuong/warthog_original/src/warthog_msgs/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_msgs" TYPE FILE FILES "/home/cuong/warthog_ekf/src/warthog_msgs/package.xml")
 endif()
 

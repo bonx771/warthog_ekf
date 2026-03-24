@@ -1,4 +1,4 @@
-prefix=/home/cuong/warthog_original/install
+prefix=/home/cuong/warthog_ekf/install
 
 Name: rotate_recovery
 Description: Description of rotate_recovery

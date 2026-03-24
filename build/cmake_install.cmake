@@ -1,8 +1,8 @@
-# Install script for directory: /home/cuong/warthog_original/src
+# Install script for directory: /home/cuong/warthog_ekf/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_original/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_ekf/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -49,141 +49,142 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/cuong/warthog_original/install/_setup_util.py")
+   "/home/cuong/warthog_ekf/install/_setup_util.py")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/cuong/warthog_original/install" TYPE PROGRAM FILES "/home/cuong/warthog_original/build/catkin_generated/installspace/_setup_util.py")
+file(INSTALL DESTINATION "/home/cuong/warthog_ekf/install" TYPE PROGRAM FILES "/home/cuong/warthog_ekf/build/catkin_generated/installspace/_setup_util.py")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/cuong/warthog_original/install/env.sh")
+   "/home/cuong/warthog_ekf/install/env.sh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/cuong/warthog_original/install" TYPE PROGRAM FILES "/home/cuong/warthog_original/build/catkin_generated/installspace/env.sh")
+file(INSTALL DESTINATION "/home/cuong/warthog_ekf/install" TYPE PROGRAM FILES "/home/cuong/warthog_ekf/build/catkin_generated/installspace/env.sh")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/cuong/warthog_original/install/setup.bash;/home/cuong/warthog_original/install/local_setup.bash")
+   "/home/cuong/warthog_ekf/install/setup.bash;/home/cuong/warthog_ekf/install/local_setup.bash")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/cuong/warthog_original/install" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/catkin_generated/installspace/setup.bash"
-    "/home/cuong/warthog_original/build/catkin_generated/installspace/local_setup.bash"
+file(INSTALL DESTINATION "/home/cuong/warthog_ekf/install" TYPE FILE FILES
+    "/home/cuong/warthog_ekf/build/catkin_generated/installspace/setup.bash"
+    "/home/cuong/warthog_ekf/build/catkin_generated/installspace/local_setup.bash"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/cuong/warthog_original/install/setup.sh;/home/cuong/warthog_original/install/local_setup.sh")
+   "/home/cuong/warthog_ekf/install/setup.sh;/home/cuong/warthog_ekf/install/local_setup.sh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/cuong/warthog_original/install" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/catkin_generated/installspace/setup.sh"
-    "/home/cuong/warthog_original/build/catkin_generated/installspace/local_setup.sh"
+file(INSTALL DESTINATION "/home/cuong/warthog_ekf/install" TYPE FILE FILES
+    "/home/cuong/warthog_ekf/build/catkin_generated/installspace/setup.sh"
+    "/home/cuong/warthog_ekf/build/catkin_generated/installspace/local_setup.sh"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/cuong/warthog_original/install/setup.zsh;/home/cuong/warthog_original/install/local_setup.zsh")
+   "/home/cuong/warthog_ekf/install/setup.zsh;/home/cuong/warthog_ekf/install/local_setup.zsh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/cuong/warthog_original/install" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/catkin_generated/installspace/setup.zsh"
-    "/home/cuong/warthog_original/build/catkin_generated/installspace/local_setup.zsh"
+file(INSTALL DESTINATION "/home/cuong/warthog_ekf/install" TYPE FILE FILES
+    "/home/cuong/warthog_ekf/build/catkin_generated/installspace/setup.zsh"
+    "/home/cuong/warthog_ekf/build/catkin_generated/installspace/local_setup.zsh"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/cuong/warthog_original/install/setup.fish;/home/cuong/warthog_original/install/local_setup.fish")
+   "/home/cuong/warthog_ekf/install/setup.fish;/home/cuong/warthog_ekf/install/local_setup.fish")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/cuong/warthog_original/install" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/catkin_generated/installspace/setup.fish"
-    "/home/cuong/warthog_original/build/catkin_generated/installspace/local_setup.fish"
+file(INSTALL DESTINATION "/home/cuong/warthog_ekf/install" TYPE FILE FILES
+    "/home/cuong/warthog_ekf/build/catkin_generated/installspace/setup.fish"
+    "/home/cuong/warthog_ekf/build/catkin_generated/installspace/local_setup.fish"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/cuong/warthog_original/install/.rosinstall")
+   "/home/cuong/warthog_ekf/install/.rosinstall")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/home/cuong/warthog_original/install" TYPE FILE FILES "/home/cuong/warthog_original/build/catkin_generated/installspace/.rosinstall")
+file(INSTALL DESTINATION "/home/cuong/warthog_ekf/install" TYPE FILE FILES "/home/cuong/warthog_ekf/build/catkin_generated/installspace/.rosinstall")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/cuong/warthog_original/build/gtest/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/navigation/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_desktop/warthog_desktop/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_manipulation/warthog_iiwa_description/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_manipulation/warthog_kinova_description/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_manipulation/warthog_manipulation/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_msgs/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_manipulation/warthog_ur_description/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/map_server/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/rf2o_laser_odometry/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/amcl/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/fake_localization/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/m-explore/map_merge/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/voxel_grid/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/costmap_2d/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/m-explore/explore/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/nav_core/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/base_local_planner/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/carrot_planner/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/clear_costmap_recovery/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/dwa_local_planner/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/move_slow_and_clear/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/navfn/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/global_planner/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/rotate_recovery/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/navigation/move_base/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_control/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_description/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_manipulation/warthog_dual_ur_moveit_config/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_gazebo/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_manipulation/warthog_iiwa_moveit_config/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_manipulation/warthog_kinova_bringup/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_navigation/warthog_simulation/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_navigation/warthog_slam/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_manipulation/warthog_ur_bringup/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_manipulation/warthog_ur_moveit_config/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_desktop/warthog_viz/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_manipulation/warthog_dual_gen3_moveit_config/cmake_install.cmake")
-  include("/home/cuong/warthog_original/build/warthog_manipulation/warthog_gen3_moveit_config/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/gtest/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/navigation/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_desktop/warthog_desktop/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_iiwa_description/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_kinova_description/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_manipulation/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_msgs/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_ur_description/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/map_server/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/rf2o_laser_odometry/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/amcl/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/fake_localization/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/m-explore/map_merge/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/robot_localization/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/voxel_grid/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/costmap_2d/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/m-explore/explore/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/nav_core/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/base_local_planner/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/carrot_planner/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/clear_costmap_recovery/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/dwa_local_planner/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/move_slow_and_clear/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/navfn/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/global_planner/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/rotate_recovery/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/navigation/move_base/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_control/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_description/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_dual_ur_moveit_config/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_gazebo/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_iiwa_moveit_config/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_kinova_bringup/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_navigation/warthog_simulation/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_navigation/warthog_slam/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_ur_bringup/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_ur_moveit_config/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_desktop/warthog_viz/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_dual_gen3_moveit_config/cmake_install.cmake")
+  include("/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_gen3_moveit_config/cmake_install.cmake")
 
 endif()
 
@@ -195,5 +196,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/cuong/warthog_original/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/cuong/warthog_ekf/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -1,8 +1,8 @@
-# Install script for directory: /home/cuong/warthog_original/src/navigation/nav_core
+# Install script for directory: /home/cuong/warthog_ekf/src/navigation/nav_core
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_original/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_ekf/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,21 +38,21 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_original/build/navigation/nav_core/catkin_generated/installspace/nav_core.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_ekf/build/navigation/nav_core/catkin_generated/installspace/nav_core.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/nav_core/cmake" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/navigation/nav_core/catkin_generated/installspace/nav_coreConfig.cmake"
-    "/home/cuong/warthog_original/build/navigation/nav_core/catkin_generated/installspace/nav_coreConfig-version.cmake"
+    "/home/cuong/warthog_ekf/build/navigation/nav_core/catkin_generated/installspace/nav_coreConfig.cmake"
+    "/home/cuong/warthog_ekf/build/navigation/nav_core/catkin_generated/installspace/nav_coreConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/nav_core" TYPE FILE FILES "/home/cuong/warthog_original/src/navigation/nav_core/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/nav_core" TYPE FILE FILES "/home/cuong/warthog_ekf/src/navigation/nav_core/package.xml")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/nav_core" TYPE DIRECTORY FILES "/home/cuong/warthog_original/src/navigation/nav_core/include/nav_core/" FILES_MATCHING REGEX "/[^/]*\\.h$" REGEX "/\\.svn$" EXCLUDE)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include/nav_core" TYPE DIRECTORY FILES "/home/cuong/warthog_ekf/src/navigation/nav_core/include/nav_core/" FILES_MATCHING REGEX "/[^/]*\\.h$" REGEX "/\\.svn$" EXCLUDE)
 endif()
 

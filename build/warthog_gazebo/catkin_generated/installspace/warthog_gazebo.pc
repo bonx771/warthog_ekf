@@ -1,4 +1,4 @@
-prefix=/home/cuong/warthog_original/install
+prefix=/home/cuong/warthog_ekf/install
 
 Name: warthog_gazebo
 Description: Description of warthog_gazebo

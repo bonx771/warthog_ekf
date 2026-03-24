@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/array_parser_test"
-  "/home/cuong/warthog_original/devel/lib/costmap_2d/array_parser_test.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/array_parser_test"
+  "/home/cuong/warthog_ekf/devel/lib/costmap_2d/array_parser_test.pdb"
   "CMakeFiles/array_parser_test.dir/test/array_parser_test.cpp.o"
 )
 

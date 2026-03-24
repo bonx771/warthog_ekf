@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cuong/warthog_original/src
+CMAKE_SOURCE_DIR = /home/cuong/warthog_ekf/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cuong/warthog_original/build
+CMAKE_BINARY_DIR = /home/cuong/warthog_ekf/build
 
 # Utility rule file for gazebo_ros_gencfg.
 
@@ -63,10 +63,10 @@ warthog_gazebo/CMakeFiles/gazebo_ros_gencfg.dir/build: gazebo_ros_gencfg
 .PHONY : warthog_gazebo/CMakeFiles/gazebo_ros_gencfg.dir/build
 
 warthog_gazebo/CMakeFiles/gazebo_ros_gencfg.dir/clean:
-	cd /home/cuong/warthog_original/build/warthog_gazebo && $(CMAKE_COMMAND) -P CMakeFiles/gazebo_ros_gencfg.dir/cmake_clean.cmake
+	cd /home/cuong/warthog_ekf/build/warthog_gazebo && $(CMAKE_COMMAND) -P CMakeFiles/gazebo_ros_gencfg.dir/cmake_clean.cmake
 .PHONY : warthog_gazebo/CMakeFiles/gazebo_ros_gencfg.dir/clean
 
 warthog_gazebo/CMakeFiles/gazebo_ros_gencfg.dir/depend:
-	cd /home/cuong/warthog_original/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_original/src /home/cuong/warthog_original/src/warthog_gazebo /home/cuong/warthog_original/build /home/cuong/warthog_original/build/warthog_gazebo /home/cuong/warthog_original/build/warthog_gazebo/CMakeFiles/gazebo_ros_gencfg.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cuong/warthog_ekf/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_ekf/src /home/cuong/warthog_ekf/src/warthog_gazebo /home/cuong/warthog_ekf/build /home/cuong/warthog_ekf/build/warthog_gazebo /home/cuong/warthog_ekf/build/warthog_gazebo/CMakeFiles/gazebo_ros_gencfg.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : warthog_gazebo/CMakeFiles/gazebo_ros_gencfg.dir/depend
 

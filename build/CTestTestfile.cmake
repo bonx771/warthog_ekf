@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /home/cuong/warthog_original/src
-# Build directory: /home/cuong/warthog_original/build
+# Source directory: /home/cuong/warthog_ekf/src
+# Build directory: /home/cuong/warthog_ekf/build
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.
@@ -17,6 +17,7 @@ subdirs("rf2o_laser_odometry")
 subdirs("navigation/amcl")
 subdirs("navigation/fake_localization")
 subdirs("m-explore/map_merge")
+subdirs("robot_localization")
 subdirs("navigation/voxel_grid")
 subdirs("navigation/costmap_2d")
 subdirs("m-explore/explore")

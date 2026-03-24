@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/python3/dist-packages/base_local_planner/msg/_Position2DInt.py"
-  "/home/cuong/warthog_original/devel/lib/python3/dist-packages/base_local_planner/msg/__init__.py"
+  "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/base_local_planner/msg/_Position2DInt.py"
+  "/home/cuong/warthog_ekf/devel/lib/python3/dist-packages/base_local_planner/msg/__init__.py"
   "CMakeFiles/base_local_planner_generate_messages_py"
 )
 

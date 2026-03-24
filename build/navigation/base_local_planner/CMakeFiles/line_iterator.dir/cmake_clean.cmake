@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/base_local_planner/line_iterator"
-  "/home/cuong/warthog_original/devel/lib/base_local_planner/line_iterator.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/base_local_planner/line_iterator"
+  "/home/cuong/warthog_ekf/devel/lib/base_local_planner/line_iterator.pdb"
   "CMakeFiles/line_iterator.dir/test/line_iterator_test.cpp.o"
 )
 

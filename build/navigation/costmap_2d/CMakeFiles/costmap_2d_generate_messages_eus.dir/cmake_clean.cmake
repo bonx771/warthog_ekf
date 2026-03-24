@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/share/roseus/ros/costmap_2d/manifest.l"
-  "/home/cuong/warthog_original/devel/share/roseus/ros/costmap_2d/msg/VoxelGrid.l"
+  "/home/cuong/warthog_ekf/devel/share/roseus/ros/costmap_2d/manifest.l"
+  "/home/cuong/warthog_ekf/devel/share/roseus/ros/costmap_2d/msg/VoxelGrid.l"
   "CMakeFiles/costmap_2d_generate_messages_eus"
 )
 

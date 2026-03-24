@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/libbase_local_planner.pdb"
-  "/home/cuong/warthog_original/devel/lib/libbase_local_planner.so"
+  "/home/cuong/warthog_ekf/devel/lib/libbase_local_planner.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/libbase_local_planner.so"
   "CMakeFiles/base_local_planner.dir/src/costmap_model.cpp.o"
   "CMakeFiles/base_local_planner.dir/src/footprint_helper.cpp.o"
   "CMakeFiles/base_local_planner.dir/src/goal_functions.cpp.o"

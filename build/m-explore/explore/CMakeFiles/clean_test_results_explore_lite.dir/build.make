@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cuong/warthog_original/src
+CMAKE_SOURCE_DIR = /home/cuong/warthog_ekf/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cuong/warthog_original/build
+CMAKE_BINARY_DIR = /home/cuong/warthog_ekf/build
 
 # Utility rule file for clean_test_results_explore_lite.
 
@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/cuong/warthog_original/build
 include m-explore/explore/CMakeFiles/clean_test_results_explore_lite.dir/progress.make
 
 m-explore/explore/CMakeFiles/clean_test_results_explore_lite:
-	cd /home/cuong/warthog_original/build/m-explore/explore && /usr/bin/python3 /opt/ros/noetic/share/catkin/cmake/test/remove_test_results.py /home/cuong/warthog_original/build/test_results/explore_lite
+	cd /home/cuong/warthog_ekf/build/m-explore/explore && /usr/bin/python3 /opt/ros/noetic/share/catkin/cmake/test/remove_test_results.py /home/cuong/warthog_ekf/build/test_results/explore_lite
 
 clean_test_results_explore_lite: m-explore/explore/CMakeFiles/clean_test_results_explore_lite
 clean_test_results_explore_lite: m-explore/explore/CMakeFiles/clean_test_results_explore_lite.dir/build.make
@@ -67,10 +67,10 @@ m-explore/explore/CMakeFiles/clean_test_results_explore_lite.dir/build: clean_te
 .PHONY : m-explore/explore/CMakeFiles/clean_test_results_explore_lite.dir/build
 
 m-explore/explore/CMakeFiles/clean_test_results_explore_lite.dir/clean:
-	cd /home/cuong/warthog_original/build/m-explore/explore && $(CMAKE_COMMAND) -P CMakeFiles/clean_test_results_explore_lite.dir/cmake_clean.cmake
+	cd /home/cuong/warthog_ekf/build/m-explore/explore && $(CMAKE_COMMAND) -P CMakeFiles/clean_test_results_explore_lite.dir/cmake_clean.cmake
 .PHONY : m-explore/explore/CMakeFiles/clean_test_results_explore_lite.dir/clean
 
 m-explore/explore/CMakeFiles/clean_test_results_explore_lite.dir/depend:
-	cd /home/cuong/warthog_original/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_original/src /home/cuong/warthog_original/src/m-explore/explore /home/cuong/warthog_original/build /home/cuong/warthog_original/build/m-explore/explore /home/cuong/warthog_original/build/m-explore/explore/CMakeFiles/clean_test_results_explore_lite.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cuong/warthog_ekf/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_ekf/src /home/cuong/warthog_ekf/src/m-explore/explore /home/cuong/warthog_ekf/build /home/cuong/warthog_ekf/build/m-explore/explore /home/cuong/warthog_ekf/build/m-explore/explore/CMakeFiles/clean_test_results_explore_lite.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : m-explore/explore/CMakeFiles/clean_test_results_explore_lite.dir/depend
 

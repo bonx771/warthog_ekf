@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/libamcl_map.pdb"
-  "/home/cuong/warthog_original/devel/lib/libamcl_map.so"
+  "/home/cuong/warthog_ekf/devel/lib/libamcl_map.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/libamcl_map.so"
   "CMakeFiles/amcl_map.dir/src/amcl/map/map.c.o"
   "CMakeFiles/amcl_map.dir/src/amcl/map/map_cspace.cpp.o"
   "CMakeFiles/amcl_map.dir/src/amcl/map/map_draw.c.o"

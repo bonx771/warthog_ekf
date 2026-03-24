@@ -1,8 +1,8 @@
-# Install script for directory: /home/cuong/warthog_original/src/warthog_manipulation/warthog_kinova_bringup
+# Install script for directory: /home/cuong/warthog_ekf/src/warthog_manipulation/warthog_kinova_bringup
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_original/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cuong/warthog_ekf/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,17 +38,17 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_original/build/warthog_manipulation/warthog_kinova_bringup/catkin_generated/installspace/warthog_kinova_bringup.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_kinova_bringup/catkin_generated/installspace/warthog_kinova_bringup.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_kinova_bringup/cmake" TYPE FILE FILES
-    "/home/cuong/warthog_original/build/warthog_manipulation/warthog_kinova_bringup/catkin_generated/installspace/warthog_kinova_bringupConfig.cmake"
-    "/home/cuong/warthog_original/build/warthog_manipulation/warthog_kinova_bringup/catkin_generated/installspace/warthog_kinova_bringupConfig-version.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_kinova_bringup/catkin_generated/installspace/warthog_kinova_bringupConfig.cmake"
+    "/home/cuong/warthog_ekf/build/warthog_manipulation/warthog_kinova_bringup/catkin_generated/installspace/warthog_kinova_bringupConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_kinova_bringup" TYPE FILE FILES "/home/cuong/warthog_original/src/warthog_manipulation/warthog_kinova_bringup/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/warthog_kinova_bringup" TYPE FILE FILES "/home/cuong/warthog_ekf/src/warthog_manipulation/warthog_kinova_bringup/package.xml")
 endif()
 

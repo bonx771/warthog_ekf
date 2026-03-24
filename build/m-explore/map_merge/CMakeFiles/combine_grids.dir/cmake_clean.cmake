@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/libcombine_grids.a"
-  "/home/cuong/warthog_original/devel/lib/libcombine_grids.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/libcombine_grids.a"
+  "/home/cuong/warthog_ekf/devel/lib/libcombine_grids.pdb"
   "CMakeFiles/combine_grids.dir/src/combine_grids/grid_compositor.cpp.o"
   "CMakeFiles/combine_grids.dir/src/combine_grids/grid_warper.cpp.o"
   "CMakeFiles/combine_grids.dir/src/combine_grids/merging_pipeline.cpp.o"

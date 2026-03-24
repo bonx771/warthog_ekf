@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/liblayers.pdb"
-  "/home/cuong/warthog_original/devel/lib/liblayers.so"
+  "/home/cuong/warthog_ekf/devel/lib/liblayers.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/liblayers.so"
   "CMakeFiles/layers.dir/plugins/inflation_layer.cpp.o"
   "CMakeFiles/layers.dir/plugins/obstacle_layer.cpp.o"
   "CMakeFiles/layers.dir/plugins/static_layer.cpp.o"

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/home/cuong/warthog_original/src/navigation/navfn/include/navfn/navfn.h
+/home/cuong/warthog_ekf/src/navigation/navfn/include/navfn/navfn.h
 math.h
 -
 stdint.h
@@ -16,7 +16,7 @@ string.h
 stdio.h
 -
 
-/home/cuong/warthog_original/src/navigation/navfn/src/navtest/navtest.cpp
+/home/cuong/warthog_ekf/src/navigation/navfn/src/navtest/navtest.cpp
 navfn/navfn.h
 -
 sys/time.h
@@ -32,7 +32,7 @@ string
 fstream
 -
 navwin.h
-/home/cuong/warthog_original/src/navigation/navfn/src/navtest/navwin.h
+/home/cuong/warthog_ekf/src/navigation/navfn/src/navtest/navwin.h
 netpbm/pgm.h
 -
 stdio.h
@@ -40,13 +40,13 @@ stdio.h
 pgm.h
 -
 
-/home/cuong/warthog_original/src/navigation/navfn/src/navtest/navwin.cpp
+/home/cuong/warthog_ekf/src/navigation/navfn/src/navtest/navwin.cpp
 string.h
 -
 navwin.h
-/home/cuong/warthog_original/src/navigation/navfn/src/navtest/navwin.h
+/home/cuong/warthog_ekf/src/navigation/navfn/src/navtest/navwin.h
 
-/home/cuong/warthog_original/src/navigation/navfn/src/navtest/navwin.h
+/home/cuong/warthog_ekf/src/navigation/navfn/src/navtest/navwin.h
 sys/time.h
 -
 stdio.h

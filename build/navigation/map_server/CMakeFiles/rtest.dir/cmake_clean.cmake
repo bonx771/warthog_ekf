@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/map_server/rtest"
-  "/home/cuong/warthog_original/devel/lib/map_server/rtest.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/map_server/rtest"
+  "/home/cuong/warthog_ekf/devel/lib/map_server/rtest.pdb"
   "CMakeFiles/rtest.dir/test/rtest.cpp.o"
   "CMakeFiles/rtest.dir/test/test_constants.cpp.o"
 )

@@ -1,4 +1,4 @@
-prefix=/home/cuong/warthog_original/install
+prefix=/home/cuong/warthog_ekf/install
 
 Name: costmap_2d
 Description: Description of costmap_2d

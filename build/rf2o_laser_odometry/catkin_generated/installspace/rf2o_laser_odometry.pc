@@ -1,4 +1,4 @@
-prefix=/home/cuong/warthog_original/install
+prefix=/home/cuong/warthog_ekf/install
 
 Name: rf2o_laser_odometry
 Description: Description of rf2o_laser_odometry

@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cuong/warthog_original/src
+CMAKE_SOURCE_DIR = /home/cuong/warthog_ekf/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cuong/warthog_original/build
+CMAKE_BINARY_DIR = /home/cuong/warthog_ekf/build
 
 # Utility rule file for clean_test_results_warthog_ur_bringup.
 
@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/cuong/warthog_original/build
 include warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur_bringup.dir/progress.make
 
 warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur_bringup:
-	cd /home/cuong/warthog_original/build/warthog_manipulation/warthog_ur_bringup && /usr/bin/python3 /opt/ros/noetic/share/catkin/cmake/test/remove_test_results.py /home/cuong/warthog_original/build/test_results/warthog_ur_bringup
+	cd /home/cuong/warthog_ekf/build/warthog_manipulation/warthog_ur_bringup && /usr/bin/python3 /opt/ros/noetic/share/catkin/cmake/test/remove_test_results.py /home/cuong/warthog_ekf/build/test_results/warthog_ur_bringup
 
 clean_test_results_warthog_ur_bringup: warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur_bringup
 clean_test_results_warthog_ur_bringup: warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur_bringup.dir/build.make
@@ -67,10 +67,10 @@ warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur
 .PHONY : warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur_bringup.dir/build
 
 warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur_bringup.dir/clean:
-	cd /home/cuong/warthog_original/build/warthog_manipulation/warthog_ur_bringup && $(CMAKE_COMMAND) -P CMakeFiles/clean_test_results_warthog_ur_bringup.dir/cmake_clean.cmake
+	cd /home/cuong/warthog_ekf/build/warthog_manipulation/warthog_ur_bringup && $(CMAKE_COMMAND) -P CMakeFiles/clean_test_results_warthog_ur_bringup.dir/cmake_clean.cmake
 .PHONY : warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur_bringup.dir/clean
 
 warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur_bringup.dir/depend:
-	cd /home/cuong/warthog_original/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_original/src /home/cuong/warthog_original/src/warthog_manipulation/warthog_ur_bringup /home/cuong/warthog_original/build /home/cuong/warthog_original/build/warthog_manipulation/warthog_ur_bringup /home/cuong/warthog_original/build/warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur_bringup.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cuong/warthog_ekf/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_ekf/src /home/cuong/warthog_ekf/src/warthog_manipulation/warthog_ur_bringup /home/cuong/warthog_ekf/build /home/cuong/warthog_ekf/build/warthog_manipulation/warthog_ur_bringup /home/cuong/warthog_ekf/build/warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur_bringup.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : warthog_manipulation/warthog_ur_bringup/CMakeFiles/clean_test_results_warthog_ur_bringup.dir/depend
 

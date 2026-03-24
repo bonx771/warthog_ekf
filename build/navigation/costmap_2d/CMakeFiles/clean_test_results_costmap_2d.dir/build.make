@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cuong/warthog_original/src
+CMAKE_SOURCE_DIR = /home/cuong/warthog_ekf/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cuong/warthog_original/build
+CMAKE_BINARY_DIR = /home/cuong/warthog_ekf/build
 
 # Utility rule file for clean_test_results_costmap_2d.
 
@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/cuong/warthog_original/build
 include navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d.dir/progress.make
 
 navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d:
-	cd /home/cuong/warthog_original/build/navigation/costmap_2d && /usr/bin/python3 /opt/ros/noetic/share/catkin/cmake/test/remove_test_results.py /home/cuong/warthog_original/build/test_results/costmap_2d
+	cd /home/cuong/warthog_ekf/build/navigation/costmap_2d && /usr/bin/python3 /opt/ros/noetic/share/catkin/cmake/test/remove_test_results.py /home/cuong/warthog_ekf/build/test_results/costmap_2d
 
 clean_test_results_costmap_2d: navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d
 clean_test_results_costmap_2d: navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d.dir/build.make
@@ -67,10 +67,10 @@ navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d.dir/build: clean_
 .PHONY : navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d.dir/build
 
 navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d.dir/clean:
-	cd /home/cuong/warthog_original/build/navigation/costmap_2d && $(CMAKE_COMMAND) -P CMakeFiles/clean_test_results_costmap_2d.dir/cmake_clean.cmake
+	cd /home/cuong/warthog_ekf/build/navigation/costmap_2d && $(CMAKE_COMMAND) -P CMakeFiles/clean_test_results_costmap_2d.dir/cmake_clean.cmake
 .PHONY : navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d.dir/clean
 
 navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d.dir/depend:
-	cd /home/cuong/warthog_original/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_original/src /home/cuong/warthog_original/src/navigation/costmap_2d /home/cuong/warthog_original/build /home/cuong/warthog_original/build/navigation/costmap_2d /home/cuong/warthog_original/build/navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cuong/warthog_ekf/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cuong/warthog_ekf/src /home/cuong/warthog_ekf/src/navigation/costmap_2d /home/cuong/warthog_ekf/build /home/cuong/warthog_ekf/build/navigation/costmap_2d /home/cuong/warthog_ekf/build/navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : navigation/costmap_2d/CMakeFiles/clean_test_results_costmap_2d.dir/depend
 

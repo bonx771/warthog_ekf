@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /home/cuong/warthog_original/src/navigation/fake_localization
-# Build directory: /home/cuong/warthog_original/build/navigation/fake_localization
+# Source directory: /home/cuong/warthog_ekf/src/navigation/fake_localization
+# Build directory: /home/cuong/warthog_ekf/build/navigation/fake_localization
 # 
 # This file includes the relevant testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

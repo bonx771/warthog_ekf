@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cuong/warthog_original/src
+CMAKE_SOURCE_DIR = /home/cuong/warthog_ekf/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cuong/warthog_original/build
+CMAKE_BINARY_DIR = /home/cuong/warthog_ekf/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -137,14 +137,14 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/cuong/warthog_original/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/cuong/warthog_original/build/CMakeFiles /home/cuong/warthog_original/build/warthog_navigation/warthog_simulation/CMakeFiles/progress.marks
-	cd /home/cuong/warthog_original/build && $(MAKE) -f CMakeFiles/Makefile2 warthog_navigation/warthog_simulation/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/cuong/warthog_original/build/CMakeFiles 0
+	cd /home/cuong/warthog_ekf/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/cuong/warthog_ekf/build/CMakeFiles /home/cuong/warthog_ekf/build/warthog_navigation/warthog_simulation/CMakeFiles/progress.marks
+	cd /home/cuong/warthog_ekf/build && $(MAKE) -f CMakeFiles/Makefile2 warthog_navigation/warthog_simulation/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/cuong/warthog_ekf/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/cuong/warthog_original/build && $(MAKE) -f CMakeFiles/Makefile2 warthog_navigation/warthog_simulation/clean
+	cd /home/cuong/warthog_ekf/build && $(MAKE) -f CMakeFiles/Makefile2 warthog_navigation/warthog_simulation/clean
 .PHONY : clean
 
 # The main clean target
@@ -154,17 +154,17 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/cuong/warthog_original/build && $(MAKE) -f CMakeFiles/Makefile2 warthog_navigation/warthog_simulation/preinstall
+	cd /home/cuong/warthog_ekf/build && $(MAKE) -f CMakeFiles/Makefile2 warthog_navigation/warthog_simulation/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/cuong/warthog_original/build && $(MAKE) -f CMakeFiles/Makefile2 warthog_navigation/warthog_simulation/preinstall
+	cd /home/cuong/warthog_ekf/build && $(MAKE) -f CMakeFiles/Makefile2 warthog_navigation/warthog_simulation/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/cuong/warthog_original/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/cuong/warthog_ekf/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Help Target
@@ -191,6 +191,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/cuong/warthog_original/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/cuong/warthog_ekf/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

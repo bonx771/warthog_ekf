@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/libglobal_planner.pdb"
-  "/home/cuong/warthog_original/devel/lib/libglobal_planner.so"
+  "/home/cuong/warthog_ekf/devel/lib/libglobal_planner.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/libglobal_planner.so"
   "CMakeFiles/global_planner.dir/src/astar.cpp.o"
   "CMakeFiles/global_planner.dir/src/dijkstra.cpp.o"
   "CMakeFiles/global_planner.dir/src/gradient_path.cpp.o"

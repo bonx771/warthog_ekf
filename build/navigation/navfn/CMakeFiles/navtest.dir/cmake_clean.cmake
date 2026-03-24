@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cuong/warthog_original/devel/lib/navfn/navtest"
-  "/home/cuong/warthog_original/devel/lib/navfn/navtest.pdb"
+  "/home/cuong/warthog_ekf/devel/lib/navfn/navtest"
+  "/home/cuong/warthog_ekf/devel/lib/navfn/navtest.pdb"
   "CMakeFiles/navtest.dir/src/navtest/navtest.cpp.o"
   "CMakeFiles/navtest.dir/src/navtest/navwin.cpp.o"
 )

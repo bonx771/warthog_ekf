@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/cuong/warthog_ekf/build
 include robot_localization/CMakeFiles/_robot_localization_generate_messages_check_deps_SetDatum.dir/progress.make
 
 robot_localization/CMakeFiles/_robot_localization_generate_messages_check_deps_SetDatum:
-	cd /home/cuong/warthog_ekf/build/robot_localization && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py robot_localization /home/cuong/warthog_ekf/src/robot_localization/srv/SetDatum.srv geographic_msgs/GeoPoint:geographic_msgs/GeoPose:geometry_msgs/Quaternion
+	cd /home/cuong/warthog_ekf/build/robot_localization && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py robot_localization /home/cuong/warthog_ekf/src/robot_localization/srv/SetDatum.srv geographic_msgs/GeoPose:geometry_msgs/Quaternion:geographic_msgs/GeoPoint
 
 _robot_localization_generate_messages_check_deps_SetDatum: robot_localization/CMakeFiles/_robot_localization_generate_messages_check_deps_SetDatum
 _robot_localization_generate_messages_check_deps_SetDatum: robot_localization/CMakeFiles/_robot_localization_generate_messages_check_deps_SetDatum.dir/build.make

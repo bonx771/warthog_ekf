@@ -1,2 +1,0 @@
-set(robot_localization_MESSAGE_FILES "")
-set(robot_localization_SERVICE_FILES "/home/cuong/warthog_ekf/src/robot_localization/srv/GetState.srv;/home/cuong/warthog_ekf/src/robot_localization/srv/SetDatum.srv;/home/cuong/warthog_ekf/src/robot_localization/srv/SetPose.srv;/home/cuong/warthog_ekf/src/robot_localization/srv/SetUTMZone.srv;/home/cuong/warthog_ekf/src/robot_localization/srv/ToggleFilterProcessing.srv;/home/cuong/warthog_ekf/src/robot_localization/srv/FromLL.srv;/home/cuong/warthog_ekf/src/robot_localization/srv/ToLL.srv")

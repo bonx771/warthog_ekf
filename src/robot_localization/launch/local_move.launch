@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="rviz" default="true"/>
+  <arg name="config" default="default" />
+
+  <arg name="use_sim_time" default="true" />
+  <arg name="gui" default="true" />
+  <arg name="headless" default="false" />
+  <arg name="world_name" default="$(find warthog_gazebo)/worlds/warthog_playpen.world" />
+
+  <rosparam command="load" file="$(find robot_localization)/params/dual_ekf_navsat_example.yaml" />
+
+  <!-- ===================== GAZEBO ===================== -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="debug" value="0" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="use_sim_time" value="$(arg use_sim_time)" />
+    <arg name="headless" value="$(arg headless)" />
+    <arg name="world_name" value="$(arg world_name)" />
+  </include>
+
+  <!-- ===================== SPAWN WARTHOG ===================== -->
+  <arg name="spawn" value="$(find warthog_simulation)/launch/warthog_spawn.launch" />
+  <include file="$(arg spawn)"/>
+
+  <!-- ===================== RF2O LASER ODOM ===================== -->
+  <node pkg="rf2o_laser_odometry" type="rf2o_laser_odometry_node" name="laser_odometry" output="screen">
+    <param name="laser_scan_topic" value="/front/scan"/>        # topic where the lidar scans are being published
+    <param name="odom_topic" value="/front/odom_laser" />              # topic where tu publish the odometry estimations
+    <param name="publish_tf" value="false" />                   # wheter or not to publish the tf::transform (base->odom)
+    <param name="base_frame_id" value="base_link"/>            # frame_id (tf) of the mobile robot base. A tf transform from the laser_frame to the base_frame is mandatory
+    <param name="odom_frame_id" value="odom" />                # frame_id (tf) to publish the odometry estimations    
+    <param name="init_pose_from_topic" value="" /> # (Odom topic) Leave empty to start at point (0,0)
+    <param name="freq" value="10.0"/>                            # Execution frequency.
+    <param name="verbose" value="true" />                       # verbose
+  </node>
+
+  <!-- ===================== EKF LOCAL ===================== -->
+  <node pkg="robot_localization"
+        type="ekf_localization_node"
+        name="ekf_se_odom"
+        output="screen"
+        clear_params="true"/>
+
+  <!-- ===================== EKF GLOBAL ===================== -->
+  <node pkg="robot_localization"
+        type="ekf_localization_node"
+        name="ekf_se_map"
+        output="screen"
+        clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+  </node>
+
+  <!-- ===================== NAVSAT TRANSFORM ===================== -->
+  <node pkg="robot_localization"
+        type="navsat_transform_node"
+        name="navsat_transform"
+        output="screen"
+        clear_params="true">
+
+    <remap from="imu/data" to="/imu/data"/>
+    <remap from="gps/fix" to="/gps/fix"/>
+    <remap from="odometry/gps" to="/odometry/gps"/>
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+
+  </node>
+
+  <!-- ===================== MOVE_BASE ===================== -->
+  <arg name="dwa_planner"  default="true"/> 
+
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+
+    <rosparam file="$(find warthog_slam)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
+    <rosparam file="$(find warthog_slam)/params/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        
+    <rosparam file="$(find warthog_slam)/params/map_nav_params/local_costmap_params.yaml" command="load" />
+    <rosparam file="$(find warthog_slam)/params/map_nav_params/global_costmap_params.yaml" command="load" />
+        
+    <rosparam file="$(find warthog_slam)/params/base_local_planner_params.yaml" command="load" />
+    <rosparam if="$(arg dwa_planner)" file="$(find warthog_slam)/params/dwa_local_planner_params.yaml" command="load" />
+    <rosparam unless="$(arg dwa_planner)" file="$(find warthog_slam)/params/move_base_params.yaml" command="load" />
+        
+    <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
+    <param if="$(arg dwa_planner)" name="DWAPlannerROS/min_vel_x" value="0.1"/>
+    <param unless="$(arg dwa_planner)" name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
+        
+    <remap from="odom" to="odometry/filtered" />
+      
+  </node>
+
+  <!-- ===================== RVIZ ===================== -->
+  <node if="$(arg rviz)"
+        pkg="rviz"
+        type="rviz"
+        name="$(anon rviz)"
+        output="screen"
+        args="-d $(find warthog_simulation)/rviz/$(arg config).rviz" />
+
+</launch>

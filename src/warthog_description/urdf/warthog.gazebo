@@ -31,7 +31,7 @@
     <plugin name="gps_controller" filename="libhector_gazebo_ros_gps.so">
       <updateRate>20</updateRate>
       <bodyName>base_link</bodyName>
-      <frameId>base_link</frameId>
+      <frameId>gps_link</frameId>
       <topicName>/gps/fix</topicName>
       <velocityTopicName>/navsat/vel</velocityTopicName>
       <referenceLatitude>$(optenv GAZEBO_WORLD_LAT 49.9)</referenceLatitude>

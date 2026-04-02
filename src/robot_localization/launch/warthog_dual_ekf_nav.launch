@@ -9,7 +9,7 @@
   <arg name="headless" default="false" />
   <arg name="world_name" default="$(find warthog_gazebo)/worlds/warthog_playpen.world" />
 
-  <rosparam command="load" file="$(find robot_localization)/params/dual_ekf_navsat_example.yaml" />
+  <rosparam command="load" file="$(find robot_localization)/params/dual_ekf_navsat.yaml" />
 
   <!-- ===================== GAZEBO ===================== -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">

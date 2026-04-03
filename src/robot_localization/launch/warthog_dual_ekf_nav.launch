@@ -2,7 +2,7 @@
 <launch>
 
   <arg name="rviz" default="true"/>
-  <arg name="config" default="default" />
+  <arg name="config" default="ekf" />
 
   <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
@@ -26,12 +26,12 @@
 
   <!-- ===================== RF2O LASER ODOM ===================== -->
   <node pkg="rf2o_laser_odometry" type="rf2o_laser_odometry_node" name="laser_odometry" output="screen">
-    <param name="laser_scan_topic" value="/front/scan"/>        # topic where the lidar scans are being published
-    <param name="odom_topic" value="/front/odom_laser" />              # topic where tu publish the odometry estimations
-    <param name="publish_tf" value="false" />                   # wheter or not to publish the tf::transform (base->odom)
-    <param name="base_frame_id" value="base_link"/>            # frame_id (tf) of the mobile robot base. A tf transform from the laser_frame to the base_frame is mandatory
-    <param name="odom_frame_id" value="odom" />                # frame_id (tf) to publish the odometry estimations    
-    <param name="init_pose_from_topic" value="" /> # (Odom topic) Leave empty to start at point (0,0)
+    <param name="laser_scan_topic" value="/front/scan"/>        
+    <param name="odom_topic" value="/front/odom_laser" />              
+    <param name="publish_tf" value="false" />                   
+    <param name="base_frame_id" value="base_link"/>            
+    <param name="odom_frame_id" value="odom" />                   
+    <param name="init_pose_from_topic" value="" /> 
     <param name="freq" value="10.0"/>                            # Execution frequency.
     <param name="verbose" value="true" />                       # verbose
   </node>
@@ -62,10 +62,11 @@
     <remap from="imu/data" to="/imu/data"/>
     <remap from="gps/fix" to="/gps/fix"/>
     <remap from="odometry/gps" to="/odometry/gps"/>
-    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+    <remap from="odometry/filtered" to="/odometry/filtered_map"/>
 
   </node>
 
+  <include file="$(find warthog_slam)/launch/amcl.launch" />
   <!-- ===================== RVIZ ===================== -->
   <node if="$(arg rviz)"
         pkg="rviz"

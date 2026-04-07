@@ -1,0 +1,141 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="rviz" default="true"/>
+  <arg name="config" default="ekf" />
+
+  <!-- <arg name="use_sim_time" default="true" />
+  <arg name="gui" default="true" />
+  <arg name="headless" default="false" />
+  <arg name="world_name" default="$(find gazebo_ros)/worlds/empty.world" /> -->
+
+  <rosparam command="load" file="$(find robot_localization)/params/test_case_1.yaml" />
+
+  <!-- ===================== GAZEBO ===================== -->
+  <!-- <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="debug" value="0" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="use_sim_time" value="$(arg use_sim_time)" />
+    <arg name="headless" value="$(arg headless)" />
+    <arg name="world_name" value="$(arg world_name)" />
+  </include> -->
+
+  <!-- ===================== SPAWN WARTHOG ===================== -->
+  <!-- <arg name="spawn" value="$(find warthog_simulation)/launch/warthog_spawn.launch" />
+  <include file="$(arg spawn)"/> -->
+
+  <!-- ===================== EKF LOCAL ===================== -->
+  <node pkg="robot_localization"
+        type="ekf_localization_node"
+        name="ekf_se_odom"
+        output="screen"
+        clear_params="true"/>
+
+  <!-- ===================== EKF GLOBAL ===================== -->
+  <node pkg="robot_localization"
+        type="ekf_localization_node"
+        name="ekf_se_map"
+        output="screen"
+        clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+  </node>
+
+  <!-- ===================== NAVSAT TRANSFORM ===================== -->
+  <node pkg="robot_localization"
+        type="navsat_transform_node"
+        name="navsat_transform"
+        output="screen"
+        clear_params="true">
+
+    <param name="wait_for_datum" value="true"/>
+    <rosparam param="datum">[21.03, 105.85, 0.0]</rosparam>
+    <remap from="imu/data" to="/imu/data"/>
+    <remap from="gps/fix" to="/gps/fix"/>
+    <remap from="odometry/gps" to="/odometry/gps"/>
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+
+  </node>
+
+  <node pkg="move_base" type="move_base" name="move_base" output="screen">
+
+    <!-- planner -->
+    <param name="base_global_planner" value="global_planner/GlobalPlanner"/>
+    <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS"/>
+
+    <!-- GLOBAL COSTMAP -->
+    <rosparam param="global_costmap">
+      global_frame: map
+      robot_base_frame: base_link
+      update_frequency: 1.0
+      publish_frequency: 1.0
+      rolling_window: true
+      width: 100.0
+      height: 100.0
+      resolution: 0.5
+      static_map: false
+      plugins:
+        - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+      inflation_layer:
+        inflation_radius: 0.5
+    </rosparam>
+
+
+    <!-- LOCAL COSTMAP -->
+    <rosparam param="local_costmap">
+      global_frame: map
+      robot_base_frame: base_link
+      rolling_window: true
+      width: 20.0
+      height: 20.0
+      resolution: 0.2
+      update_frequency: 5.0
+      publish_frequency: 2.0
+      static_map: false
+
+      plugins:
+        - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+
+      inflation_layer:
+        inflation_radius: 0.5
+    </rosparam>
+
+    <rosparam param="DWAPlannerROS">
+      max_vel_x: 0.5
+      min_vel_x: 0.0
+      max_vel_trans: 3.0
+      min_vel_trans: 0.05
+      max_vel_theta: 1.0
+      min_vel_theta: 0.0
+      acc_lim_x: 2.0
+      acc_lim_theta: 1.5
+      xy_goal_tolerance: 2.0
+      yaw_goal_tolerance: 3.14
+      sim_time: 3.0
+   </rosparam>
+   <rosparam param="move_base">
+      transform_tolerance: 0.5
+      controller_frequency: 10.0
+      oscillation_timeout: 10.0
+      oscillation_distance: 0.5
+   </rosparam>
+   <remap from="odom" to="odometry/filtered_map"/>
+
+  </node>
+
+  <!-- ===================== GPS WAYPOINT SENDER ===================== -->
+  <node pkg="robot_localization"
+        type="gps_waypoint_sender_cpp"
+        name="gps_waypoint_sender"
+        output="screen"
+        launch-prefix="bash -c 'sleep 5; $0 $@'" />
+
+
+  <!-- ===================== RVIZ ===================== -->
+  <node if="$(arg rviz)"
+        pkg="rviz"
+        type="rviz"
+        name="$(anon rviz)"
+        output="screen"
+        args="-d $(find warthog_simulation)/rviz/$(arg config).rviz" />
+
+</launch>

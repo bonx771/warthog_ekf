@@ -4,28 +4,30 @@
   <arg name="rviz" default="true"/>
   <arg name="config" default="ekf" />
 
-  <arg name="use_sim_time" default="true" />
-  <arg name="gui" default="true" />
+  <arg name="use_sim_time" default="false" />
+  <!-- <arg name="gui" default="true" />
   <arg name="headless" default="false" />
-  <arg name="world_name" default="$(find warthog_gazebo)/worlds/warthog_playpen.world" />
+  <arg name="world_name" default="$(find warthog_gazebo)/worlds/warthog_playpen.world" /> -->
 
-  <rosparam command="load" file="$(find robot_localization)/params/dual_ekf_navsat.yaml" />
+  <rosparam command="load" file="$(find robot_localization)/params/dual_ekf_navsat.yaml" /> 
+
+  <!-- <include file="$(find gps_pkg)/launch/navsat_transform_gps.launch"></include> -->
 
   <!-- ===================== GAZEBO ===================== -->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+  <!-- <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="debug" value="0" />
     <arg name="gui" value="$(arg gui)" />
     <arg name="use_sim_time" value="$(arg use_sim_time)" />
     <arg name="headless" value="$(arg headless)" />
     <arg name="world_name" value="$(arg world_name)" />
-  </include>
+  </include> -->
 
   <!-- ===================== SPAWN WARTHOG ===================== -->
-  <arg name="spawn" value="$(find warthog_simulation)/launch/warthog_spawn.launch" />
-  <include file="$(arg spawn)"/>
+  <!-- <arg name="spawn" value="$(find warthog_simulation)/launch/warthog_spawn.launch" />
+  <include file="$(arg spawn)"/> -->
 
   <!-- ===================== RF2O LASER ODOM ===================== -->
-  <node pkg="rf2o_laser_odometry" type="rf2o_laser_odometry_node" name="laser_odometry" output="screen">
+  <!-- <node pkg="rf2o_laser_odometry" type="rf2o_laser_odometry_node" name="laser_odometry" output="screen">
     <param name="laser_scan_topic" value="/front/scan"/>        
     <param name="odom_topic" value="/front/odom_laser" />              
     <param name="publish_tf" value="false" />                   
@@ -34,7 +36,7 @@
     <param name="init_pose_from_topic" value="" /> 
     <param name="freq" value="10.0"/>                            # Execution frequency.
     <param name="verbose" value="true" />                       # verbose
-  </node>
+  </node> -->
 
   <!-- ===================== EKF LOCAL ===================== -->
   <node pkg="robot_localization"

@@ -6,28 +6,28 @@
   <arg name="config" default="default" />
 
   <!-- Gazebo -->
-  <arg name="use_sim_time" default="true" />
+  <!-- <arg name="use_sim_time" default="true" />
   <arg name="gui" default="true" />
   <arg name="headless" default="false" />
-  <arg name="world_name" default="$(find warthog_gazebo)/worlds/warthog_playpen.world" />
+  <arg name="world_name" default="$(find warthog_gazebo)/worlds/warthog_playpen.world" /> -->
 
   <!-- Launch Gazebo with the specified world -->
-  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+  <!-- <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="debug" value="0" />
     <arg name="gui" value="$(arg gui)" />
     <arg name="use_sim_time" value="$(arg use_sim_time)" />
     <arg name="headless" value="$(arg headless)" />
     <arg name="world_name" value="$(arg world_name)" />
-  </include>
+  </include> -->
 
   <!-- Spawn Warthog -->
-  <arg name="spawn" value="$(find warthog_simulation)/launch/warthog_spawn.launch" />
+  <!-- <arg name="spawn" value="$(find warthog_simulation)/launch/warthog_spawn.launch" /> -->
 
   <!-- Spawn AprilTag -->
   <!-- <node name="spawn_apriltag" pkg="gazebo_ros" type="spawn_model" 
         args="-file $(find warthog_simulation)/urdf/apriltag.urdf.xacro -urdf -x 2 -y 0 -z 1 -R 1.57 -P 1.57 -Y -1.57 -model apriltag"/> -->
 
-  <include file="$(arg spawn)"/>
+  <!-- <include file="$(arg spawn)"/> -->
 
   <!-- Point clound to laser scan -->
   <!-- <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
@@ -44,7 +44,7 @@
         concurrency_level: 0
     </rosparam>
   </node> -->
-
+<!-- 
   <node pkg="rf2o_laser_odometry" type="rf2o_laser_odometry_node" name="laser_odometry" output="screen">
     <param name="laser_scan_topic" value="/front/scan"/>        # topic where the lidar scans are being published
     <param name="odom_topic" value="/front/odom_laser" />              # topic where tu publish the odometry estimations
@@ -54,7 +54,7 @@
     <param name="init_pose_from_topic" value="" /> # (Odom topic) Leave empty to start at point (0,0)
     <param name="freq" value="10.0"/>                            # Execution frequency.
     <param name="verbose" value="true" />                       # verbose
-  </node>
+  </node> -->
 
   <!-- WORLD
   <group if="$(eval config != 'rtabmap')">

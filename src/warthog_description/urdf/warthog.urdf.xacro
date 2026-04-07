@@ -468,7 +468,7 @@
     </visual>
   </link>
   <joint name="diff_link_joint" type="fixed">
-    <parent link="chassis_link"/>
+    <parent link="base_link"/>
     <child link="diff_link"/>
     <origin xyz="-0.5826 0 0.24979" rpy="0 0 0" />
   </joint>
@@ -482,7 +482,7 @@
 
   <link name="gps_link"/>
   <joint name="gps_link_joint" type="fixed">
-    <parent link="chassis_link"/>
+    <parent link="base_link"/>
     <child link="gps_link"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>

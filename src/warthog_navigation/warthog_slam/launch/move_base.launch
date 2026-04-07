@@ -18,7 +18,7 @@
         <param if="$(arg dwa_planner)" name="DWAPlannerROS/min_vel_x" value="0.0"/>
         <param unless="$(arg dwa_planner)" name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
         
-        <remap from="odom" to="odometry/filtered" />
+        <remap from="odom" to="odometry/filtered_map" />
       
     </node>
 

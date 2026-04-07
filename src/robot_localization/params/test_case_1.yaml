@@ -5,7 +5,7 @@ ekf_se_odom:
   sensor_timeout: 0.1
   two_d_mode: true
   transform_time_offset: 0.0
-  transform_timeout: 0.0
+  transform_timeout: 0.1
   print_diagnostics: true
   debug: false
   publish_tf: true  
@@ -42,20 +42,20 @@ ekf_se_odom:
 
   use_control: false
 
-  # ===== LiDAR ODOM =====
-  odom1: /front/odom_laser   
-  odom1_config: [true,  true,  false,
-                 false, false, true,
-                 false, false, false,
-                 false, false, false,
-                 false, false, false]
+  # # ===== LiDAR ODOM =====
+  # odom1: /front/odom_laser   
+  # odom1_config: [true,  true,  false,
+  #                false, false, true,
+  #                false, false, false,
+  #                false, false, false,
+  #                false, false, false]
 
-  odom1_queue_size: 10
-  odom1_nodelay: true
-  odom1_differential: false
-  odom1_relative: false
+  # odom1_queue_size: 10
+  # odom1_nodelay: true
+  # odom1_differential: false
+  # odom1_relative: false
 
-  use_control: false
+  # use_control: false
 
   process_noise_covariance: [1e-3, 0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                              0,    1e-3, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
@@ -94,7 +94,7 @@ ekf_se_map:
   sensor_timeout: 0.1
   two_d_mode: true
   transform_time_offset: 0.0
-  transform_timeout: 0.0
+  transform_timeout: 0.1
   print_diagnostics: true
   debug: false
   publish_tf: true  
@@ -183,4 +183,5 @@ navsat_transform:
   broadcast_cartesian_transform_as_parent_frame: false
   publish_filtered_gps: true
   use_odometry_yaw: false
-  wait_for_datum: false
+  wait_for_datum: true
+  datum: [21.03, 105.85, 0.0]

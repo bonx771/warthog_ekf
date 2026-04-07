@@ -95,7 +95,7 @@ namespace RobotLocalization
     // to be accepted rapidly when the filter starts, so we should
     // initialize the state's covariance with large values.
     estimateErrorCovariance_.setIdentity();
-    estimateErrorCovariance_ *= 1e-9;
+    estimateErrorCovariance_ *= 1e-7;
 
     // We need the identity for the update equations
     identity_.setIdentity();

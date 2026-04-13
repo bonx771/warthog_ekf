@@ -11,8 +11,7 @@
 
   <rosparam command="load" file="$(find robot_localization)/params/dual_ekf_navsat.yaml" /> 
 
-  <!-- <include file="$(find gps_pkg)/launch/navsat_transform_gps.launch"></include> -->
-
+  
   <!-- ===================== GAZEBO ===================== -->
   <include file="$(find gazebo_ros)/launch/empty_world.launch">
     <arg name="debug" value="0" />

@@ -1,9 +1,9 @@
 <launch>
   <!-- Node đọc GPS thật -->
-  <node pkg="gps_pkg" type="gps_node.py" name="gps_node" output="screen" />
+  <!-- <node pkg="gps_pkg" type="gps_node.py" name="gps_node" output="screen" /> -->
 
   <!-- Node đọc Waypoints -->
-  <node pkg="gps_pkg" type="mission_receiver.py" name="mission_receiver" output="screen" />
+  <!-- <node pkg="gps_pkg" type="mission_receiver.py" name="mission_receiver" output="screen" /> -->
 
   <!-- TF GPS -->
   <node pkg="tf2_ros" type="static_transform_publisher" name="gps_tf" 

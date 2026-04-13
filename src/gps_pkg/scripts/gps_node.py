@@ -115,6 +115,12 @@ def gps_publisher():
     rospy.init_node('gps_node', anonymous=True)
     pub = rospy.Publisher('/gps/fix', NavSatFix, queue_size=10)
 
+    rate = rospy.Rate(30)  # 30Hz
+
+    # 👉 lưu giá trị GPS gần nhất
+    last_msg = None
+    last_time = None
+
     try:
         ser = serial.Serial(GPS_PORT, BAUD_RATE, timeout=1)
         rospy.loginfo(f"Đang đọc GPS từ {GPS_PORT}")
@@ -126,49 +132,55 @@ def gps_publisher():
         try:
             line = ser.readline().decode('ascii', errors='ignore').strip()
 
-            if not line:
-                continue
+            # ===== Nếu có dữ liệu mới =====
+            if line:
+                if line.startswith("$GNGSA") or line.startswith("$GPGSA") or line.startswith("$GLGSA"):
+                    parse_gngsa(line)
 
-            # Parse GSA trước để lấy VDOP/HDOP
-            if line.startswith("$GNGSA") or line.startswith("$GPGSA") or line.startswith("$GLGSA"):
-                parse_gngsa(line)
+                if line.startswith("$GNGGA") or line.startswith("$GPGGA"):
+                    lat, lon, alt = parse_gngga(line)
 
-            # Parse GGA để publish fix
-            if line.startswith("$GNGGA") or line.startswith("$GPGGA"):
-                lat, lon, alt = parse_gngga(line)
+                    if lat is not None and lon is not None:
+                        msg = NavSatFix()
+                        msg.header.frame_id = "gps_link"
 
-                if lat is not None and lon is not None:
-                    msg = NavSatFix()
-                    msg.header.stamp = rospy.Time.now()
-                    msg.header.frame_id = "gps_link"
+                        if latest_fix_quality > 0:
+                            msg.status.status = NavSatStatus.STATUS_FIX
+                        else:
+                            msg.status.status = NavSatStatus.STATUS_NO_FIX
 
-                    # Status theo fix quality
-                    if latest_fix_quality > 0:
-                        msg.status.status = NavSatStatus.STATUS_FIX
-                    else:
-                        msg.status.status = NavSatStatus.STATUS_NO_FIX
+                        msg.status.service = NavSatStatus.SERVICE_GPS
 
-                    msg.status.service = NavSatStatus.SERVICE_GPS
+                        msg.latitude = lat
+                        msg.longitude = lon
+                        msg.altitude = alt
 
-                    msg.latitude = lat
-                    msg.longitude = lon
-                    msg.altitude = alt
+                        msg.position_covariance = build_covariance(latest_hdop, latest_vdop)
+                        msg.position_covariance_type = NavSatFix.COVARIANCE_TYPE_APPROXIMATED
 
-                    # Covariance động từ HDOP/VDOP
-                    msg.position_covariance = build_covariance(latest_hdop, latest_vdop)
-                    msg.position_covariance_type = NavSatFix.COVARIANCE_TYPE_APPROXIMATED
+                        # 👉 cập nhật dữ liệu mới nhất
+                        last_msg = msg
+                        last_time = rospy.Time.now()
 
-                    pub.publish(msg)
+            # ===== Publish 30Hz (dù có data mới hay không) =====
+            if last_msg is not None:
+                last_msg.header.stamp = rospy.Time.now()  # cập nhật timestamp mới
+                pub.publish(last_msg)
 
-                    rospy.loginfo_throttle(
-                        2,
-                        f"GPS Fix: lat={lat:.8f}, lon={lon:.8f}, alt={alt:.2f}, "
-                        f"HDOP={latest_hdop}, VDOP={latest_vdop}, "
-                        f"cov={msg.position_covariance}"
-                    )
+                rospy.loginfo_throttle(
+                    2,
+                    f"Publishing @30Hz | lat={last_msg.latitude:.8f}, lon={last_msg.longitude:.8f}"
+                )
+
+            # ===== cảnh báo nếu GPS quá lâu không update =====
+            if last_time is not None:
+                if (rospy.Time.now() - last_time).to_sec() > 1.0:
+                    rospy.logwarn_throttle(2, "GPS data too old!")
 
         except Exception as e:
             rospy.logwarn(f"Lỗi khi đọc GPS: {e}")
+
+        rate.sleep()
 
 
 if __name__ == "__main__":
@@ -176,84 +188,3 @@ if __name__ == "__main__":
         gps_publisher()
     except rospy.ROSInterruptException:
         pass
-
-
-# import rospy
-# import serial
-# from sensor_msgs import msg
-# from sensor_msgs.msg import NavSatFix
-# from sensor_msgs.msg import NavSatStatus
-
-# GPS_PORT = "/dev/ttyACM0"
-# BAUD_RATE = 9600
-
-# def parse_gngga(sentence):
-#     parts = sentence.split(',')
-#     if parts[0].endswith("GGA") and len(parts) > 5 and parts[2] and parts[4]:
-#         # Latitude
-#         lat_raw = parts[2]
-#         lat_dir = parts[3]
-#         lat_deg = float(lat_raw[:2])
-#         lat_min = float(lat_raw[2:])
-#         latitude = lat_deg + lat_min / 60
-#         if lat_dir == "S":
-#             latitude = -latitude
-
-#         # Longitude
-#         lon_raw = parts[4]
-#         lon_dir = parts[5]
-#         lon_deg = float(lon_raw[:3])
-#         lon_min = float(lon_raw[3:])
-#         longitude = lon_deg + lon_min / 60
-#         if lon_dir == "W":
-#             longitude = -longitude
-
-#         # Altitude
-#         try:
-#             altitude = float(parts[9])
-#         except:
-#             altitude = 0.0
-
-#         return latitude, longitude, altitude
-#     return None, None, None
-
-# def gps_publisher():
-#     rospy.init_node('gps_node', anonymous=True)
-#     pub = rospy.Publisher('/gps/fix', NavSatFix, queue_size=10)
-
-#     try:
-#         ser = serial.Serial(GPS_PORT, BAUD_RATE, timeout=1)
-#         rospy.loginfo(f"Đang đọc GPS từ {GPS_PORT}")
-#     except serial.SerialException as e:
-#         rospy.logerr(f"Không thể mở GPS: {e}")
-#         return
-
-#     while not rospy.is_shutdown():
-#         line = ser.readline().decode('ascii', errors='ignore').strip()
-#         if line.startswith("$GNGGA"):
-#             lat, lon, alt = parse_gngga(line)
-#             if lat is not None and lon is not None:
-#                 msg = NavSatFix()
-#                 msg.header.stamp = rospy.Time.now()
-#                 msg.header.frame_id = "gps_link"
-
-#                 # GPS Status
-#                 msg.status.status = NavSatStatus.STATUS_FIX
-#                 msg.status.service = NavSatStatus.SERVICE_GPS
-
-#                 msg.latitude = lat
-#                 msg.longitude = lon
-#                 msg.altitude = alt
-
-#                 # Covariance giống topic mô phỏng
-#                 msg.position_covariance = [2.5, 0.0, 0.0,
-#                                             0.0, 2.5, 0.0,
-#                                             0.0, 0.0, 5.0]
-#                 msg.position_covariance_type = NavSatFix.COVARIANCE_TYPE_APPROXIMATED
-#                 pub.publish(msg)  # publish ngay khi nhận dữ liệu
-
-# if __name__ == "__main__":
-#     try:
-#         gps_publisher()
-#     except rospy.ROSInterruptException:
-#         pass

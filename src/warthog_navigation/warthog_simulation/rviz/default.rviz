@@ -209,7 +209,7 @@ Visualization Manager:
       Size (Pixels): 5
       Size (m): 0.009999999776482582
       Style: Points
-      Topic: /scan
+      Topic: /front/scan
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true

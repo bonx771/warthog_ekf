@@ -42,6 +42,33 @@
     </plugin>
   </gazebo>
 
+  <gazebo reference="front_laser">
+    <sensor type="ray" name="laser">
+      <pose>0 0 0 0 0 0</pose>
+      <visualize>true</visualize>
+      <update_rate>10</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>360</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159</min_angle>
+            <max_angle>3.14159</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.1</min>
+          <max>10.0</max>
+          <resolution>0.01</resolution>
+        </range>
+      </ray>
+      <plugin name="gazebo_ros_laser" filename="libgazebo_ros_laser.so">
+        <topicName>/front/scan</topicName>
+        <frameName>front_laser</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
   <gazebo reference="base_link">
     <turnGravityOff>false</turnGravityOff>
   </gazebo>

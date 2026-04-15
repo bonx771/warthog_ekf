@@ -486,6 +486,13 @@
     <child link="gps_link"/>
     <origin xyz="0 0 0" rpy="0 0 0"/>
   </joint>
+
+  <link name="front_laser"/>
+  <joint name="front_laser_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="front_laser"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
   <!-- Bring in simulation data for Gazebo. -->
   <xacro:include filename="$(find warthog_description)/urdf/warthog.gazebo" />
 

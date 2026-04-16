@@ -10,7 +10,7 @@
 	<arg name="collect_button_num" value="3" />
 	<arg name="collect_button_sym" value="Y" />
 	<arg name="end_button_num" value="6" />
-	<arg name="end_button_sym" value="BACK" />
+	<arg name="end_button_sym" value="K" />
 	<arg name="coordinates_file_dir" value="/waypoint_files/points_sim.txt" />
 
   <!-- Run collect_gps_waypoints node -->

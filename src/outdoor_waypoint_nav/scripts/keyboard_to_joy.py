@@ -145,8 +145,8 @@ class KeyboardToJoy:
                 rospy.loginfo("Keyboard drive: stop")
                 continue
             if key in self.key_to_button:
-                self._publish_button(self.key_to_button[key])
                 rospy.loginfo("Sent Joy button for key: %s", key)
+                self._publish_button(self.key_to_button[key])
 
         self._stop_motion()
 

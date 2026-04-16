@@ -105,9 +105,9 @@ int main(int argc, char** argv)
 					lati_last = lati_point;
 					longi_last = longi_point;
 
-					ROS_INFO("Collected waypoint %d (lat, lon): %.8f, %.8f", numWaypoints, lati_point, longi_point);
-					ROS_INFO("Press %s button to collect waypoint %d.", collect_button_sym.c_str(), numWaypoints + 1);
-					ROS_INFO("Press %s button to end waypoint collection.", end_button_sym.c_str());
+						ROS_INFO("Collected waypoint %d (lat, lon): %.8f, %.8f", numWaypoints, lati_point, longi_point);
+						ROS_INFO("Press %s button to collect next waypoint %d.", collect_button_sym.c_str(), numWaypoints + 1);
+						ROS_INFO("Press %s button to end waypoint collection.", end_button_sym.c_str());
 					std::cout << std::endl;
 				}
 

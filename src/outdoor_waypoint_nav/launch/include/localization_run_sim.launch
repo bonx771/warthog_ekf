@@ -2,15 +2,18 @@
 <launch>
 
   <group ns="/outdoor_waypoint_nav">
+    <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_params_sim.yaml" />
     <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/navsat_params_sim.yaml" />
 
-    <!-- In simulation, use Gazebo wheel odometry directly for odom->base_link. -->
-    <node pkg="topic_tools" type="relay" name="filtered_odom_relay" args="/warthog_velocity_controller/odom odometry/filtered" />
-    <node pkg="topic_tools" type="relay" name="filtered_map_relay" args="/warthog_velocity_controller/odom odometry/filtered_map" />
+    <!-- Local odometry is estimated by one EKF that fuses wheel encoder odometry and IMU. -->
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true" output="screen" />
+
+    <!-- Keep the filtered_map topic available for RViz and legacy consumers. -->
+    <node pkg="topic_tools" type="relay" name="filtered_map_relay" args="odometry/filtered odometry/filtered_map" />
 
     <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
-      <remap from="odometry/filtered" to="/warthog_velocity_controller/odom"/>
       <remap from="gps/fix" to="/gps/fix"/>
+      <remap from="imu/data" to="/imu/data"/>
     </node>
   </group>
 

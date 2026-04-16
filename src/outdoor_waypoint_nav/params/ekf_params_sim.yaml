@@ -1,28 +1,46 @@
 ekf_se_odom:
-  frequency: 30
-  sensor_timeout: 0.1
+  frequency: 50
+  sensor_timeout: 0.2
   two_d_mode: true
   transform_time_offset: 0.0
   transform_timeout: 0.0
+  reset_on_time_jump: true
   print_diagnostics: true
   debug: false
+  publish_tf: true
 
   map_frame: map
   odom_frame: odom
   base_link_frame: base_link
   world_frame: odom
 
-  # In Gazebo, use wheel odometry only for the local odom -> base_link TF.
+  # Local localization in simulation:
+  # - wheel encoder odometry provides planar velocities
+  # - IMU provides heading and yaw rate
+  # GPS is intentionally not fused here; it is used only by navsat_transform
+  # to build the UTM <-> odom transform for waypoint conversion.
   odom0: /warthog_velocity_controller/odom
   odom0_config: [false, false, false,
                  false, false, false,
-                 true,  false, false,
+                 true,  true,  false,
                  false, false, true,
                  false, false, false]
-  odom0_queue_size: 10
+  odom0_queue_size: 20
   odom0_nodelay: true
   odom0_differential: false
   odom0_relative: false
+
+  imu0: /imu/data
+  imu0_config: [false, false, false,
+                false, false, true,
+                false, false, false,
+                false, false, true,
+                false, false, false]
+  imu0_queue_size: 20
+  imu0_nodelay: true
+  imu0_differential: false
+  imu0_relative: false
+  imu0_remove_gravitational_acceleration: false
 
   use_control: false
 
@@ -42,58 +60,18 @@ ekf_se_odom:
                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0.3,  0,
                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0.3]
 
-ekf_se_map:
-  frequency: 30
-  sensor_timeout: 0.1
-  two_d_mode: true
-  transform_time_offset: 0.0
-  transform_timeout: 0.0
-  print_diagnostics: true
-  debug: false
-
-  map_frame: map
-  odom_frame: odom
-  base_link_frame: base_link
-  world_frame: map
-
-  # Preserve heading from wheel odometry in simulation.
-  odom0: /warthog_velocity_controller/odom
-  odom0_config: [false, false, false,
-                 false, false, false,
-                 true,  false, false,
-                 false, false, true,
-                 false, false, false]
-  odom0_queue_size: 10
-  odom0_nodelay: true
-  odom0_differential: false
-  odom0_relative: false
-
-  # Fuse only GPS position into the global map frame.
-  odom1: /outdoor_waypoint_nav/odometry/gps
-  odom1_config: [true,  true,  false,
-                 false, false, false,
-                 false, false, false,
-                 false, false, false,
-                 false, false, false]
-  odom1_queue_size: 10
-  odom1_nodelay: true
-  odom1_differential: false
-  odom1_relative: false
-
-  use_control: false
-
-  process_noise_covariance: [1.0,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-                             0,    1.0,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-                             0,    0,    1e-3, 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-                             0,    0,    0,    0.3,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-                             0,    0,    0,    0,    0.3,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-                             0,    0,    0,    0,    0,    0.05, 0,    0,    0,    0,    0,    0,    0,    0,    0,
-                             0,    0,    0,    0,    0,    0,    0.3,  0,    0,    0,    0,    0,    0,    0,    0,
-                             0,    0,    0,    0,    0,    0,    0,    0.3,  0,    0,    0,    0,    0,    0,    0,
-                             0,    0,    0,    0,    0,    0,    0,    0,    0.3,  0,    0,    0,    0,    0,    0,
-                             0,    0,    0,    0,    0,    0,    0,    0,    0,    0.3,  0,    0,    0,    0,    0,
-                             0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0.3,  0,    0,    0,    0,
-                             0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0.3,  0,    0,    0,
-                             0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0.3,  0,    0,
-                             0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0.3,  0,
-                             0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0.3]
+  initial_estimate_covariance: [1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    1.0,  0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    1.0,  0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    1.0,  0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    1.0,  0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    1.0,  0,     0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    1.0,   0,     0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     1.0,   0,     0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     1.0,   0,    0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     1.0,  0,    0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    1.0,  0,
+                                0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    1.0]

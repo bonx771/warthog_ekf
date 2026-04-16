@@ -112,23 +112,7 @@ def launch_subscribers():
     rospy.Subscriber("/outdoor_waypoint_nav/waypoint_following_status",Bool, waypoint_following_status_CB )
 
 def print_instructions():
-    instructions = textwrap.dedent(
-        """
-        ---------------- Waypoint Control ----------------
-        Press {collect} to start waypoint collection
-        Press {send} to start waypoint following
-        Press {calibrate} to perform heading calibration
-        Press {abort} at any time to stop robot motion
-        --------------------------------------------------
-        """
-    ).format(
-        collect=collect_btn_sym,
-        send=send_btn_sym,
-        calibrate=calibrate_btn_sym,
-        abort=abort_btn_sym,
-    ).strip("\n")
-    sys.stdout.write("\n" + instructions + "\n\n")
-    sys.stdout.flush()
+    return
 
 def relay_launch_output(process, label):
     for raw_line in iter(process.stdout.readline, ""):

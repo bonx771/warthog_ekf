@@ -1,2 +1,3 @@
 warthog_velocity_controller:
-  enable_odom_tf: true
+  # EKF publishes the authoritative odom -> base_link transform in simulation.
+  enable_odom_tf: false

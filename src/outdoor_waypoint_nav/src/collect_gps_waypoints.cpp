@@ -2,6 +2,7 @@
 #include <ros/package.h>
 #include <utility>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <sensor_msgs/NavSatFix.h>
 #include <std_msgs/Bool.h>
@@ -16,7 +17,7 @@ bool collect_request;
 bool continue_collection = true;
 double lati_point=0, longi_point=0, lati_last=0, longi_last=0;
 double min_coord_change = 10 * pow(10,-6);
-std::string end_button_sym, collect_button_sym;
+std::string end_button_sym, collect_button_sym, gps_topic;
 int end_button_num = 0, collect_button_num = 0;
 
 void joy_CB(const sensor_msgs::Joy joy_msg)
@@ -59,11 +60,13 @@ int main(int argc, char** argv)
 	// Get button numbers to collect waypoints and end collection
 		ros::param::get("/outdoor_waypoint_nav/collect_button_num", collect_button_num);
 		ros::param::get("/outdoor_waypoint_nav/end_button_num", end_button_num);
+		ros::param::param<std::string>("/outdoor_waypoint_nav/gps_topic", gps_topic, "/outdoor_waypoint_nav/gps/filtered");
 
     //Initiate subscribers
 		ros::Subscriber sub_joy = n.subscribe("/joy_teleop/joy", 100, joy_CB);
-		ros::Subscriber sub_gps = n.subscribe("/outdoor_waypoint_nav/gps/filtered", 100, filtered_gps_CB);
+		ros::Subscriber sub_gps = n.subscribe(gps_topic, 100, filtered_gps_CB);
 		ROS_INFO("Initiated collect_gps_waypoints node");
+		ROS_INFO("Collecting waypoints from GPS topic: %s", gps_topic.c_str());
 
 	// Initiate publisher to send end of node message
 		ros::Publisher pubCollectionNodeEnded = n.advertise<std_msgs::Bool>("/outdoor_waypoint_nav/collection_status",100);
@@ -97,15 +100,15 @@ int main(int argc, char** argv)
 
 				if( (difference_lat > min_coord_change) || (difference_long > min_coord_change))
 				{
-					//write waypoint
-					ROS_INFO("You have collected another waypoint!");
-					ROS_INFO("Press %s button to collect and store another waypoint.", collect_button_sym.c_str());
-					ROS_INFO("Press %s button to end waypoint collection.", end_button_sym.c_str());
-					std::cout << std::endl;
 					numWaypoints++;
 					coordFile << std::fixed << std::setprecision(8) << lati_point << " " << longi_point << std::endl;
 					lati_last = lati_point;
 					longi_last = longi_point;
+
+					ROS_INFO("Collected waypoint %d (lat, lon): %.8f, %.8f", numWaypoints, lati_point, longi_point);
+					ROS_INFO("Press %s button to collect waypoint %d.", collect_button_sym.c_str(), numWaypoints + 1);
+					ROS_INFO("Press %s button to end waypoint collection.", end_button_sym.c_str());
+					std::cout << std::endl;
 				}
 
 				else
@@ -130,6 +133,7 @@ int main(int argc, char** argv)
 	}
 
 	ROS_INFO("Closed waypoint file, you have collected %d waypoints.", numWaypoints);
+	ROS_INFO("Waypoint collection complete.");
 	ROS_INFO("Ending node...");
 
 	// Notify joy_launch_control that calibration is complete

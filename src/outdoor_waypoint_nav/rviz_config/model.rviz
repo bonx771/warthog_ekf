@@ -160,7 +160,7 @@ Visualization Manager:
       Class: rviz/LaserScan
       Color: 255; 255; 255
       Color Transformer: Intensity
-      Decay Time: 0
+      Decay Time: 0.3
       Enabled: true
       Invert Rainbow: false
       Max Color: 255; 255; 255
@@ -169,7 +169,7 @@ Visualization Manager:
       Min Intensity: 0
       Name: LaserScan
       Position Transformer: XYZ
-      Queue Size: 10
+      Queue Size: 1
       Selectable: true
       Size (Pixels): 3
       Size (m): 0.01
@@ -184,7 +184,7 @@ Visualization Manager:
       Length: 0.5
       Name: Map Coord Frame
       Radius: 0.01
-      Reference Frame: map
+      Reference Frame: odom
       Value: true
     - Class: rviz/Axes
       Enabled: true
@@ -241,11 +241,11 @@ Visualization Manager:
       Class: rviz/Map
       Color Scheme: map
       Draw Behind: false
-      Enabled: true
+      Enabled: false
       Name: Map - Gmapping
       Topic: /map
       Unreliable: false
-      Value: true
+      Value: false
     - Alpha: 1
       Buffer Length: 1
       Class: rviz/Path
@@ -312,7 +312,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: map
+    Fixed Frame: odom
     Frame Rate: 30
   Name: root
   Tools:

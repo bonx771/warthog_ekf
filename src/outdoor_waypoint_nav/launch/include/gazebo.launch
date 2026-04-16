@@ -1,10 +1,11 @@
 <?xml version="1.0"?>
 
 <launch>
+  <arg name="world_name" default="$(find warthog_gazebo)/worlds/warthog.world" />
 
   <!-- Launch warthog gazebo -->
     <include file="$(find warthog_gazebo)/launch/empty_world.launch">
-      <arg name="world_name" value="$(find warthog_gazebo)/worlds/warthog_playpen.world"/>
+      <arg name="world_name" value="$(arg world_name)" />
     </include>
 
 </launch>

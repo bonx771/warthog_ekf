@@ -21,6 +21,7 @@
 			<param name="/outdoor_waypoint_nav/end_button_num" value="$(arg end_button_num)" type="int" />
 			<param name="/outdoor_waypoint_nav/collect_button_sym" value="$(arg collect_button_sym)" type="string" />
 			<param name="/outdoor_waypoint_nav/end_button_sym" value="$(arg end_button_sym)" type="string" />
+			<param name="/outdoor_waypoint_nav/gps_topic" value="/gps/fix" type="string" />
 
 </launch>
 			

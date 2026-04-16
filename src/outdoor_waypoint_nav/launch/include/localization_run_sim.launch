@@ -1,21 +1,17 @@
 <?xml version="1.0"?>
 <launch>
 
-  <group ns="outdoor_waypoint_nav"> 
-  <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_params.yaml" />
-  <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/navsat_params_sim.yaml" />
- 
-  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true"/>
+  <group ns="/outdoor_waypoint_nav">
+    <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/navsat_params_sim.yaml" />
 
-  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
-    <remap from="odometry/filtered" to="odometry/filtered_map"/>
-  </node>
+    <!-- In simulation, use Gazebo wheel odometry directly for odom->base_link. -->
+    <node pkg="topic_tools" type="relay" name="filtered_odom_relay" args="/warthog_velocity_controller/odom odometry/filtered" />
+    <node pkg="topic_tools" type="relay" name="filtered_map_relay" args="/warthog_velocity_controller/odom odometry/filtered_map" />
 
-  <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen" >
-      <remap from="odometry/filtered" to="odometry/filtered_map"/>
+    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
+      <remap from="odometry/filtered" to="/warthog_velocity_controller/odom"/>
       <remap from="gps/fix" to="/gps/fix"/>
-      <remap from="imu/data" to="/imu/data"/>
-  </node>
+    </node>
   </group>
 
 </launch>

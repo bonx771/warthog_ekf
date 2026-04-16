@@ -1,0 +1,2 @@
+warthog_velocity_controller:
+  enable_odom_tf: true

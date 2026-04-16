@@ -1,10 +1,6 @@
 <launch>
 
-  <!--- Run Move Base -->
-  <include file="$(find warthog_slam)/launch/move_base.launch">
-    <param name="dwa_planner"  value="false" />
-  </include>
-  
+
 
   <!--- Gmapping -->
   <arg name="scan_topic" default="front/scan" />
@@ -18,7 +14,8 @@
     <!-- Process 1 out of every this many scans (set it to a higher number to skip more scans)  -->
     <param name="throttle_scans" value="1"/>
 
-    <param name="map_update_interval" value="5.0"/> <!-- default: 5.0 -->
+    <!-- Keep updates reasonably responsive without destabilizing scan matching. -->
+    <param name="map_update_interval" value="2.0"/>
 
     <!-- The maximum usable range of the laser. A beam is cropped to this value.  -->
     <param name="maxUrange" value="5.0"/>
@@ -33,7 +30,8 @@
     <param name="iterations" value="5"/>
     <param name="lsigma" value="0.075"/>
     <param name="ogain" value="3.0"/>
-    <param name="minimumScore" value="0.0"/>
+    <!-- Reject weak scan matches that tend to smear the map in simulation. -->
+    <param name="minimumScore" value="50.0"/>
     <!-- Number of beams to skip in each scan. -->
     <param name="lskip" value="0"/>
 
@@ -52,7 +50,7 @@
     <param name="resampleThreshold" value="0.5"/>
 
     <!-- Number of particles in the filter. default 30        -->
-    <param name="particles" value="10"/>
+    <param name="particles" value="30"/>
 
 <!-- Initial map size  -->
     <param name="xmin" value="-10.0"/>

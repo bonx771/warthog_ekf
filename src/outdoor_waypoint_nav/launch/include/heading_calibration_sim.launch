@@ -5,6 +5,7 @@
   <group ns="outdoor_waypoint_nav">
   <!-- Load current navsat parameters -->
   <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/navsat_params_sim.yaml" />
+  <param name="/outdoor_waypoint_nav/navsat_params_file" value="/params/navsat_params_sim.yaml" />
 
   <!-- Start calibration node -->
   <node ns="/outdoor_waypoint_nav" name="calibrate_heading" pkg="outdoor_waypoint_nav" type="calibrate_heading" output="screen" />
@@ -17,4 +18,3 @@
   </group>
 
 </launch>
-

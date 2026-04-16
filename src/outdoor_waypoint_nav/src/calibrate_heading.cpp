@@ -8,6 +8,7 @@
 #include <ros/duration.h>
 #include <ros/time.h>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 
 #include <math.h>
@@ -99,7 +100,12 @@ int main(int argc, char **argv)
     ROS_INFO("Detected heading error of: %.1f Degrees", 180/M_PI*(heading_error));
 
     //write params file
-    std::string path =  ros::package::getPath("outdoor_waypoint_nav") + "/params/navsat_params.yaml";
+    std::string navsat_params_file;
+    ros::param::param<std::string>(
+        "/outdoor_waypoint_nav/navsat_params_file",
+        navsat_params_file,
+        "/params/navsat_params.yaml");
+    std::string path = ros::package::getPath("outdoor_waypoint_nav") + navsat_params_file;
     ROS_INFO("Writing calibration results to file...");
     writeParams(path, heading_error);
     ROS_INFO("Wrote to param file: ");

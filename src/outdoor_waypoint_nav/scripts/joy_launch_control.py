@@ -3,6 +3,12 @@ import rospy
 import roslaunch
 import rospkg
 import os
+import signal
+import subprocess
+import sys
+import threading
+import textwrap
+import time
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Bool
 
@@ -28,6 +34,9 @@ calibrate_complete = False
 collect_complete = False
 send_complete = False
 velocity_paused = False
+launch_process = None
+launch_label = ""
+launch_output_thread = None
 
 def getParameter():
     global collect_btn_num
@@ -103,13 +112,103 @@ def launch_subscribers():
     rospy.Subscriber("/outdoor_waypoint_nav/waypoint_following_status",Bool, waypoint_following_status_CB )
 
 def print_instructions():
+    instructions = textwrap.dedent(
+        """
+        ---------------- Waypoint Control ----------------
+        Press {collect} to start waypoint collection
+        Press {send} to start waypoint following
+        Press {calibrate} to perform heading calibration
+        Press {abort} at any time to stop robot motion
+        --------------------------------------------------
+        """
+    ).format(
+        collect=collect_btn_sym,
+        send=send_btn_sym,
+        calibrate=calibrate_btn_sym,
+        abort=abort_btn_sym,
+    ).strip("\n")
+    sys.stdout.write("\n" + instructions + "\n\n")
+    sys.stdout.flush()
 
-    print("")
-    print("Press %s to start waypoint collection" % collect_btn_sym)
-    print("Press %s to start waypoint following" % send_btn_sym)
-    print("Press %s to perform heading calibration" % calibrate_btn_sym)
-    print("Press %s at ANY TIME to STOP robot motion" % abort_btn_sym)
-    print("")
+def relay_launch_output(process, label):
+    for raw_line in iter(process.stdout.readline, ""):
+        stripped = raw_line.strip()
+        if not stripped:
+            continue
+
+        # Show only actionable node output and hide roslaunch boilerplate.
+        if (
+            "[INFO]" in stripped
+            or "[WARN]" in stripped
+            or "[ERROR]" in stripped
+            or stripped.startswith("Press ")
+        ):
+            sys.stdout.write(stripped + "\n")
+            sys.stdout.flush()
+
+    process.stdout.close()
+
+def shutdown_launch_process():
+    global launch_process
+    global launch_label
+
+    if launch_process is None:
+        return
+
+    if launch_process.poll() is None:
+        try:
+            os.killpg(os.getpgid(launch_process.pid), signal.SIGTERM)
+        except OSError:
+            pass
+    launch_process = None
+    launch_label = ""
+
+def start_launch_process(launch_file, label):
+    global launch_process
+    global launch_label
+    global launch_output_thread
+
+    shutdown_launch_process()
+    rospy.loginfo("Starting %s...", label)
+    launch_process = subprocess.Popen(
+        ["roslaunch", launch_file],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        text=True,
+        bufsize=1,
+        preexec_fn=os.setsid,
+    )
+    launch_label = label
+    launch_output_thread = threading.Thread(
+        target=relay_launch_output,
+        args=(launch_process, label),
+        daemon=True,
+    )
+    launch_output_thread.start()
+
+def get_coordinates_file_path():
+    path_local = rospy.get_param("/outdoor_waypoint_nav/coordinates_file", None)
+    if path_local:
+        return rospkg.RosPack().get_path("outdoor_waypoint_nav") + path_local
+
+    filename = "/waypoint_files/points_sim.txt" if sim_enabled else "/waypoint_files/points_outdoor.txt"
+    return rospkg.RosPack().get_path("outdoor_waypoint_nav") + filename
+
+def count_waypoint_tokens(filepath):
+    if not os.path.exists(filepath):
+        return 0
+
+    with open(filepath, "r", encoding="utf-8") as waypoint_file:
+        return len(waypoint_file.read().split())
+
+def has_move_base_server():
+    published_topics = dict(rospy.get_published_topics())
+    required_topics = [
+        "/move_base/status",
+        "/move_base/goal",
+        "/move_base/result",
+    ]
+    return all(topic in published_topics for topic in required_topics)
 
 def check_buttons():
 
@@ -125,9 +224,8 @@ def check_buttons():
         rospy.logerr("STOP BUTTON SELECTED, blocking velocity commands...")
         os.system("rosnode kill safety_node")
         rospy.sleep(1) # Sleep for 1 second to allow time for node to shutdown
-        print("")
-        print("Press %s to continue following waypoints" % continue_btn_sym)
-        print("")
+        sys.stdout.write("\nPress %s to continue following waypoints\n\n" % continue_btn_sym)
+        sys.stdout.flush()
         velocity_paused = True
     
     elif buttons_array[4] == 1 and velocity_paused == True:
@@ -142,36 +240,39 @@ def check_buttons():
     if buttons_array[0] == 1:
         while buttons_array[0] == 1:    # Wait for button to be released
             pass
-        rospy.loginfo("Starting collect_goals.launch...")
-        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        roslaunch.configure_logging(uuid)
-        launch = roslaunch.parent.ROSLaunchParent(uuid,[location_collect])
-        launch.start()
+        start_launch_process(location_collect, "collect_goals.launch")
 
     # Start sending goals
     elif buttons_array[1] == 1:
         while buttons_array[1] ==1:
             pass
-        rospy.loginfo("Starting send_goals.launch...")
-        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        roslaunch.configure_logging(uuid)
-        launch = roslaunch.parent.ROSLaunchParent(uuid, [location_send])
-        launch.start()
+        if not has_move_base_server():
+            rospy.logerr("move_base is not running. Start outdoor_waypoint_nav_sim.launch before pressing %s.", send_btn_sym)
+            return
+
+        waypoint_path = get_coordinates_file_path()
+        waypoint_token_count = count_waypoint_tokens(waypoint_path)
+        if waypoint_token_count < 2:
+            rospy.logerr("No waypoint available in %s. Collect waypoint(s) before pressing %s.", waypoint_path, send_btn_sym)
+            return
+
+        rospy.loginfo("Using waypoint file: %s", waypoint_path)
+        rospy.loginfo("Waypoint count detected: %d", waypoint_token_count // 2)
+        start_launch_process(location_send, "send_goals.launch")
 
     # Start Heading Calbration
     elif buttons_array[2] == 1:
         while buttons_array[2] ==1:
             pass
-        rospy.loginfo("Starting heading_calibration.launch...")
-        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        roslaunch.configure_logging(uuid)
-        launch = roslaunch.parent.ROSLaunchParent(uuid, [location_calibrate])
-        launch.start()
+        if sim_enabled:
+            rospy.logwarn("Heading calibration is disabled in simulation. Using navsat_params_sim.yaml defaults instead.")
+            return
+        start_launch_process(location_calibrate, "heading_calibration.launch")
 
     # Check if end notice has been published by other nodes
     if (calibrate_complete or collect_complete or send_complete):
         rospy.sleep(2) # Sleep for 2 seconds to allow time for other nodes to shutdown
-        launch.shutdown()
+        shutdown_launch_process()
         print_instructions()
         # Reset all parameters
         calibrate_complete = False
@@ -182,6 +283,7 @@ def main():
 
     # start node to subscribe to joy messages node end messages 
     launch_subscribers()
+    rospy.on_shutdown(shutdown_launch_process)
 
     # check buttons and launch the appropriate file
     while not rospy.is_shutdown():
@@ -193,14 +295,14 @@ if __name__ == '__main__':
     getParameter()
     getPaths()
 
-    uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-    roslaunch.configure_logging(uuid)
-    launch = roslaunch.parent.ROSLaunchParent(uuid,[location_collect])
     print_instructions()
 
     if sim_enabled == False:
-        print("NOTE: It is recommended to perform one or two heading calibrations")
-        print("      each time the robot is starting from a new heading.")
+        sys.stdout.write(
+            "NOTE: It is recommended to perform one or two heading calibrations\n"
+            "      each time the robot is starting from a new heading.\n"
+        )
+        sys.stdout.flush()
     
     main()
     

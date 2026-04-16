@@ -15,7 +15,7 @@
     <param name="planner_patience" value="10.0" />
 
     <rosparam param="global_costmap">
-      global_frame: odom
+      global_frame: map
       robot_base_frame: base_link
       update_frequency: 4.0
       publish_frequency: 2.0
@@ -50,7 +50,7 @@
     <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
 
-    <remap from="odom" to="/outdoor_waypoint_nav/odometry/filtered" />
+    <remap from="odom" to="/outdoor_waypoint_nav/odometry/filtered_map" />
     <remap from="cmd_vel" to="/cmd_vel_intermediate" />
     <remap from="scan" to="/front/scan" />
   </node>

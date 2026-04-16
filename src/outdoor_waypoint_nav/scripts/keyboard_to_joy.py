@@ -36,6 +36,7 @@ class KeyboardToJoy:
         self._running = True
         self.current_twist = Twist()
         self.manual_active = False
+        self.stop_hold_active = False
 
         signal.signal(signal.SIGINT, self._handle_sigint)
         rospy.Timer(rospy.Duration(1.0 / self.publish_rate), self._publish_current_twist)
@@ -46,20 +47,25 @@ class KeyboardToJoy:
         rospy.signal_shutdown("Ctrl-C pressed")
 
     def _publish_current_twist(self, _event):
-        if self.manual_active:
+        if self.manual_active or self.stop_hold_active:
             self.cmd_pub.publish(self.current_twist)
 
     def _set_motion(self, linear=0.0, angular=0.0):
         self.current_twist.linear.x = linear
         self.current_twist.angular.z = angular
+        self.stop_hold_active = False
         self.manual_active = True
         self.cmd_pub.publish(self.current_twist)
 
-    def _stop_motion(self):
+    def _stop_motion(self, hold_zero=False):
         self.current_twist.linear.x = 0.0
         self.current_twist.angular.z = 0.0
         self.cmd_pub.publish(self.current_twist)
         self.manual_active = False
+        self.stop_hold_active = hold_zero
+
+    def _release_stop_hold(self):
+        self.stop_hold_active = False
 
     def _publish_button(self, button_index):
         pressed_msg = Joy()
@@ -141,10 +147,14 @@ class KeyboardToJoy:
                 rospy.loginfo("Keyboard drive: turn right")
                 continue
             if key == " ":
-                self._stop_motion()
+                self._stop_motion(hold_zero=True)
                 rospy.loginfo("Keyboard drive: stop")
                 continue
             if key in self.key_to_button:
+                if key == "b":
+                    self._stop_motion(hold_zero=True)
+                else:
+                    self._release_stop_hold()
                 rospy.loginfo("Sent Joy button for key: %s", key)
                 self._publish_button(self.key_to_button[key])
 

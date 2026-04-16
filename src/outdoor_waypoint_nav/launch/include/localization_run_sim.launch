@@ -5,14 +5,27 @@
     <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_params_sim.yaml" />
     <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/navsat_params_sim.yaml" />
 
-    <!-- Local odometry is estimated by one EKF that fuses wheel encoder odometry and IMU. -->
+    <!-- Local odometry EKF: wheel encoder odometry + IMU. -->
     <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true" output="screen" />
 
-    <!-- Keep the filtered_map topic available for RViz and legacy consumers. -->
-    <node pkg="topic_tools" type="relay" name="filtered_map_relay" args="odometry/filtered odometry/filtered_map" />
+    <!-- Global map EKF: wheel encoder odometry + GPS odometry + IMU. -->
+    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true" output="screen">
+      <remap from="odometry/filtered" to="odometry/filtered_map" />
+    </node>
 
+    <!-- Give simulated GPS a realistic covariance before it is fused globally. -->
+    <node pkg="outdoor_waypoint_nav" type="gps_covariance_relay.py" name="gps_covariance_relay" output="screen">
+      <param name="input_topic" value="/gps/fix" />
+      <param name="output_topic" value="/outdoor_waypoint_nav/gps/fix_with_covariance" />
+      <param name="xy_variance" value="1.0" />
+      <param name="z_variance" value="4.0" />
+      <param name="override_zero_only" value="true" />
+    </node>
+
+    <!-- Match the outdoor stack: navsat_transform works in the global map frame. -->
     <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
-      <remap from="gps/fix" to="/gps/fix"/>
+      <remap from="odometry/filtered" to="odometry/filtered_map"/>
+      <remap from="gps/fix" to="/outdoor_waypoint_nav/gps/fix_with_covariance"/>
       <remap from="imu/data" to="/imu/data"/>
     </node>
   </group>

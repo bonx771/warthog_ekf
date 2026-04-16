@@ -5,7 +5,7 @@
   <!-- Run gazebo to simulate robot -->
     <include file="$(find outdoor_waypoint_nav)/launch/include/gazebo.launch"/> 
 
-  <!-- teleop.launch is already included by warthog_gazebo/spawn_warthog.launch -->
+
 
   <!-- Launch robot_localization and navsat node -->
     <include file="$(find outdoor_waypoint_nav)/launch/include/localization_run_sim.launch"/>
@@ -13,7 +13,7 @@
   <!-- Run rviz -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find outdoor_waypoint_nav)/rviz_config/model.rviz" />
 
-  <!-- Run move_base in odom coordinates for GPS waypoint following in simulation -->
+  <!-- Run move_base with a global map frame and local odom frame for GPS waypoint following in simulation -->
     <include file="$(find warthog_slam)/launch/move_base_gps_sim.launch" />
 
   <!-- launch safety node to allow the user to disable velocity commands to the robot -->

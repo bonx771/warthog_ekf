@@ -210,17 +210,17 @@ Visualization Manager:
     - Angle Tolerance: 0.1
       Class: rviz/Odometry
       Enabled: true
-      Keep: 1000
+      Keep: 5000
       Name: Raw Wheel Odom
       Position Tolerance: 0.1
       Queue Size: 10
       Shape:
         Alpha: 1
         Color: 0; 200; 0
-        Head Length: 0.3
-        Head Radius: 0.12
-        Shaft Length: 0.8
-        Shaft Radius: 0.07
+        Head Length: 0.28
+        Head Radius: 0.21
+        Shaft Length: 0.72
+        Shaft Radius: 0.13
         Value: Arrow
       Topic: /warthog_velocity_controller/odom
       Unreliable: false
@@ -239,17 +239,17 @@ Visualization Manager:
     - Angle Tolerance: 0.1
       Class: rviz/Odometry
       Enabled: true
-      Keep: 1000
+      Keep: 5000
       Name: GPS Odom
       Position Tolerance: 0.1
       Queue Size: 10
       Shape:
         Alpha: 1
         Color: 0; 120; 255
-        Head Length: 0.3
-        Head Radius: 0.12
-        Shaft Length: 0.8
-        Shaft Radius: 0.07
+        Head Length: 0.36
+        Head Radius: 0.18
+        Shaft Length: 0.95
+        Shaft Radius: 0.11
         Value: Arrow
       Topic: /outdoor_waypoint_nav/odometry/gps
       Unreliable: false
@@ -268,16 +268,45 @@ Visualization Manager:
     - Angle Tolerance: 0.1
       Class: rviz/Odometry
       Enabled: true
-      Keep: 1000
+      Keep: 5000
       Name: EKF Filtered Odom
       Position Tolerance: 0.1
       Queue Size: 10
       Shape:
         Alpha: 1
         Color: 255; 0; 0
-        Head Length: 0.3
+        Head Length: 0.45
+        Head Radius: 0.15
+        Shaft Length: 1.18
+        Shaft Radius: 0.09
+        Value: Arrow
+      Topic: /outdoor_waypoint_nav/odometry/filtered
+      Unreliable: false
+      Covariance:
+        Orientation:
+          Alpha: 0.5
+          Color: 255; 255; 127
+          Offset: 1
+          Scale: 1
+        Position:
+          Alpha: 0.3
+          Color: 204; 51; 204
+          Scale: 1
+        Value: false
+      Value: true
+    - Angle Tolerance: 0.1
+      Class: rviz/Odometry
+      Enabled: true
+      Keep: 5000
+      Name: EKF Filtered Map
+      Position Tolerance: 0.1
+      Queue Size: 10
+      Shape:
+        Alpha: 1
+        Color: 255; 255; 0
+        Head Length: 0.55
         Head Radius: 0.12
-        Shaft Length: 0.8
+        Shaft Length: 1.45
         Shaft Radius: 0.07
         Value: Arrow
       Topic: /outdoor_waypoint_nav/odometry/filtered_map
@@ -369,7 +398,7 @@ Visualization Manager:
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: odom
+    Fixed Frame: map
     Frame Rate: 30
   Name: root
   Tools:

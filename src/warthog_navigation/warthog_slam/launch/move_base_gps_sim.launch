@@ -9,46 +9,78 @@
     <rosparam file="$(find warthog_slam)/params/base_local_planner_params.yaml" command="load" />
     <rosparam file="$(find warthog_slam)/params/move_base_params.yaml" command="load" />
 
-    <param name="controller_frequency" value="20.0" />
-    <param name="planner_frequency" value="5.0" />
-    <param name="controller_patience" value="20.0" />
-    <param name="planner_patience" value="10.0" />
+    <param name="controller_frequency" value="15.0" />
+    <param name="planner_frequency" value="8.0" />
+    <param name="controller_patience" value="6.0" />
+    <param name="planner_patience" value="3.0" />
+    <param name="oscillation_timeout" value="5.0" />
+    <param name="oscillation_distance" value="0.08" />
+    <param name="recovery_behavior_enabled" value="false" />
+    <param name="clearing_rotation_allowed" value="false" />
+
+    <rosparam param="recovery_behaviors">
+      - name: conservative_reset
+        type: clear_costmap_recovery/ClearCostmapRecovery
+      - name: aggressive_reset
+        type: clear_costmap_recovery/ClearCostmapRecovery
+    </rosparam>
+
+    <param name="conservative_reset/reset_distance" value="1.5" />
+    <param name="aggressive_reset/reset_distance" value="3.0" />
 
     <!-- Make waypoint-to-waypoint transitions less stop-and-rotate heavy in simulation. -->
     <param name="TrajectoryPlannerROS/yaw_goal_tolerance" value="0.8" />
     <param name="TrajectoryPlannerROS/latch_xy_goal_tolerance" value="false" />
+    <param name="TrajectoryPlannerROS/min_vel_x" value="0.0" />
+    <param name="TrajectoryPlannerROS/max_vel_theta" value="1.0" />
+    <param name="TrajectoryPlannerROS/min_vel_theta" value="-1.0" />
+    <param name="TrajectoryPlannerROS/min_in_place_vel_theta" value="0.18" />
+    <param name="TrajectoryPlannerROS/acc_lim_theta" value="6.0" />
+    <param name="TrajectoryPlannerROS/sim_time" value="1.2" />
+    <param name="TrajectoryPlannerROS/vx_samples" value="8" />
+    <param name="TrajectoryPlannerROS/vtheta_samples" value="24" />
+    <param name="TrajectoryPlannerROS/controller_frequency" value="15.0" />
+    <param name="TrajectoryPlannerROS/pdist_scale" value="1.0" />
+    <param name="TrajectoryPlannerROS/gdist_scale" value="0.7" />
+    <param name="TrajectoryPlannerROS/occdist_scale" value="0.8" />
 
     <rosparam param="global_costmap">
       global_frame: map
       robot_base_frame: base_link
-      update_frequency: 20.0
-      publish_frequency: 10.0
+      update_frequency: 15.0
+      publish_frequency: 8.0
       width: 100.0
       height: 100.0
       resolution: 0.1
       static_map: false
       rolling_window: true
       transform_tolerance: 1.0
+      footprint_padding: 0.02
       track_unknown_space: false
       plugins:
         - {name: obstacles_layer, type: "costmap_2d::ObstacleLayer"}
         - {name: inflater_layer, type: "costmap_2d::InflationLayer"}
+      inflater_layer:
+        inflation_radius: 0.45
     </rosparam>
 
     <rosparam param="local_costmap">
       global_frame: odom
       robot_base_frame: base_link
-      update_frequency: 20.0
-      publish_frequency: 10.0
+      update_frequency: 15.0
+      publish_frequency: 8.0
       width: 15.0
       height: 15.0
       resolution: 0.1
       static_map: false
       rolling_window: true
       transform_tolerance: 1.0
+      footprint_padding: 0.02
       plugins:
         - {name: obstacles_layer, type: "costmap_2d::ObstacleLayer"}
         - {name: inflater_layer, type: "costmap_2d::InflationLayer"}
+      inflater_layer:
+        inflation_radius: 0.45
     </rosparam>
   
     <param name="base_global_planner" type="string" value="navfn/NavfnROS" />

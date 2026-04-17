@@ -16,6 +16,7 @@ find_package(catkin REQUIRED COMPONENTS
   roslib
   roslaunch
   robot_localization
+  visualization_msgs
 )
 
 catkin_package()
@@ -30,6 +31,7 @@ add_executable(gps_waypoint_continuous1 src/gps_waypoint_continuous1.cpp)
 add_executable(gps_waypoint_continuous2 src/gps_waypoint_continuous2.cpp)
 add_executable(gps_waypoint_mapping src/gps_waypoint_mapping.cpp)
 add_executable(collect_gps_waypoints src/collect_gps_waypoints.cpp)
+add_executable(publish_waypoints_from_file src/publish_waypoints_from_file.cpp)
 add_executable(plot_gps_waypoints src/plot_gps_waypoints.cpp)
 add_executable(calibrate_heading src/calibrate_heading.cpp)
 add_executable(safety_node src/safety_node.cpp)
@@ -41,6 +43,7 @@ target_link_libraries(gps_waypoint_continuous1 ${catkin_LIBRARIES})
 target_link_libraries(gps_waypoint_continuous2 ${catkin_LIBRARIES})
 target_link_libraries(gps_waypoint_mapping ${catkin_LIBRARIES})
 target_link_libraries(collect_gps_waypoints ${catkin_LIBRARIES})
+target_link_libraries(publish_waypoints_from_file ${catkin_LIBRARIES})
 target_link_libraries(plot_gps_waypoints ${catkin_LIBRARIES})
 target_link_libraries(calibrate_heading ${catkin_LIBRARIES})
 target_link_libraries(safety_node ${catkin_LIBRARIES})

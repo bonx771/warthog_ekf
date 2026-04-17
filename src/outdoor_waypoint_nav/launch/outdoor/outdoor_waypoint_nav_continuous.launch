@@ -2,6 +2,9 @@
 
 <launch>
 
+    <arg name="launch_rviz" default="true" />
+    <arg name="rviz_config" default="$(find outdoor_waypoint_nav)/rviz_config/real.rviz" />
+
     <!-- Run warthog_bringup -->
     <include file="$(find outdoor_waypoint_nav)/launch/include/warthog_bringup.launch" />
 
@@ -29,10 +32,7 @@
     <!-- launch safety node to allow the user to disable velocity commands to the robot -->
     <include file="$(find outdoor_waypoint_nav)/launch/include/safety_node.launch" />
 
-  <!-- Run rviz -->
-     <!-- Using standard configuration file -->
-  	<!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find warthog_viz)/rviz/model.rviz" /-->
-     <!-- Using custom configuration file -->
-	<!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find outdoor_waypoint_nav)/rviz_config/model.rviz" /-->
+    <!-- Run rviz using the outdoor-specific configuration -->
+    <node if="$(arg launch_rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" />
 
 </launch>

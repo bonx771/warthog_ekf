@@ -8,6 +8,7 @@
 #include <robot_localization/navsat_conversions.h>
 #include <geometry_msgs/PointStamped.h>
 #include <std_msgs/Bool.h>
+#include <visualization_msgs/Marker.h>
 #include <tf/transform_listener.h>
 #include <math.h>
 
@@ -26,7 +27,9 @@ int count = 0, waypointCount = 0, wait_count = 0;
 double numWaypoints = 0;
 double latiGoal, longiGoal, latiNext, longiNext;
 std::string utm_zone;
-std::string path_local, path_abs, goal_frame;
+std::string path_local, path_abs, goal_frame, waypoint_marker_frame, waypoint_marker_topic;
+double waypoint_marker_scale = 0.7;
+double waypoint_marker_activation_radius = 0.675;
 
 
 int countWaypointsInFile(std::string path_local)
@@ -163,6 +166,57 @@ move_base_msgs::MoveBaseGoal buildGoal(geometry_msgs::PointStamped map_point, ge
     return goal;
 }
 
+void publishReachedWaypointMarker(
+    ros::Publisher& marker_pub,
+    const geometry_msgs::PointStamped& marker_point,
+    int waypoint_index)
+{
+    visualization_msgs::Marker marker;
+    marker.header.frame_id = waypoint_marker_frame;
+    marker.header.stamp = ros::Time::now();
+    marker.ns = "collected_waypoints";
+    marker.id = waypoint_index;
+    marker.type = visualization_msgs::Marker::SPHERE;
+    marker.action = visualization_msgs::Marker::ADD;
+    marker.pose.orientation.w = 1.0;
+    marker.pose.position.x = marker_point.point.x;
+    marker.pose.position.y = marker_point.point.y;
+    marker.pose.position.z = marker_point.point.z + 0.2;
+    marker.scale.x = waypoint_marker_scale;
+    marker.scale.y = waypoint_marker_scale;
+    marker.scale.z = waypoint_marker_scale;
+    marker.color.a = 1.0;
+    marker.color.r = 0.0;
+    marker.color.g = 1.0;
+    marker.color.b = 0.0;
+    marker.lifetime = ros::Duration(0.0);
+    marker_pub.publish(marker);
+}
+
+bool tryGetRobotPointInFrame(
+    tf::TransformListener& listener,
+    const std::string& target_frame,
+    geometry_msgs::PointStamped& robot_point)
+{
+    geometry_msgs::PointStamped base_point;
+    base_point.header.frame_id = "base_link";
+    base_point.header.stamp = ros::Time(0);
+    base_point.point.x = 0.0;
+    base_point.point.y = 0.0;
+    base_point.point.z = 0.0;
+
+    try
+    {
+        listener.transformPoint(target_frame, base_point, robot_point);
+        return true;
+    }
+    catch (tf::TransformException& ex)
+    {
+        ROS_WARN_THROTTLE(2.0, "Unable to update waypoint proximity marker: %s", ex.what());
+        return false;
+    }
+}
+
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "gps_waypoint"); //initiate node called gps_waypoint
@@ -172,11 +226,16 @@ int main(int argc, char** argv)
     int reachedWaypoints = 0;
     ROS_INFO("Initiated gps_waypoint node");
     MoveBaseClient ac("/move_base", true);
+    tf::TransformListener tf_listener;
     //construct an action client that we use to communication with the action named move_base.
     //Setting true is telling the constructor to start ros::spin()
 
     // Initiate publisher to send end of node message
     ros::Publisher pubWaypointNodeEnded = n.advertise<std_msgs::Bool>("/outdoor_waypoint_nav/waypoint_following_status", 100);
+    ros::Publisher pubWaypointMarkers = n.advertise<visualization_msgs::Marker>(
+        "/outdoor_waypoint_nav/collected_waypoints",
+        100,
+        true);
 
     //wait for the action server to come up
     while(!ac.waitForServer(ros::Duration(5.0)))
@@ -199,6 +258,15 @@ int main(int argc, char** argv)
     //Count number of waypoints
     ros::param::get("/outdoor_waypoint_nav/coordinates_file", path_local);
     ros::param::param<std::string>("/outdoor_waypoint_nav/goal_frame", goal_frame, "map");
+    ros::param::param<std::string>("/outdoor_waypoint_nav/waypoint_marker_frame", waypoint_marker_frame, goal_frame);
+    ros::param::param<std::string>("/outdoor_waypoint_nav/waypoint_marker_topic", waypoint_marker_topic, "/outdoor_waypoint_nav/collected_waypoints");
+    ros::param::param<double>("/outdoor_waypoint_nav/waypoint_marker_scale", waypoint_marker_scale, 0.7);
+    ros::param::param<double>("/outdoor_waypoint_nav/waypoint_marker_activation_radius", waypoint_marker_activation_radius, 0.675);
+    if(waypoint_marker_topic != "/outdoor_waypoint_nav/collected_waypoints")
+    {
+        pubWaypointMarkers.shutdown();
+        pubWaypointMarkers = n.advertise<visualization_msgs::Marker>(waypoint_marker_topic, 100, true);
+    }
     numWaypoints = countWaypointsInFile(path_local);
     totalWaypoints = static_cast<int>(numWaypoints);
     ROS_INFO("Starting waypoint following for %d waypoint(s).", totalWaypoints);
@@ -259,12 +327,44 @@ int main(int argc, char** argv)
         ROS_INFO("Sending waypoint %d/%d", currentWaypointIndex, totalWaypoints);
         ac.sendGoal(goal); //push goal to move_base node
 
-        //Wait for result
-        ac.waitForResult(); //waiting to see if move_base was able to reach goal
+        bool marker_turned_green = false;
+        while(ros::ok())
+        {
+            if(!marker_turned_green)
+            {
+                geometry_msgs::PointStamped robot_point;
+                if(tryGetRobotPointInFrame(tf_listener, waypoint_marker_frame, robot_point))
+                {
+                    const double dx = robot_point.point.x - map_point.point.x;
+                    const double dy = robot_point.point.y - map_point.point.y;
+                    const double distance_to_waypoint = std::sqrt((dx * dx) + (dy * dy));
+                    if(distance_to_waypoint <= waypoint_marker_activation_radius)
+                    {
+                        publishReachedWaypointMarker(pubWaypointMarkers, map_point, currentWaypointIndex);
+                        marker_turned_green = true;
+                        ROS_INFO(
+                            "Waypoint %d/%d entered marker activation radius (%.3f m <= %.3f m).",
+                            currentWaypointIndex,
+                            totalWaypoints,
+                            distance_to_waypoint,
+                            waypoint_marker_activation_radius);
+                    }
+                }
+            }
+
+            if(ac.waitForResult(ros::Duration(0.1)))
+            {
+                break;
+            }
+        }
 
         if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
         {
             reachedWaypoints++;
+            if(!marker_turned_green)
+            {
+                publishReachedWaypointMarker(pubWaypointMarkers, map_point, currentWaypointIndex);
+            }
             ROS_INFO("Reached waypoint %d/%d", currentWaypointIndex, totalWaypoints);
             //switch to next waypoint and repeat
         }
@@ -286,8 +386,62 @@ int main(int argc, char** argv)
         }
     } // End for loop iterating through waypoint vector
 
+    if(totalWaypoints > 1 && reachedWaypoints == totalWaypoints)
+    {
+        const double latiReturn = waypointVect.front().first;
+        const double longiReturn = waypointVect.front().second;
+        const double latiReturnNext = waypointVect[1].first;
+        const double longiReturnNext = waypointVect[1].second;
+
+        ROS_INFO("Completed waypoint list. Returning to waypoint 1/%d before finishing.", totalWaypoints);
+
+        UTM_point = latLongtoUTM(latiReturn, longiReturn);
+        UTM_next = latLongtoUTM(latiReturnNext, longiReturnNext);
+        map_point = UTMtoMapPoint(UTM_point);
+        map_next = UTMtoMapPoint(UTM_next);
+
+        ROS_INFO(
+            "Return waypoint 1/%d transformed in %s frame: x=%.3f y=%.3f",
+            totalWaypoints,
+            goal_frame.c_str(),
+            map_point.point.x,
+            map_point.point.y);
+
+        move_base_msgs::MoveBaseGoal return_goal = buildGoal(map_point, map_next, false);
+        ROS_INFO("Sending return goal to waypoint 1/%d", totalWaypoints);
+        ac.sendGoal(return_goal);
+        ac.waitForResult();
+
+        if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
+        {
+            ROS_INFO("Returned to waypoint 1/%d", totalWaypoints);
+        }
+        else
+        {
+            ROS_ERROR(
+                "Failed to return to waypoint 1/%d. move_base state: %s. %s",
+                totalWaypoints,
+                ac.getState().toString().c_str(),
+                ac.getState().getText().c_str());
+            ROS_ERROR("GPS waypoint return-to-start unreachable.");
+            ROS_INFO("Exiting node...");
+
+            std_msgs::Bool node_ended;
+            node_ended.data = true;
+            pubWaypointNodeEnded.publish(node_ended);
+            ros::shutdown();
+        }
+    }
+
     ROS_INFO("Final status: reached %d/%d waypoint(s).", reachedWaypoints, totalWaypoints);
-    ROS_INFO("Waypoint following complete: %d/%d waypoint(s) reached.", reachedWaypoints, totalWaypoints);
+    if(totalWaypoints > 1)
+    {
+        ROS_INFO("Waypoint following complete: %d/%d waypoint(s) reached, returned to waypoint 1.", reachedWaypoints, totalWaypoints);
+    }
+    else
+    {
+        ROS_INFO("Waypoint following complete: %d/%d waypoint(s) reached.", reachedWaypoints, totalWaypoints);
+    }
     ROS_INFO("Warthog has reached all of its goals!!!\n");
     ROS_INFO("Ending node...");
 

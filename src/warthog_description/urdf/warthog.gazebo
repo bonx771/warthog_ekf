@@ -18,12 +18,13 @@
       <updateRate>50.0</updateRate>
       <bodyName>imu_link</bodyName>
       <topicName>/imu/data</topicName>
-      <accelDrift>0.05 0.05 0.05</accelDrift>
-      <accelGaussianNoise>0.05 0.05 0.05</accelGaussianNoise>
-      <rateDrift>0.05 0.05 0.05 </rateDrift>
-      <rateGaussianNoise>0.05 0.05 0.05 </rateGaussianNoise>
-      <headingDrift>0.05</headingDrift>
-      <headingGaussianNoise>0.05</headingGaussianNoise>
+      <!-- Keep the simulated IMU imperfect so local and global EKF traces do not overlap unrealistically. -->
+      <accelDrift>0.08 0.08 0.08</accelDrift>
+      <accelGaussianNoise>0.08 0.08 0.08</accelGaussianNoise>
+      <rateDrift>0.08 0.08 0.08 </rateDrift>
+      <rateGaussianNoise>0.08 0.08 0.08 </rateGaussianNoise>
+      <headingDrift>0.10</headingDrift>
+      <headingGaussianNoise>0.10</headingGaussianNoise>
     </plugin>
   </gazebo>
 
@@ -52,8 +53,8 @@
           <horizontal>
             <samples>360</samples>
             <resolution>1</resolution>
-            <min_angle>-2.35619</min_angle>
-            <max_angle>2.35619</max_angle>
+            <min_angle>-1.0472</min_angle>
+            <max_angle>1.0472</max_angle>
           </horizontal>
         </scan>
         <range>

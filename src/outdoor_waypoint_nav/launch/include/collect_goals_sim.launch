@@ -22,6 +22,9 @@
 			<param name="/outdoor_waypoint_nav/collect_button_sym" value="$(arg collect_button_sym)" type="string" />
 			<param name="/outdoor_waypoint_nav/end_button_sym" value="$(arg end_button_sym)" type="string" />
 			<param name="/outdoor_waypoint_nav/gps_topic" value="/gps/fix" type="string" />
+			<param name="/outdoor_waypoint_nav/waypoint_marker_frame" value="map" type="string" />
+			<param name="/outdoor_waypoint_nav/waypoint_marker_topic" value="/outdoor_waypoint_nav/collected_waypoints" type="string" />
+			<param name="/outdoor_waypoint_nav/waypoint_marker_scale" value="0.7" type="double" />
 
 </launch>
 			

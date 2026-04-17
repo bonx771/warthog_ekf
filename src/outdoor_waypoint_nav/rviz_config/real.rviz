@@ -184,7 +184,7 @@ Visualization Manager:
       Length: 0.5
       Name: Map Coord Frame
       Radius: 0.01
-      Reference Frame: odom
+      Reference Frame: map
       Value: true
     - Class: rviz/Axes
       Enabled: true
@@ -335,11 +335,11 @@ Visualization Manager:
       Class: rviz/Map
       Color Scheme: map
       Draw Behind: false
-      Enabled: false
-      Name: Map - Gmapping
+      Enabled: true
+      Name: Map
       Topic: /map
       Unreliable: false
-      Value: false
+      Value: true
     - Alpha: 1
       Buffer Length: 1
       Class: rviz/Path

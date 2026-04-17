@@ -4,9 +4,14 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <string>
 #include <sensor_msgs/NavSatFix.h>
 #include <std_msgs/Bool.h>
 #include <sensor_msgs/Joy.h>
+#include <geometry_msgs/PointStamped.h>
+#include <visualization_msgs/Marker.h>
+#include <robot_localization/navsat_conversions.h>
+#include <tf/transform_listener.h>
 #include <ros/duration.h>
 #include <ros/time.h>
 #include <math.h>
@@ -17,8 +22,78 @@ bool collect_request;
 bool continue_collection = true;
 double lati_point=0, longi_point=0, lati_last=0, longi_last=0;
 double min_coord_change = 10 * pow(10,-6);
-std::string end_button_sym, collect_button_sym, gps_topic;
+double marker_scale = 0.7;
+std::string end_button_sym, collect_button_sym, gps_topic, marker_frame, marker_topic, utm_zone;
 int end_button_num = 0, collect_button_num = 0;
+
+geometry_msgs::PointStamped latLongToUTM(double lati_input, double longi_input)
+{
+	double utm_x = 0;
+	double utm_y = 0;
+	geometry_msgs::PointStamped utm_point;
+
+	RobotLocalization::NavsatConversions::LLtoUTM(lati_input, longi_input, utm_y, utm_x, utm_zone);
+	utm_point.header.frame_id = "utm";
+	utm_point.header.stamp = ros::Time(0);
+	utm_point.point.x = utm_x;
+	utm_point.point.y = utm_y;
+	utm_point.point.z = 0.0;
+	return utm_point;
+}
+
+bool UTMToMarkerFrame(
+	const geometry_msgs::PointStamped& utm_point,
+	geometry_msgs::PointStamped& marker_point,
+	tf::TransformListener& listener)
+{
+	try
+	{
+		listener.waitForTransform(marker_frame, "utm", ros::Time(0), ros::Duration(1.0));
+		listener.transformPoint(marker_frame, utm_point, marker_point);
+		return true;
+	}
+	catch (tf::TransformException& ex)
+	{
+		ROS_WARN("Saved waypoint, but could not transform marker into %s: %s", marker_frame.c_str(), ex.what());
+		return false;
+	}
+}
+
+void clearWaypointMarkers(ros::Publisher& marker_pub)
+{
+	visualization_msgs::Marker clear_marker;
+	clear_marker.header.frame_id = marker_frame;
+	clear_marker.header.stamp = ros::Time::now();
+	clear_marker.action = visualization_msgs::Marker::DELETEALL;
+	marker_pub.publish(clear_marker);
+}
+
+void publishWaypointMarker(
+	ros::Publisher& marker_pub,
+	const geometry_msgs::PointStamped& marker_point,
+	int waypoint_index)
+{
+	visualization_msgs::Marker marker;
+	marker.header.frame_id = marker_frame;
+	marker.header.stamp = ros::Time::now();
+	marker.ns = "collected_waypoints";
+	marker.id = waypoint_index;
+	marker.type = visualization_msgs::Marker::SPHERE;
+	marker.action = visualization_msgs::Marker::ADD;
+	marker.pose.orientation.w = 1.0;
+	marker.pose.position.x = marker_point.point.x;
+	marker.pose.position.y = marker_point.point.y;
+	marker.pose.position.z = marker_point.point.z + 0.2;
+	marker.scale.x = marker_scale;
+	marker.scale.y = marker_scale;
+	marker.scale.z = marker_scale;
+	marker.color.a = 1.0;
+	marker.color.r = 1.0;
+	marker.color.g = 0.0;
+	marker.color.b = 0.0;
+	marker.lifetime = ros::Duration(0.0);
+	marker_pub.publish(marker);
+}
 
 void joy_CB(const sensor_msgs::Joy joy_msg)
 {
@@ -61,12 +136,18 @@ int main(int argc, char** argv)
 		ros::param::get("/outdoor_waypoint_nav/collect_button_num", collect_button_num);
 		ros::param::get("/outdoor_waypoint_nav/end_button_num", end_button_num);
 		ros::param::param<std::string>("/outdoor_waypoint_nav/gps_topic", gps_topic, "/outdoor_waypoint_nav/gps/filtered");
+		ros::param::param<std::string>("/outdoor_waypoint_nav/waypoint_marker_frame", marker_frame, "map");
+		ros::param::param<std::string>("/outdoor_waypoint_nav/waypoint_marker_topic", marker_topic, "/outdoor_waypoint_nav/collected_waypoints");
+		ros::param::param<double>("/outdoor_waypoint_nav/waypoint_marker_scale", marker_scale, 0.7);
 
     //Initiate subscribers
 		ros::Subscriber sub_joy = n.subscribe("/joy_teleop/joy", 100, joy_CB);
 		ros::Subscriber sub_gps = n.subscribe(gps_topic, 100, filtered_gps_CB);
+		ros::Publisher pubWaypointMarkers = n.advertise<visualization_msgs::Marker>(marker_topic, 100, true);
+		tf::TransformListener listener;
 		ROS_INFO("Initiated collect_gps_waypoints node");
 		ROS_INFO("Collecting waypoints from GPS topic: %s", gps_topic.c_str());
+		ROS_INFO("Publishing collected waypoint markers to: %s", marker_topic.c_str());
 
 	// Initiate publisher to send end of node message
 		ros::Publisher pubCollectionNodeEnded = n.advertise<std_msgs::Bool>("/outdoor_waypoint_nav/collection_status",100);
@@ -84,6 +165,8 @@ int main(int argc, char** argv)
 		std::cout << "Press " << collect_button_sym.c_str() << " button to collect and store waypoint." << std::endl;
 		std::cout << "Press " << end_button_sym.c_str() << " button to end waypoint collection." << std::endl;
 		std::cout << std::endl;
+		clearWaypointMarkers(pubWaypointMarkers);
+		ros::Duration(0.1).sleep();
 
 	if(coordFile.is_open())
 	{
@@ -104,6 +187,13 @@ int main(int argc, char** argv)
 					coordFile << std::fixed << std::setprecision(8) << lati_point << " " << longi_point << std::endl;
 					lati_last = lati_point;
 					longi_last = longi_point;
+
+					geometry_msgs::PointStamped marker_point;
+					geometry_msgs::PointStamped utm_point = latLongToUTM(lati_point, longi_point);
+					if(UTMToMarkerFrame(utm_point, marker_point, listener))
+					{
+						publishWaypointMarker(pubWaypointMarkers, marker_point, numWaypoints);
+					}
 
 						ROS_INFO("Collected waypoint %d (lat, lon): %.8f, %.8f", numWaypoints, lati_point, longi_point);
 						ROS_INFO("Press %s button to collect next waypoint %d.", collect_button_sym.c_str(), numWaypoints + 1);

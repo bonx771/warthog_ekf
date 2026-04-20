@@ -86,7 +86,7 @@
         inflation_radius: 1.5
         cost_scaling_factor: 1.2
     </rosparam>
-  
+
     <param name="base_global_planner" type="string" value="navfn/NavfnROS" />
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
 

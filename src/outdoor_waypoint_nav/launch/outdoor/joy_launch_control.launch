@@ -40,9 +40,10 @@
         output="screen"
         launch-prefix="bash -lc">
     <param name="output_topic" value="$(arg keyboard_joy_topic)" type="string" />
+    <param name="cmd_topic" value="" type="string" />
     <param name="button_count" value="8" type="int" />
     <param name="enable_motion_keys" value="false" type="bool" />
-    <rosparam param="enabled_button_keys">["l", "r", "y", "k", "b"]</rosparam>
+    <rosparam param="enabled_button_keys">["l", "y", "k", "r"]</rosparam>
   </node>
 
 </launch>

@@ -15,6 +15,7 @@
 #include <ros/duration.h>
 #include <ros/time.h>
 #include <math.h>
+#include <cmath>
 
 
 
@@ -29,6 +30,8 @@ std::string keyboard_joy_topic = "/outdoor_waypoint_nav/keyboard_joy";
 bool keyboard_waypoint_control_enabled = false;
 bool last_collect_pressed_main = false, last_end_pressed_main = false;
 bool last_collect_pressed_keyboard = false, last_end_pressed_keyboard = false;
+bool have_gps_fix = false;
+bool first_valid_fix_logged = false;
 
 geometry_msgs::PointStamped latLongToUTM(double lati_input, double longi_input)
 {
@@ -137,8 +140,24 @@ void keyboard_joy_CB(const sensor_msgs::Joy joy_msg)
 
 void filtered_gps_CB(const sensor_msgs::NavSatFix gps_msg)
 {
+		if((gps_msg.status.status < 0) ||
+		   !std::isfinite(gps_msg.latitude) ||
+		   !std::isfinite(gps_msg.longitude))
+		{
+			ROS_WARN_THROTTLE(2.0, "GPS fix is not valid yet on %s. Waiting for a usable latitude/longitude.", gps_topic.c_str());
+			have_gps_fix = false;
+			return;
+		}
+
 		lati_point = gps_msg.latitude;
 		longi_point = gps_msg.longitude;
+		have_gps_fix = true;
+
+		if(!first_valid_fix_logged)
+		{
+			ROS_INFO("Received valid GPS point on %s: lat=%.8f lon=%.8f", gps_topic.c_str(), lati_point, longi_point);
+			first_valid_fix_logged = true;
+		}
 }
 
 int main(int argc, char** argv)
@@ -179,6 +198,7 @@ int main(int argc, char** argv)
 		ROS_INFO("Initiated collect_gps_waypoints node");
 		ROS_INFO("Collecting waypoints from GPS topic: %s", gps_topic.c_str());
 		ROS_INFO("Publishing collected waypoint markers to: %s", marker_topic.c_str());
+		ROS_WARN("Waiting for a valid GPS fix before accepting waypoint saves.");
 
 	// Initiate publisher to send end of node message
 		ros::Publisher pubCollectionNodeEnded = n.advertise<std_msgs::Bool>("/outdoor_waypoint_nav/collection_status",100);
@@ -204,6 +224,10 @@ int main(int argc, char** argv)
 		while(continue_collection)
 		{
 			ros::spinOnce();
+			if(!have_gps_fix)
+			{
+				ROS_WARN_THROTTLE(5.0, "No valid GPS fix available yet on %s. Press %s after a valid (lat, lon) is received.", gps_topic.c_str(), collect_button_sym.c_str());
+			}
 			time_current = ros::Time::now();
 			if(collect_request == true)
 			{	
@@ -213,6 +237,15 @@ int main(int argc, char** argv)
 					ROS_WARN("Waypoint request ignored because collect debounce timer has not expired yet.");
 					continue;
 				}
+
+				if(!have_gps_fix)
+				{
+					ROS_ERROR("Cannot save waypoint: no valid GPS fix has been received yet on %s.", gps_topic.c_str());
+					time_last = time_current;
+					continue;
+				}
+
+				ROS_INFO("Save waypoint request accepted with current GPS point: lat=%.8f lon=%.8f", lati_point, longi_point);
 
 				// Check that there was sufficient change in position between points
 				// This makes the move_base navigation smoother and stops points from being collected twice

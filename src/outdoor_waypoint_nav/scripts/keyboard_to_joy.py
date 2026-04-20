@@ -15,6 +15,8 @@ class KeyboardToJoy:
     def __init__(self):
         self.output_topic = self._get_param("output_topic", "/joy_teleop/joy")
         self.cmd_topic = self._get_param("cmd_topic", "/joy_teleop/cmd_vel")
+        if isinstance(self.cmd_topic, str):
+            self.cmd_topic = self.cmd_topic.strip()
         self.button_count = self._get_param("button_count", 8)
         self.press_repeats = self._get_param("press_repeats", 5)
         self.release_repeats = self._get_param("release_repeats", 2)
@@ -45,7 +47,10 @@ class KeyboardToJoy:
         }
 
         self.pub = rospy.Publisher(self.output_topic, Joy, queue_size=10)
-        self.cmd_pub = rospy.Publisher(self.cmd_topic, Twist, queue_size=10)
+        self.cmd_pub = None
+        if self.enable_motion_keys and self.cmd_topic:
+            self.cmd_pub = rospy.Publisher(self.cmd_topic, Twist, queue_size=10)
+        self.motion_controls_enabled = self.cmd_pub is not None
         self._running = True
         self.current_twist = Twist()
         self.manual_active = False
@@ -54,10 +59,11 @@ class KeyboardToJoy:
         signal.signal(signal.SIGINT, self._handle_sigint)
         rospy.Timer(rospy.Duration(1.0 / self.publish_rate), self._publish_current_twist)
         rospy.loginfo(
-            "Keyboard waypoint control config: motion_keys=%s, enabled_buttons=%s, output_topic=%s",
-            self.enable_motion_keys,
+            "Keyboard waypoint control config: motion_keys=%s, enabled_buttons=%s, output_topic=%s, cmd_topic=%s",
+            self.motion_controls_enabled,
             sorted(self.key_to_button.keys()),
             self.output_topic,
+            self.cmd_topic if self.cmd_topic else "<disabled>",
         )
 
     @staticmethod
@@ -89,10 +95,12 @@ class KeyboardToJoy:
         rospy.signal_shutdown("Ctrl-C pressed")
 
     def _publish_current_twist(self, _event):
-        if self.manual_active or self.stop_hold_active:
+        if self.cmd_pub is not None and (self.manual_active or self.stop_hold_active):
             self.cmd_pub.publish(self.current_twist)
 
     def _set_motion(self, linear=0.0, angular=0.0):
+        if self.cmd_pub is None:
+            return
         self.current_twist.linear.x = linear
         self.current_twist.angular.z = angular
         self.stop_hold_active = False
@@ -100,6 +108,10 @@ class KeyboardToJoy:
         self.cmd_pub.publish(self.current_twist)
 
     def _stop_motion(self, hold_zero=False):
+        if self.cmd_pub is None:
+            self.manual_active = False
+            self.stop_hold_active = False
+            return
         self.current_twist.linear.x = 0.0
         self.current_twist.angular.z = 0.0
         self.cmd_pub.publish(self.current_twist)
@@ -144,8 +156,12 @@ class KeyboardToJoy:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
     def run(self):
-        banner_lines = ["==================== Keyboard To Joy ===================="]
-        if self.enable_motion_keys:
+        banner_lines = [
+            "==================== Keyboard To Joy ===================="
+            if self.motion_controls_enabled
+            else "================ Keyboard Waypoint Control ================"
+        ]
+        if self.motion_controls_enabled:
             banner_lines.extend(
                 [
                     "w -> drive forward",
@@ -188,23 +204,23 @@ class KeyboardToJoy:
             key = key.lower()
             if key == "q":
                 break
-            if self.enable_motion_keys and key == "w":
+            if self.motion_controls_enabled and key == "w":
                 self._set_motion(self.linear_speed, 0.0)
                 rospy.loginfo("Keyboard drive: forward")
                 continue
-            if self.enable_motion_keys and key == "x":
+            if self.motion_controls_enabled and key == "x":
                 self._set_motion(-self.linear_speed, 0.0)
                 rospy.loginfo("Keyboard drive: backward")
                 continue
-            if self.enable_motion_keys and key == "a":
+            if self.motion_controls_enabled and key == "a":
                 self._set_motion(0.0, self.angular_speed)
                 rospy.loginfo("Keyboard drive: turn left")
                 continue
-            if self.enable_motion_keys and key == "d":
+            if self.motion_controls_enabled and key == "d":
                 self._set_motion(0.0, -self.angular_speed)
                 rospy.loginfo("Keyboard drive: turn right")
                 continue
-            if self.enable_motion_keys and key == " ":
+            if self.motion_controls_enabled and key == " ":
                 self._stop_motion(hold_zero=True)
                 rospy.loginfo("Keyboard drive: stop")
                 continue

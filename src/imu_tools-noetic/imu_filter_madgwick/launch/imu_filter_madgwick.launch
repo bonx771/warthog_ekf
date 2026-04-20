@@ -1,17 +1,27 @@
-<!-- Node for merging magnetometer and accelerometer data into a single imu message -->
 <launch>
+  <node pkg="imu_filter_madgwick"
+        type="imu_filter_node"
+        name="imu_filter_nomag"
+        output="screen">
 
+    <remap from="imu/data_raw" to="/imu/data_raw"/>
+    <remap from="imu/data" to="/imu/data_nomag"/>
 
-  <node pkg="nodelet" type="nodelet" name="imu_manager"
-    args="manager" output="screen" />
-
-
-
-  <node pkg="nodelet" type="nodelet" name="ImuFilterNodelet"
-    args="load imu_filter_madgwick/ImuFilterNodelet imu_manager"
-    output="screen">
-
+    <param name="use_mag" value="false"/>
     <param name="publish_tf" value="false"/>
+    <param name="world_frame" value="enu"/>
 
+    <!-- Start conservative when yaw is not corrected by magnetometer. -->
+    <param name="gain" value="0.05"/>
+    <param name="zeta" value="0.0"/>
+    <param name="orientation_stddev" value="0.2"/>
+  </node>
+
+  <node pkg="imu_filter_madgwick"
+        type="imu_yaw_logger.py"
+        name="imu_yaw_logger"
+        output="screen">
+    <remap from="imu/data" to="/imu/data_nomag"/>
+    <param name="log_rate_hz" value="10.0"/>
   </node>
 </launch>

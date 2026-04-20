@@ -28,6 +28,7 @@
   <run_depend>nodelet</run_depend>
   <run_depend>pluginlib</run_depend>
   <run_depend>roscpp</run_depend>
+  <run_depend>rospy</run_depend>
   <run_depend>sensor_msgs</run_depend>
   <run_depend>tf2</run_depend>
   <run_depend>tf2_geometry_msgs</run_depend>

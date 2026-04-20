@@ -225,6 +225,11 @@ install(DIRECTORY launch/
 install(DIRECTORY params/
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/params)
 
+catkin_install_python(PROGRAMS
+  scripts/ekf_odom_yaw_logger.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
 install(FILES
   LICENSE
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}

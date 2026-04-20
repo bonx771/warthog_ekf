@@ -21,7 +21,7 @@
     </node> -->
 
     <!-- Differential controller parameters and basic localization -->
-    <include file="$(find warthog_control)/launch/control.launch" />
+    <!-- <include file="$(find warthog_control)/launch/control.launch" /> -->
 
     <!--Teleop -->
     <include file="$(find warthog_control)/launch/teleop.launch" />

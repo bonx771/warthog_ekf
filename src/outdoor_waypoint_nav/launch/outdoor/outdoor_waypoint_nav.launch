@@ -6,7 +6,7 @@
     <arg name="rviz_config" default="$(find outdoor_waypoint_nav)/rviz_config/real.rviz" />
 
     <!-- Run warthog_bringup -->
-    <include file="$(find outdoor_waypoint_nav)/launch/include/warthog_bringup.launch" />
+    <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/warthog_bringup.launch" /> -->
 
     <!-- launch lms1xx lidar -->
     <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/laser.launch" /> -->

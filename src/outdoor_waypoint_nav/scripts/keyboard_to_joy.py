@@ -13,16 +13,16 @@ from sensor_msgs.msg import Joy
 
 class KeyboardToJoy:
     def __init__(self):
-        self.output_topic = rospy.get_param("~output_topic", "/joy_teleop/joy")
-        self.cmd_topic = rospy.get_param("~cmd_topic", "/joy_teleop/cmd_vel")
-        self.button_count = rospy.get_param("~button_count", 8)
-        self.press_repeats = rospy.get_param("~press_repeats", 5)
-        self.release_repeats = rospy.get_param("~release_repeats", 2)
-        self.repeat_delay = rospy.get_param("~repeat_delay", 0.03)
-        self.linear_speed = rospy.get_param("~linear_speed", 0.8)
-        self.angular_speed = rospy.get_param("~angular_speed", 0.8)
-        self.publish_rate = rospy.get_param("~publish_rate", 10.0)
-        self.enable_motion_keys = self._coerce_bool(rospy.get_param("~enable_motion_keys", True))
+        self.output_topic = self._get_param("output_topic", "/joy_teleop/joy")
+        self.cmd_topic = self._get_param("cmd_topic", "/joy_teleop/cmd_vel")
+        self.button_count = self._get_param("button_count", 8)
+        self.press_repeats = self._get_param("press_repeats", 5)
+        self.release_repeats = self._get_param("release_repeats", 2)
+        self.repeat_delay = self._get_param("repeat_delay", 0.03)
+        self.linear_speed = self._get_param("linear_speed", 0.8)
+        self.angular_speed = self._get_param("angular_speed", 0.8)
+        self.publish_rate = self._get_param("publish_rate", 10.0)
+        self.enable_motion_keys = self._coerce_bool(self._get_param("enable_motion_keys", True))
 
         default_key_to_button = {
             "l": 4,  # LB
@@ -32,7 +32,7 @@ class KeyboardToJoy:
             "y": 3,  # Y
             "k": 6,  # BACK
         }
-        enabled_button_keys = rospy.get_param("~enabled_button_keys", list(default_key_to_button.keys()))
+        enabled_button_keys = self._get_param("enabled_button_keys", list(default_key_to_button.keys()))
         if isinstance(enabled_button_keys, str):
             try:
                 enabled_button_keys = ast.literal_eval(enabled_button_keys)
@@ -53,6 +53,12 @@ class KeyboardToJoy:
 
         signal.signal(signal.SIGINT, self._handle_sigint)
         rospy.Timer(rospy.Duration(1.0 / self.publish_rate), self._publish_current_twist)
+        rospy.loginfo(
+            "Keyboard waypoint control config: motion_keys=%s, enabled_buttons=%s, output_topic=%s",
+            self.enable_motion_keys,
+            sorted(self.key_to_button.keys()),
+            self.output_topic,
+        )
 
     @staticmethod
     def _coerce_bool(value):
@@ -61,6 +67,21 @@ class KeyboardToJoy:
         if isinstance(value, str):
             return value.strip().lower() in ("1", "true", "yes", "on")
         return bool(value)
+
+    @staticmethod
+    def _candidate_param_names(name):
+        private_name = f"~{name}"
+        absolute_names = [
+            f"/outdoor_waypoint_nav/keyboard_waypoint_control/{name}",
+            f"/outdoor_waypoint_nav/keyboard_to_joy/{name}",
+        ]
+        return [private_name] + absolute_names
+
+    def _get_param(self, name, default):
+        for param_name in self._candidate_param_names(name):
+            if rospy.has_param(param_name):
+                return rospy.get_param(param_name)
+        return default
 
     def _handle_sigint(self, _signum, _frame):
         self._stop_motion()

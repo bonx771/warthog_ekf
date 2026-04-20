@@ -14,7 +14,9 @@ from std_msgs.msg import Bool
 
 # Initialize variables
 
-buttons_array = [0, 0, 0, 0, 0]
+button_events = [False, False, False, False, False]
+main_prev_buttons = [0, 0, 0, 0, 0]
+keyboard_prev_buttons = [0, 0, 0, 0, 0]
 collect_btn_num = 0
 collect_btn_sym = ""
 send_btn_num = 0
@@ -24,6 +26,8 @@ calibrate_btn_sym = ""
 abort_btn_num = 0
 abort_btn_sym = ""
 sim_enabled = False
+keyboard_waypoint_control_enabled = False
+keyboard_joy_topic = "/outdoor_waypoint_nav/keyboard_joy"
 
 location_collect = ""
 location_send = ""
@@ -50,6 +54,8 @@ def getParameter():
     global continue_btn_num
     global continue_btn_sym
     global sim_enabled
+    global keyboard_waypoint_control_enabled
+    global keyboard_joy_topic
 
     collect_btn_num = rospy.get_param("/outdoor_waypoint_nav/collect_button_num")
     collect_btn_sym = rospy.get_param("/outdoor_waypoint_nav/collect_button_sym")
@@ -63,6 +69,8 @@ def getParameter():
     continue_btn_sym = rospy.get_param("/outdoor_waypoint_nav/continue_button_sym")
     
     sim_enabled = rospy.get_param("/outdoor_waypoint_nav/sim_enabled")
+    keyboard_waypoint_control_enabled = rospy.get_param("/outdoor_waypoint_nav/keyboard_waypoint_control_enabled", False)
+    keyboard_joy_topic = rospy.get_param("/outdoor_waypoint_nav/keyboard_joy_topic", "/outdoor_waypoint_nav/keyboard_joy")
 
 def getPaths():
     global location_collect
@@ -87,10 +95,29 @@ def getPaths():
     else:
         print("ERROR: PLEASE SPECIFY SIM_ENABLED PARAMETER.")
 
-def joy_CB(joy_msg):
-    global start_collect_btn
-    global buttons_array 
-    buttons_array = [joy_msg.buttons[collect_btn_num],joy_msg.buttons[send_btn_num],joy_msg.buttons[calibrate_btn_num], joy_msg.buttons[abort_btn_num], joy_msg.buttons[continue_btn_num]]
+def _button_value(joy_msg, index):
+    if index < len(joy_msg.buttons):
+        return joy_msg.buttons[index]
+    return 0
+
+def _make_joy_cb(previous_state):
+    def joy_cb(joy_msg):
+        global button_events
+
+        current_buttons = [
+            _button_value(joy_msg, collect_btn_num),
+            _button_value(joy_msg, send_btn_num),
+            _button_value(joy_msg, calibrate_btn_num),
+            _button_value(joy_msg, abort_btn_num),
+            _button_value(joy_msg, continue_btn_num),
+        ]
+
+        for idx, current_value in enumerate(current_buttons):
+            if current_value == 1 and previous_state[idx] == 0:
+                button_events[idx] = True
+            previous_state[idx] = current_value
+
+    return joy_cb
 
 def calibrate_status_CB(calibrate_status_msg):
     global calibrate_complete
@@ -106,7 +133,9 @@ def waypoint_following_status_CB(waypoint_following_status_msg):
 
 def launch_subscribers():
     rospy.init_node('joy_launch_control')
-    rospy.Subscriber("/joy_teleop/joy",Joy, joy_CB )
+    rospy.Subscriber("/joy_teleop/joy", Joy, _make_joy_cb(main_prev_buttons))
+    if keyboard_waypoint_control_enabled:
+        rospy.Subscriber(keyboard_joy_topic, Joy, _make_joy_cb(keyboard_prev_buttons))
     rospy.Subscriber("/outdoor_waypoint_nav/calibrate_status",Bool, calibrate_status_CB )
     rospy.Subscriber("/outdoor_waypoint_nav/collection_status",Bool, collection_status_CB )
     rospy.Subscriber("/outdoor_waypoint_nav/waypoint_following_status",Bool, waypoint_following_status_CB )
@@ -196,15 +225,18 @@ def has_move_base_server():
 
 def check_buttons():
 
-    global buttons_array     
+    global button_events
     global launch 
     global calibrate_complete
     global collect_complete
     global send_complete
     global velocity_paused
+
+    current_events = button_events[:]
+    button_events = [False, False, False, False, False]
     
     # Check abort button
-    if buttons_array[3] == 1:
+    if current_events[3]:
         rospy.logerr("STOP BUTTON SELECTED, blocking velocity commands...")
         os.system("rosnode kill safety_node")
         rospy.sleep(1) # Sleep for 1 second to allow time for node to shutdown
@@ -212,7 +244,7 @@ def check_buttons():
         sys.stdout.flush()
         velocity_paused = True
     
-    elif buttons_array[4] == 1 and velocity_paused == True:
+    elif current_events[4] and velocity_paused == True:
         rospy.loginfo("continuing to follow wapoints...")
         uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
         roslaunch.configure_logging(uuid)
@@ -221,17 +253,14 @@ def check_buttons():
         velocity_paused = False
 
     # Start collecting goals
-    if buttons_array[0] == 1:
-        while buttons_array[0] == 1:    # Wait for button to be released
-            pass
+    if current_events[0]:
         start_launch_process(location_collect, "collect_goals.launch")
 
     # Start sending goals
-    elif buttons_array[1] == 1:
-        while buttons_array[1] ==1:
-            pass
+    elif current_events[1]:
         if not has_move_base_server():
-            rospy.logerr("move_base is not running. Start outdoor_waypoint_nav_sim.launch before pressing %s.", send_btn_sym)
+            launch_name = "outdoor_waypoint_nav_sim.launch" if sim_enabled else "outdoor_waypoint_nav.launch"
+            rospy.logerr("move_base is not running. Start %s before pressing %s.", launch_name, send_btn_sym)
             return
 
         waypoint_path = get_coordinates_file_path()
@@ -245,9 +274,7 @@ def check_buttons():
         start_launch_process(location_send, "send_goals.launch")
 
     # Start Heading Calbration
-    elif buttons_array[2] == 1:
-        while buttons_array[2] ==1:
-            pass
+    elif current_events[2]:
         if sim_enabled:
             rospy.logwarn("Heading calibration is disabled in simulation. Using navsat_params_sim.yaml defaults instead.")
             return
@@ -270,9 +297,10 @@ def main():
     rospy.on_shutdown(shutdown_launch_process)
 
     # check buttons and launch the appropriate file
+    rate = rospy.Rate(50)
     while not rospy.is_shutdown():
         check_buttons()
-    rospy.spin()
+        rate.sleep()
 
 if __name__ == '__main__':
 

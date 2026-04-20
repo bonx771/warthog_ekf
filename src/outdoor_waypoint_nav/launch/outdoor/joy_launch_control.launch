@@ -15,6 +15,7 @@
   <arg name="continue_button_sym" value="Y" />
 
 	<arg name="simulation_enabled" value="false" />
+	<arg name="keyboard_joy_topic" value="/outdoor_waypoint_nav/keyboard_joy" />
 
   <!-- Run collect_gps_waypoints node -->
   	<node ns="/outdoor_waypoint_nav" pkg="outdoor_waypoint_nav" type="joy_launch_control.py" name="joy_launch_control" output="screen"/>
@@ -29,6 +30,20 @@
 			<param name="/outdoor_waypoint_nav/continue_button_num" value="$(arg continue_button_num)" type="int" />
 			<param name="/outdoor_waypoint_nav/continue_button_sym" value="$(arg continue_button_sym)" type="string" />
 			<param name="/outdoor_waypoint_nav/sim_enabled" value="$(arg simulation_enabled)" type="bool" />
+			<param name="/outdoor_waypoint_nav/keyboard_waypoint_control_enabled" value="true" type="bool" />
+			<param name="/outdoor_waypoint_nav/keyboard_joy_topic" value="$(arg keyboard_joy_topic)" type="string" />
+
+  <node ns="/outdoor_waypoint_nav"
+        pkg="outdoor_waypoint_nav"
+        type="keyboard_to_joy.py"
+        name="keyboard_waypoint_control"
+        output="screen"
+        launch-prefix="bash -lc">
+    <param name="output_topic" value="$(arg keyboard_joy_topic)" type="string" />
+    <param name="button_count" value="8" type="int" />
+    <param name="enable_motion_keys" value="false" type="bool" />
+    <rosparam param="enabled_button_keys">["l", "r", "y", "k", "b"]</rosparam>
+  </node>
 
 </launch>
 			

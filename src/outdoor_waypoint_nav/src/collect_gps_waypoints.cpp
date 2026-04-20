@@ -18,13 +18,17 @@
 
 
 
-bool collect_request;
+bool collect_request = false;
 bool continue_collection = true;
 double lati_point=0, longi_point=0, lati_last=0, longi_last=0;
 double min_coord_change = 10 * pow(10,-6);
 double marker_scale = 0.7;
 std::string end_button_sym, collect_button_sym, gps_topic, marker_frame, marker_topic, utm_zone;
 int end_button_num = 0, collect_button_num = 0;
+std::string keyboard_joy_topic = "/outdoor_waypoint_nav/keyboard_joy";
+bool keyboard_waypoint_control_enabled = false;
+bool last_collect_pressed_main = false, last_end_pressed_main = false;
+bool last_collect_pressed_keyboard = false, last_end_pressed_keyboard = false;
 
 geometry_msgs::PointStamped latLongToUTM(double lati_input, double longi_input)
 {
@@ -95,21 +99,40 @@ void publishWaypointMarker(
 	marker_pub.publish(marker);
 }
 
-void joy_CB(const sensor_msgs::Joy joy_msg)
+bool buttonPressed(const sensor_msgs::Joy& joy_msg, int button_num)
 {
-	if(joy_msg.buttons[collect_button_num]==1)
+	return (button_num >= 0) &&
+	       (button_num < static_cast<int>(joy_msg.buttons.size())) &&
+	       (joy_msg.buttons[button_num] == 1);
+}
+
+void processJoyMessage(const sensor_msgs::Joy& joy_msg, bool& last_collect_pressed, bool& last_end_pressed)
+{
+	const bool collect_pressed = buttonPressed(joy_msg, collect_button_num);
+	const bool end_pressed = buttonPressed(joy_msg, end_button_num);
+
+	if(collect_pressed && !last_collect_pressed)
 	{
 		collect_request = true;
 	}
-	else
-	{
-		collect_request = false;
-	}
 
-	if(joy_msg.buttons[end_button_num]==1)
+	if(end_pressed && !last_end_pressed)
 	{
 		continue_collection = false;
 	}
+
+	last_collect_pressed = collect_pressed;
+	last_end_pressed = end_pressed;
+}
+
+void joy_CB(const sensor_msgs::Joy joy_msg)
+{
+	processJoyMessage(joy_msg, last_collect_pressed_main, last_end_pressed_main);
+}
+
+void keyboard_joy_CB(const sensor_msgs::Joy joy_msg)
+{
+	processJoyMessage(joy_msg, last_collect_pressed_keyboard, last_end_pressed_keyboard);
 }
 
 void filtered_gps_CB(const sensor_msgs::NavSatFix gps_msg)
@@ -139,9 +162,17 @@ int main(int argc, char** argv)
 		ros::param::param<std::string>("/outdoor_waypoint_nav/waypoint_marker_frame", marker_frame, "map");
 		ros::param::param<std::string>("/outdoor_waypoint_nav/waypoint_marker_topic", marker_topic, "/outdoor_waypoint_nav/collected_waypoints");
 		ros::param::param<double>("/outdoor_waypoint_nav/waypoint_marker_scale", marker_scale, 0.7);
+		ros::param::param<bool>("/outdoor_waypoint_nav/keyboard_waypoint_control_enabled", keyboard_waypoint_control_enabled, false);
+		ros::param::param<std::string>("/outdoor_waypoint_nav/keyboard_joy_topic", keyboard_joy_topic, "/outdoor_waypoint_nav/keyboard_joy");
 
     //Initiate subscribers
 		ros::Subscriber sub_joy = n.subscribe("/joy_teleop/joy", 100, joy_CB);
+		ros::Subscriber sub_keyboard_joy;
+		if(keyboard_waypoint_control_enabled)
+		{
+			sub_keyboard_joy = n.subscribe(keyboard_joy_topic, 100, keyboard_joy_CB);
+			ROS_INFO("Listening for keyboard waypoint commands on: %s", keyboard_joy_topic.c_str());
+		}
 		ros::Subscriber sub_gps = n.subscribe(gps_topic, 100, filtered_gps_CB);
 		ros::Publisher pubWaypointMarkers = n.advertise<visualization_msgs::Marker>(marker_topic, 100, true);
 		tf::TransformListener listener;
@@ -174,8 +205,15 @@ int main(int argc, char** argv)
 		{
 			ros::spinOnce();
 			time_current = ros::Time::now();
-			if((collect_request == true) && (time_current - time_last > duration_min))
+			if(collect_request == true)
 			{	
+				collect_request = false;
+				if(time_current - time_last <= duration_min)
+				{
+					ROS_WARN("Waypoint request ignored because collect debounce timer has not expired yet.");
+					continue;
+				}
+
 				// Check that there was sufficient change in position between points
 				// This makes the move_base navigation smoother and stops points from being collected twice
 				double difference_lat = abs((lati_point - lati_last)*pow(10,6))*pow(10,-6);

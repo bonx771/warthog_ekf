@@ -4,6 +4,7 @@ import termios
 import tty
 import textwrap
 import signal
+import ast
 
 import rospy
 from geometry_msgs.msg import Twist
@@ -21,14 +22,26 @@ class KeyboardToJoy:
         self.linear_speed = rospy.get_param("~linear_speed", 0.8)
         self.angular_speed = rospy.get_param("~angular_speed", 0.8)
         self.publish_rate = rospy.get_param("~publish_rate", 10.0)
+        self.enable_motion_keys = self._coerce_bool(rospy.get_param("~enable_motion_keys", True))
 
-        self.key_to_button = {
+        default_key_to_button = {
             "l": 4,  # LB
             "r": 5,  # RB
             "s": 7,  # START
             "b": 1,  # B
             "y": 3,  # Y
             "k": 6,  # BACK
+        }
+        enabled_button_keys = rospy.get_param("~enabled_button_keys", list(default_key_to_button.keys()))
+        if isinstance(enabled_button_keys, str):
+            try:
+                enabled_button_keys = ast.literal_eval(enabled_button_keys)
+            except (ValueError, SyntaxError):
+                enabled_button_keys = list(default_key_to_button.keys())
+        self.key_to_button = {
+            key: button_index
+            for key, button_index in default_key_to_button.items()
+            if key in enabled_button_keys
         }
 
         self.pub = rospy.Publisher(self.output_topic, Joy, queue_size=10)
@@ -40,6 +53,14 @@ class KeyboardToJoy:
 
         signal.signal(signal.SIGINT, self._handle_sigint)
         rospy.Timer(rospy.Duration(1.0 / self.publish_rate), self._publish_current_twist)
+
+    @staticmethod
+    def _coerce_bool(value):
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, str):
+            return value.strip().lower() in ("1", "true", "yes", "on")
+        return bool(value)
 
     def _handle_sigint(self, _signum, _frame):
         self._stop_motion()
@@ -102,24 +123,40 @@ class KeyboardToJoy:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
 
     def run(self):
-        banner = textwrap.dedent(
-            """
-            ==================== Keyboard To Joy ====================
-            w -> drive forward
-            x -> drive backward
-            a -> turn left
-            d -> turn right
-            space -> stop motion
-            l -> LB     start waypoint collection
-            r -> RB     start waypoint following
-            s -> START  heading calibration
-            b -> B      stop robot motion
-            y -> Y      continue or collect waypoint
-            k -> BACK   end waypoint collection
-            q -> quit
-            ========================================================
-            """
-        ).strip("\n")
+        banner_lines = ["==================== Keyboard To Joy ===================="]
+        if self.enable_motion_keys:
+            banner_lines.extend(
+                [
+                    "w -> drive forward",
+                    "x -> drive backward",
+                    "a -> turn left",
+                    "d -> turn right",
+                    "space -> stop motion",
+                ]
+            )
+        else:
+            banner_lines.append("joystick -> drive robot motion")
+
+        key_descriptions = {
+            "l": "start waypoint collection",
+            "r": "start waypoint following",
+            "s": "heading calibration",
+            "b": "stop robot motion",
+            "y": "continue or collect waypoint",
+            "k": "end waypoint collection",
+        }
+
+        for key in ["l", "r", "s", "b", "y", "k"]:
+            if key in self.key_to_button:
+                banner_lines.append(f"{key} -> {key_descriptions[key]}")
+
+        banner_lines.extend(
+            [
+                "q -> quit",
+                "========================================================",
+            ]
+        )
+        banner = "\n".join(banner_lines)
         sys.stdout.write("\n" + banner + "\n\n")
         sys.stdout.flush()
 
@@ -130,23 +167,23 @@ class KeyboardToJoy:
             key = key.lower()
             if key == "q":
                 break
-            if key == "w":
+            if self.enable_motion_keys and key == "w":
                 self._set_motion(self.linear_speed, 0.0)
                 rospy.loginfo("Keyboard drive: forward")
                 continue
-            if key == "x":
+            if self.enable_motion_keys and key == "x":
                 self._set_motion(-self.linear_speed, 0.0)
                 rospy.loginfo("Keyboard drive: backward")
                 continue
-            if key == "a":
+            if self.enable_motion_keys and key == "a":
                 self._set_motion(0.0, self.angular_speed)
                 rospy.loginfo("Keyboard drive: turn left")
                 continue
-            if key == "d":
+            if self.enable_motion_keys and key == "d":
                 self._set_motion(0.0, -self.angular_speed)
                 rospy.loginfo("Keyboard drive: turn right")
                 continue
-            if key == " ":
+            if self.enable_motion_keys and key == " ":
                 self._stop_motion(hold_zero=True)
                 rospy.loginfo("Keyboard drive: stop")
                 continue

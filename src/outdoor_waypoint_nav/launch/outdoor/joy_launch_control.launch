@@ -43,7 +43,7 @@
     <param name="cmd_topic" value="" type="string" />
     <param name="button_count" value="8" type="int" />
     <param name="enable_motion_keys" value="false" type="bool" />
-    <rosparam param="enabled_button_keys">["l", "y", "k", "r"]</rosparam>
+    <rosparam param="enabled_button_keys">["l", "y", "k", "r", "s"]</rosparam>
   </node>
 
 </launch>

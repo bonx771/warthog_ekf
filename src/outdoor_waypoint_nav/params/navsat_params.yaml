@@ -6,7 +6,5 @@ navsat_transform:
   zero_altitude: true
   broadcast_utm_transform: true
   publish_filtered_gps: true
-  # Outdoor uses IMU heading for world-frame alignment. heading_calibration.launch
-  # updates magnetic_declination_radians in this file after calibration.
   use_odometry_yaw: false
   wait_for_datum: false

@@ -13,7 +13,8 @@
     <param name="/outdoor_waypoint_nav/x_vel" value="0.5" />
 
     <!-- set how long to publish velocity command (s) -->
-    <param name="/ourdoor_waypoint_nav/x_vel_time" value="10" />
+    <param name="/outdoor_waypoint_nav/x_vel_time" value="10" />
+    <param name="/outdoor_waypoint_nav/calibrate_cmd_rate" value="30" />
     
   </group>
 

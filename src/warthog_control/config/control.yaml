@@ -31,15 +31,15 @@ warthog_velocity_controller:
   linear:
     x:
       has_velocity_limits    : true
-      max_velocity           : 5.0   # m/s
+      max_velocity           : 0.5   # m/s
       has_acceleration_limits: true
-      max_acceleration       : 50.0   # m/s^2
+      max_acceleration       : 1.0   # m/s^2
   angular:
     z:
       has_velocity_limits    : true
-      max_velocity           : 4.0   # rad/s
+      max_velocity           : 0.35   # rad/s
       has_acceleration_limits: true
-      max_acceleration       : 40.0   # rad/s^2
+      max_acceleration       : 0.8   # rad/s^2
 
 ekf_localization:
   frequency: 50
@@ -51,7 +51,7 @@ ekf_localization:
                  false, false, true,
                  false, false, false]
   odom0_differential: false
-  imu0: /imu/data
+  imu0: /imu/data_nomag
   imu0_config: [false, false, false,
                 false, false, false,
                 false, false, false,

@@ -11,6 +11,6 @@
   <param name="/outdoor_waypoint_nav/obstacle_avoidance_clear_distance" value="2.6" type="double" />
   <param name="/outdoor_waypoint_nav/obstacle_avoidance_turn_commit_time" value="2.0" type="double" />
 
-  <node ns="/outdoor_waypoint_nav" pkg="outdoor_waypoint_nav" type="safety_node" name="safety_node" output="screen"/>
+  <node ns="/outdoor_waypoint_nav" pkg="outdoor_waypoint_nav" type="safety_node" name="test_safety_node" output="screen"/>
 
 </launch>

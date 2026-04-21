@@ -32,7 +32,7 @@ ekf_se_odom: # Local odom filter: wheel odom + IMU
   # IMU provides absolute yaw and yaw rate. Keeping this in the local filter
   # makes odom smoother and reduces heading drift before GPS is fused globally.
 
-  imu0: /imu/data
+  imu0: /imu/data_nomag
   imu0_config: [false, false, false,
                 false, false, true,
                 false, false, false,
@@ -123,7 +123,7 @@ ekf_se_map: # Global map filter: wheel odom + GPS odom + IMU
 
   # IMU stabilizes global yaw and yaw rate.
 
-  imu0: /imu/data
+  imu0: /imu/data_nomag
   imu0_config: [false, false, false,
                 false, false, true,
                 false, false, false,

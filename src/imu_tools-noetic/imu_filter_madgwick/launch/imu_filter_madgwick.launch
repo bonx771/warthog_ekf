@@ -4,7 +4,7 @@
         name="imu_filter_nomag"
         output="screen">
 
-    <remap from="imu/data_raw" to="/imu/data_raw"/>
+    <remap from="imu/data_raw" to="/imu/data_raw_bias"/>
     <remap from="imu/data" to="/imu/data_nomag"/>
 
     <param name="use_mag" value="false"/>

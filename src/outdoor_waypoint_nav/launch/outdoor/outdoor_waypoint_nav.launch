@@ -4,6 +4,7 @@
 
     <arg name="launch_rviz" default="true" />
     <arg name="rviz_config" default="$(find outdoor_waypoint_nav)/rviz_config/real.rviz" />
+    <arg name="use_lidar" default="false" />
 
     <include file="$(find gps_pkg)/launch/navsat_transform_gps.launch"></include>
 
@@ -13,8 +14,8 @@
     <!-- Run warthog_bringup -->
     <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/warthog_bringup.launch" /> -->
 
-    <!-- launch lms1xx lidar -->
-    <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/laser.launch" /> -->
+    <!-- launch lms1xx lidar when explicitly enabled -->
+    <include if="$(arg use_lidar)" file="$(find outdoor_waypoint_nav)/launch/include/laser.launch" />
 
     <!-- launch um6 imu -->
     <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/imu.launch" /> -->
@@ -32,7 +33,9 @@
     <!-- include file="$(find hector_mapping_nav)/launch/scanmatch_nav.launch" /-->
 
     <!-- Run warthog_navigation to enable move_base -->
-    <include file="$(find warthog_slam)/launch/move_base_nav.launch" />
+    <include file="$(find warthog_slam)/launch/move_base_nav.launch">
+      <arg name="use_lidar" value="$(arg use_lidar)" />
+    </include>
 
     <!-- launch safety node to allow the user to disable velocity commands to the robot -->
     <include file="$(find outdoor_waypoint_nav)/launch/include/safety_node.launch" />

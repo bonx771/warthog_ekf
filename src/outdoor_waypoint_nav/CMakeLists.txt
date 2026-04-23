@@ -54,6 +54,8 @@ install(DIRECTORY  launch
 )
 
 catkin_install_python(PROGRAMS
+  scripts/gps_covariance_relay.py
+  scripts/imu_covariance_relay.py
   scripts/joy_launch_control.py
   scripts/joy_launch_control_continuous.py
   scripts/joy_launch_control_mapping.py

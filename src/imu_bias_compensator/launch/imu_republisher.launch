@@ -13,7 +13,7 @@
 
     <!-- File bias tính trước (chỉnh giá trị trong file này) -->
     <param name="bias_file"
-           value="$(find imu_bias_compensator)/config/gyro_bias_static.yaml"/>
+           value="$(find imu_bias_compensator)/config/gyro_bias.yaml"/>
 
     <!-- Topics -->
     <param name="imu_topic"   value="/imu/data_raw"/>

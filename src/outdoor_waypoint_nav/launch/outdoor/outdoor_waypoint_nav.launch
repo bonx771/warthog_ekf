@@ -17,10 +17,8 @@
     <!-- launch lms1xx lidar when explicitly enabled -->
     <include if="$(arg use_lidar)" file="$(find outdoor_waypoint_nav)/launch/include/laser.launch" />
 
-    <!-- launch um6 imu -->
-    <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/imu.launch" /> -->
+    <include file="$(find outdoor_waypoint_nav)/launch/include/imu.launch" />
 
-    <!-- launch gps -->
     <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/gps.launch" /> -->
 
     <!-- Launch robot_localization and navsat -->

@@ -7,5 +7,5 @@
 
   <!-- TF GPS -->
   <node pkg="tf2_ros" type="static_transform_publisher" name="gps_tf" 
-        args="0 0 1 0 0 0 base_link gps_link"/>
+        args="-0.5 0.3 0 0 0 0 base_link gps_link"/>
 </launch>

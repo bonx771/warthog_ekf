@@ -32,11 +32,11 @@ ekf_se_odom: # Local odom filter: wheel odom + IMU
   # IMU provides absolute yaw and yaw rate. Keeping this in the local filter
   # makes odom smoother and reduces heading drift before GPS is fused globally.
 
-  imu0: /imu/data_nomag
+  imu0: /imu/data_covariance
   imu0_config: [false, false, false,
                 false, false, true,
                 false, false, false,
-                false, false, true,
+                false, false, false,
                 false, false, false]
   imu0_nodelay: true
   imu0_differential: false
@@ -46,9 +46,9 @@ ekf_se_odom: # Local odom filter: wheel odom + IMU
 
   use_control: false
 
-  process_noise_covariance: [1e-3, 0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
-                             0,    1e-3, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
-                             0,    0,    1e-3, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+  process_noise_covariance: [0,   0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0, 0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                              0,    0,    0,    0.3,  0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                              0,    0,    0,    0,    0.3,  0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                              0,    0,    0,    0,    0,    0.01, 0,     0,     0,    0,    0,    0,    0,    0,    0,
@@ -62,9 +62,9 @@ ekf_se_odom: # Local odom filter: wheel odom + IMU
                              0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0.3,  0,
                              0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0.3]
 
-  initial_estimate_covariance: [1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
-                                0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
-                                0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+  initial_estimate_covariance: [0, 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0, 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
                                 0,    0,    0,    1.0,  0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
                                 0,    0,    0,    0,    1.0,  0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
                                 0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,     0,     0,     0,    0,    0,
@@ -123,11 +123,11 @@ ekf_se_map: # Global map filter: wheel odom + GPS odom + IMU
 
   # IMU stabilizes global yaw and yaw rate.
 
-  imu0: /imu/data_nomag
+  imu0: /imu/data_covariance
   imu0_config: [false, false, false,
                 false, false, true,
                 false, false, false,
-                false, false, true,
+                false, false, false,
                 false, false, false]
   imu0_nodelay: true
   imu0_differential: false
@@ -137,9 +137,9 @@ ekf_se_map: # Global map filter: wheel odom + GPS odom + IMU
 
   use_control: false
 
-  process_noise_covariance: [1.0,  0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
-                             0,    1.0,  0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
-                             0,    0,    1e-3, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+  process_noise_covariance: [0.0,  0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0.0,  0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                             0,    0,    0, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                              0,    0,    0,    0.3,  0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                              0,    0,    0,    0,    0.3,  0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                              0,    0,    0,    0,    0,    0.01, 0,     0,     0,    0,    0,    0,    0,    0,    0,
@@ -153,9 +153,9 @@ ekf_se_map: # Global map filter: wheel odom + GPS odom + IMU
                              0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0.3,  0,
                              0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0.3]
 
-  initial_estimate_covariance: [1.0,  0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
-                                0,    1.0,  0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
-                                0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+  initial_estimate_covariance: [0.0,  0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0.0,  0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                                0,    0,    0, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
                                 0,    0,    0,    1.0,  0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
                                 0,    0,    0,    0,    1.0,  0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
                                 0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,     0,     0,     0,    0,    0,

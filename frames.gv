@@ -1,29 +1,11 @@
 digraph G {
-"chassis_link" -> "imu_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"odom" -> "base_link"[label="Broadcaster: /outdoor_waypoint_nav/ekf_se_odom\nAverage rate: 44.275 Hz\nMost recent transform: 1776913588.968 ( 0.026 sec old)\nBuffer length: 4.969 sec\n"];
-"base_link" -> "chassis_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"chassis_link" -> "diff_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"left_diff_unit_link" -> "left_diff_unit_antenna_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"chassis_link" -> "left_diff_unit_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 31.653 Hz\nMost recent transform: 1776913588.980 ( 0.015 sec old)\nBuffer length: 4.960 sec\n"];
-"left_diff_unit_link" -> "left_diff_unit_buttons_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"left_diff_unit_link" -> "left_diff_unit_headlight_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"left_diff_unit_link" -> "left_diff_unit_taillight_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"right_diff_unit_link" -> "right_diff_unit_antenna_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"chassis_link" -> "right_diff_unit_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 31.653 Hz\nMost recent transform: 1776913588.980 ( 0.015 sec old)\nBuffer length: 4.960 sec\n"];
-"right_diff_unit_link" -> "right_diff_unit_buttons_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"right_diff_unit_link" -> "right_diff_unit_estop_antenna_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"right_diff_unit_link" -> "right_diff_unit_headlight_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"right_diff_unit_link" -> "right_diff_unit_taillight_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"chassis_link" -> "top_chassis_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"odom" -> "utm"[label="Broadcaster: /outdoor_waypoint_nav/navsat_transform\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"map" -> "odom"[label="Broadcaster: /outdoor_waypoint_nav/ekf_se_map\nAverage rate: 30.280 Hz\nMost recent transform: 1776913589.018 ( -0.024 sec old)\nBuffer length: 4.954 sec\n"];
-"base_link" -> "gps_link"[label="Broadcaster: /gps_tf\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776913588.995 sec old)\nBuffer length: 0.000 sec\n"];
-"left_diff_unit_link" -> "front_left_wheel_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 18.776 Hz\nMost recent transform: 1776913588.949 ( 0.045 sec old)\nBuffer length: 4.900 sec\n"];
-"right_diff_unit_link" -> "front_right_wheel_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 18.776 Hz\nMost recent transform: 1776913588.949 ( 0.045 sec old)\nBuffer length: 4.900 sec\n"];
-"left_diff_unit_link" -> "rear_left_wheel_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 18.776 Hz\nMost recent transform: 1776913588.949 ( 0.045 sec old)\nBuffer length: 4.900 sec\n"];
-"right_diff_unit_link" -> "rear_right_wheel_link"[label="Broadcaster: /robot_state_publisher\nAverage rate: 18.776 Hz\nMost recent transform: 1776913588.949 ( 0.045 sec old)\nBuffer length: 4.900 sec\n"];
+"base_link" -> "gps_link"[label="Broadcaster: /gps_tf\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776932653.617 sec old)\nBuffer length: 0.000 sec\n"];
+"odom" -> "base_link"[label="Broadcaster: /outdoor_waypoint_nav/ekf_se_odom\nAverage rate: 42.232 Hz\nMost recent transform: 1776932653.599 ( 0.018 sec old)\nBuffer length: 4.973 sec\n"];
+"base_link" -> "imu_link"[label="Broadcaster: /base_link_to_imu\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776932653.617 sec old)\nBuffer length: 0.000 sec\n"];
+"odom" -> "utm"[label="Broadcaster: /outdoor_waypoint_nav/navsat_transform\nAverage rate: 10000.000 Hz\nMost recent transform: 0.000 ( 1776932653.617 sec old)\nBuffer length: 0.000 sec\n"];
+"map" -> "odom"[label="Broadcaster: /outdoor_waypoint_nav/ekf_se_map\nAverage rate: 29.763 Hz\nMost recent transform: 1776932653.649 ( -0.032 sec old)\nBuffer length: 4.973 sec\n"];
 edge [style=invis];
  subgraph cluster_legend { style=bold; color=black; label ="view_frames Result";
-"Recorded at time: 1776913588.995"[ shape=plaintext ] ;
+"Recorded at time: 1776932653.617"[ shape=plaintext ] ;
  }->"map";
 }

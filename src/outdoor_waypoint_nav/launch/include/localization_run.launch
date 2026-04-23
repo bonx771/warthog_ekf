@@ -4,25 +4,22 @@
   <group ns="/outdoor_waypoint_nav">
     <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/navsat_params.yaml" />
 
-    <!-- Local EKF: /warthog_velocity_controller/odom + /imu/data_covariance
-         -> /outdoor_waypoint_nav/odometry/filtered -->
+
     <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true">
       <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_se_odom.yaml" />
     </node>
 
-    <!-- Global EKF: /outdoor_waypoint_nav/odometry/filtered + /outdoor_waypoint_nav/odometry/gps
-         + /imu/data_covariance -> /outdoor_waypoint_nav/odometry/filtered_map -->
-    <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
+
+    <!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
       <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_se_map.yaml" />
       <remap from="odometry/filtered" to="odometry/filtered_map" />
-    </node>
+    </node> -->
 
-    <!-- navsat_transform consumes the local EKF output on odometry/filtered,
-         plus /gps/fix and /imu/data_covariance, then publishes odometry/gps. -->
-    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" output="screen">
+
+    <!-- <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" output="screen">
       <remap from="gps/fix" to="/gps/fix" />
       <remap from="imu/data" to="/imu/data_covariance" />
-    </node>
+    </node> -->
   </group>
 
 </launch>

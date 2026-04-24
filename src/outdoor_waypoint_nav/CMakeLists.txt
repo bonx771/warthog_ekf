@@ -54,11 +54,14 @@ install(DIRECTORY  launch
 )
 
 catkin_install_python(PROGRAMS
+  scripts/encoder_odometry_node.py
   scripts/gps_covariance_relay.py
+  scripts/imu_covariance_log.py
   scripts/imu_covariance_relay.py
   scripts/joy_launch_control.py
   scripts/joy_launch_control_continuous.py
   scripts/joy_launch_control_mapping.py
   scripts/keyboard_to_joy.py
+  scripts/path_node.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

@@ -12,8 +12,8 @@
 
     <include file="$(find imu_filter_madgwick)/launch/imu_filter_madgwick.launch" />
 
-    <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_imu" 
-            args="0 0 0 0 0 1.77 base_link imu_link" />
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_imu" 
+            args="0 0 0 0 0 0 base_link imu_link" /> -->
 
      <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_lidar" 
             args="0.4 0 0.3 0 0 0 base_link rslidar" />

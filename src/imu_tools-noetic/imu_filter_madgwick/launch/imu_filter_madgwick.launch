@@ -7,7 +7,7 @@
     <remap from="imu/data_raw" to="/imu/data_raw_bias"/>
     <remap from="imu/data" to="/imu/data_nomag"/>
 
-    <param name="use_mag" value="false"/>
+    <param name="use_mag" value="true"/>
     <param name="publish_tf" value="false"/>
     <param name="world_frame" value="enu"/>
 
@@ -17,11 +17,4 @@
     <param name="orientation_stddev" value="0.2"/>
   </node>
 
-  <node pkg="imu_filter_madgwick"
-        type="imu_yaw_logger.py"
-        name="imu_yaw_logger"
-        output="screen">
-    <remap from="imu/data" to="/imu/data_nomag"/>
-    <param name="log_rate_hz" value="10.0"/>
-  </node>
 </launch>

@@ -222,7 +222,7 @@ Visualization Manager:
         Shaft Length: 0.72
         Shaft Radius: 0.13
         Value: Arrow
-      Topic: /warthog_velocity_controller/odom
+      Topic: /odometry/encoder
       Unreliable: false
       Covariance:
         Orientation:
@@ -235,6 +235,28 @@ Visualization Manager:
           Color: 204; 51; 204
           Scale: 1
         Value: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 0; 200; 0
+      Enabled: true
+      Head Diameter: 0.42
+      Head Length: 0.2
+      Length: 0.3
+      Line Style: Lines
+      Line Width: 0.42
+      Name: Encoder Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Style: None
+      Radius: 0.42
+      Shaft Diameter: 0.42
+      Shaft Length: 0.1
+      Topic: /odometry/encoder_path
+      Unreliable: false
       Value: true
     - Angle Tolerance: 0.1
       Class: rviz/Odometry
@@ -293,6 +315,28 @@ Visualization Manager:
           Color: 204; 51; 204
           Scale: 1
         Value: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 255; 0; 0
+      Enabled: true
+      Head Diameter: 0.3
+      Head Length: 0.2
+      Length: 0.3
+      Line Style: Lines
+      Line Width: 0.3
+      Name: EKF Filtered Path
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Style: None
+      Radius: 0.3
+      Shaft Diameter: 0.3
+      Shaft Length: 0.1
+      Topic: /outdoor_waypoint_nav/odometry/filtered_path
+      Unreliable: false
       Value: true
     - Angle Tolerance: 0.1
       Class: rviz/Odometry

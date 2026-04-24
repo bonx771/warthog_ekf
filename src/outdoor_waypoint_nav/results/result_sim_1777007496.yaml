@@ -1,0 +1,22 @@
+angular_vel_rads: 0.3
+ekf_rmse_vs_gt_m: 1.418555
+end_pos_ekf:
+  x: -0.0724223495596797
+  y: 0.10754633215637707
+grade: TỐT
+gt_loop_closure_error_m: 2.776398
+gt_start_pos:
+  x: 0.0003505441476491494
+  y: 6.085177361512668e-07
+heading_error_deg: -5.728
+linear_vel_ms: 0.4
+loop_closure_error_m: 0.126416
+loop_closure_error_pct: 1.5802
+mode: sim
+side_length_m: 2.0
+start_pos:
+  x: 0.00034803815013665577
+  y: 4.7780040189376885e-05
+timestamp: 1777007496
+total_path_m: 8.0
+verdict: Đủ điều kiện dẫn đường thông thường

@@ -1,0 +1,18 @@
+angular_vel_rads: 0.25
+end_pos_ekf:
+  x: 0.3334266709687541
+  y: 2.5903663971566835
+grade: KÉM
+gt_start_pos: null
+heading_error_deg: -11.3944
+linear_vel_ms: 0.5
+loop_closure_error_m: 2.61178
+loop_closure_error_pct: 21.7648
+mode: outdoor
+side_length_m: 3.0
+start_pos:
+  x: -0.000327253163279436
+  y: -1.4290435073299688e-06
+timestamp: 1777019723
+total_path_m: 12.0
+verdict: Không đủ dẫn đường — kiểm tra lại cấu hình EKF

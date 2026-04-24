@@ -53,6 +53,10 @@ install(DIRECTORY  launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
+install(DIRECTORY params
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
 catkin_install_python(PROGRAMS
   scripts/encoder_odometry_node.py
   scripts/gps_covariance_relay.py
@@ -63,5 +67,7 @@ catkin_install_python(PROGRAMS
   scripts/joy_launch_control_mapping.py
   scripts/keyboard_to_joy.py
   scripts/path_node.py
+  scripts/plot_results.py
+  scripts/square_eval.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

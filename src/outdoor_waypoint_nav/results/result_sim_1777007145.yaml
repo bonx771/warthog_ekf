@@ -1,0 +1,22 @@
+angular_vel_rads: 0.3
+ekf_rmse_vs_gt_m: 1.758892
+end_pos_ekf:
+  x: -0.11225787748381816
+  y: 0.1351091519977008
+grade: XUẤT SẮC
+gt_loop_closure_error_m: 3.192152
+gt_start_pos:
+  x: 0.0005251130048264605
+  y: 7.540966485266198e-07
+heading_error_deg: -3.2712
+linear_vel_ms: 0.4
+loop_closure_error_m: 0.17697
+loop_closure_error_pct: 0.8849
+mode: sim
+side_length_m: 5.0
+start_pos:
+  x: 0.0005270995716126355
+  y: 6.873630053663559e-07
+timestamp: 1777007145
+total_path_m: 20.0
+verdict: Đủ điều kiện dẫn đường chính xác cao

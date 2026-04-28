@@ -20,68 +20,72 @@ world_frame: odom
 # - /outdoor_waypoint_nav/odometry/filtered
 #
 # Wheel odometry provides planar body-frame motion.
+# Raw outdoor wheel yaw can drift badly on skid-steer turns, so use encoder
+# forward speed plus the nonholonomic lateral-velocity constraint only.
 
 odom0: /warthog_velocity_controller/odom
 odom0_config: [false, false, false,
                 false, false, false,
-                true,  false,  false,
-                false, false, true,
+                true,  true,   false,
+                false, false, false,
                 false, false, false]
 odom0_queue_size: 10
 odom0_nodelay: true
 odom0_differential: false
 odom0_relative: false
 odom0_pose_rejection_threshold:  2.0
-odom0_twist_rejection_threshold: 0.5
-# IMU provides absolute yaw and yaw rate. Keeping this in the local filter
-# makes odom smoother and reduces heading drift before GPS is fused globally.
+odom0_twist_rejection_threshold: 2.0
+# IMU gyro Z is used for local heading propagation. We intentionally ignore the
+# absolute yaw from Madgwick here, because magnetometer disturbances on the
+# vehicle can pull the estimate away during turns.
 
 # imu0: /imu/data_covariance
 imu0: /imu/data_covariance
 
 imu0_config: [false, false, false,
-              false, false, true,
+              false, false, false,
               false, false, false,
               false, false, true,
               false, false, false]
-imu0_nodelay: false
+imu0_nodelay: true
 imu0_differential: false
-imu0_relative: true
+imu0_relative: false
 imu0_queue_size: 10
 imu0_remove_gravitational_acceleration: true
-imu0_pose_rejection_threshold:         2.0
-imu0_twist_rejection_threshold:        0.2
+imu0_pose_rejection_threshold:         0.8
+imu0_twist_rejection_threshold:        0.8
 
 use_control: false
+dynamic_process_noise_covariance: true
 
-process_noise_covariance: [0.1,   0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
-                            0,    0.1,  0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
-                            0,    0,    0.1, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
-                            0,    0,    0,    0.1,  0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
-                            0,    0,    0,    0,    0.1,  0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
-                            0,    0,    0,    0,    0,    0.1, 0,     0,     0,    0,    0,    0,    0,    0,    0,
-                            0,    0,    0,    0,    0,    0,    0.1,   0,     0,    0,    0,    0,    0,    0,    0,
-                            0,    0,    0,    0,    0,    0,    0,     0.1,   0,    0,    0,    0,    0,    0,    0,
-                            0,    0,    0,    0,    0,    0,    0,     0,     0.1,  0,    0,    0,    0,    0,    0,
-                            0,    0,    0,    0,    0,    0,    0,     0,     0,    0.1,  0,    0,    0,    0,    0,
-                            0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0.1,  0,    0,    0,    0,
-                            0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0.1,  0,    0,    0,
-                            0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0.1,  0,    0,
-                            0,    0,    0,    0,    0,    0,    0,     0,     0,    0,   0,    0,    0,    0.1,   0,
-                            0,    0,    0,    0,    0,    0,    0,     0,     0,    0,   0,    0,    0,    0,    0.1]
+process_noise_covariance: [0.02,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+                           0,     0.02,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+                           0,     0,     1e-6,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+                           0,     0,     0,     1e-6,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+                           0,     0,     0,     0,     1e-6,  0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
+                           0,     0,     0,     0,     0,     0.04,  0,     0,     0,     0,     0,     0,     0,     0,     0,
+                           0,     0,     0,     0,     0,     0,     0.03,  0,     0,     0,     0,     0,     0,     0,     0,
+                           0,     0,     0,     0,     0,     0,     0,     0.01,  0,     0,     0,     0,     0,     0,     0,
+                           0,     0,     0,     0,     0,     0,     0,     0,     1e-6,  0,     0,     0,     0,     0,     0,
+                           0,     0,     0,     0,     0,     0,     0,     0,     0,     1e-6,  0,     0,     0,     0,     0,
+                           0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     1e-6,  0,     0,     0,     0,
+                           0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0.03,  0,     0,     0,
+                           0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0.08,  0,     0,
+                           0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0.05,  0,
+                           0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     0,     1e-6]
 
-initial_estimate_covariance: [1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
-                              0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
-                              0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
-                              0,    0,    0,    1.0,  0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
-                              0,    0,    0,    0,    1.0,  0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
-                              0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,     0,     0,     0,    0,    0,
-                              0,    0,    0,    0,    0,    0,    1e-9,  0,    0,    0,     0,     0,     0,    0,    0,
-                              0,    0,    0,    0,    0,    0,    0,    1.0,  0,    0,     0,     0,     0,    0,    0,
-                              0,    0,    0,    0,    0,    0,    0,    0,    1.0,  0,     0,     0,     0,    0,    0,
-                              0,    0,    0,    0,    0,    0,    0,    0,    0,    1.0,   0,     0,     0,    0,    0,
-                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     1.0,   0,     0,    0,    0,
-                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     1e-9,   0,    0,    0,
-                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     1.0,  0,    0,
-                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    1.0,  0,
-                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    1.0]
+initial_estimate_covariance: [1e-4, 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+                              0,    1e-4, 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+                              0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+                              0,    0,    0,    1.0,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+                              0,    0,    0,    0,    1.0,  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+                              0,    0,    0,    0,    0,    1e-3, 0,    0,    0,    0,    0,    0,    0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    1e-3, 0,    0,    0,    0,    0,    0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    1e-3, 0,    0,    0,    0,    0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    1.0,  0,    0,    0,    0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    1.0,  0,    0,    0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    1.0,  0,    0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    1e-3, 0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    1.0,  0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    1.0,  0,
+                              0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,    1.0]

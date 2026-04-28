@@ -16,6 +16,7 @@ import sys
 import os
 import math
 import csv
+import re
 import yaml
 import numpy as np
 import matplotlib
@@ -57,6 +58,15 @@ def find_companion_csv(yaml_path, prefix):
     mode_ts = ts_part                              # sim_1234567
     candidate = os.path.join(dirpath, f"{prefix}_{mode_ts}.csv")
     return candidate if os.path.exists(candidate) else None
+
+
+def extract_result_timestamp(yaml_path):
+    """Lấy timestamp từ tên file result_<mode>_<timestamp>.yaml."""
+    basename = os.path.basename(yaml_path)
+    match = re.search(r"_(\d+)\.yaml$", basename)
+    if match:
+        return int(match.group(1))
+    return int(os.path.getmtime(yaml_path))
 
 
 def ideal_square(start_x, start_y, start_yaw, side):
@@ -115,6 +125,11 @@ def plot_all(yaml_path):
 
     has_ekf = ekf_csv is not None
     has_gt  = (mode == "sim") and (gt_csv is not None)
+
+    print(f"[plot_results] YAML đang dùng: {yaml_path}")
+    print(f"[plot_results] EKF CSV: {ekf_csv if has_ekf else 'không tìm thấy'}")
+    if mode == "sim":
+        print(f"[plot_results] GT CSV : {gt_csv if has_gt else 'không tìm thấy'}")
 
     ekf_xs = ekf_ys = ekf_ts = None
     gt_xs  = gt_ys  = gt_ts  = None
@@ -254,12 +269,12 @@ if __name__ == "__main__":
             results_dir = os.path.join(pkg_path, "results")
         except Exception:
             results_dir = "/tmp/ekf_eval"
-        files = sorted(glob.glob(os.path.join(results_dir, "result_*.yaml")), reverse=True)
+        files = glob.glob(os.path.join(results_dir, "result_*.yaml"))
         if not files:
             print(f"Không có file kết quả trong: {results_dir}")
             print("Dùng: rosrun outdoor_waypoint_nav plot_results.py <path/to/result.yaml>")
             sys.exit(1)
-        yaml_path = files[0]
+        yaml_path = max(files, key=lambda path: (extract_result_timestamp(path), os.path.getmtime(path)))
         print(f"[plot_results] Dùng file mới nhất: {yaml_path}")
     else:
         yaml_path = sys.argv[1]

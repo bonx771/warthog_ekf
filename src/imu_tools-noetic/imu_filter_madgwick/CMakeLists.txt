@@ -79,13 +79,6 @@ install(FILES imu_filter_nodelet.xml
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 
-catkin_install_python(PROGRAMS
-  scripts/imu_yaw_logger.py
-  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-)
-
-
-
 if(CATKIN_ENABLE_TESTING)
   catkin_add_gtest(${PROJECT_NAME}-madgwick_test
     test/stateless_orientation_test.cpp

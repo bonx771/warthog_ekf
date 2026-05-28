@@ -17,9 +17,7 @@
     <node pkg="outdoor_waypoint_nav" type="gps_covariance_relay.py" name="gps_covariance_relay" output="screen">
       <param name="input_topic" value="/gps/fix" />
       <param name="output_topic" value="/outdoor_waypoint_nav/gps/fix_with_covariance" />
-      <param name="xy_variance" value="1.0" />
-      <param name="z_variance" value="4.0" />
-      <param name="override_zero_only" value="true" />
+      <rosparam param="position_diag">[1.0, 1.0, 4.0]</rosparam>
     </node>
 
     <!-- Match the outdoor stack: navsat_transform works in the global map frame. -->

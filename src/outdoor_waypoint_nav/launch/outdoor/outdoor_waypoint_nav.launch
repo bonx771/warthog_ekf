@@ -4,40 +4,56 @@
 
     <arg name="launch_rviz" default="true" />
     <arg name="rviz_config" default="$(find outdoor_waypoint_nav)/rviz_config/real.rviz" />
+    <arg name="use_lidar" default="false" />
+    <arg name="use_gps" default="false" />
 
-    <include file="$(find gps_pkg)/launch/navsat_transform_gps.launch"></include>
+    <include if="$(arg use_gps)" file="$(find gps_pkg)/launch/navsat_transform_gps.launch"></include>
 
-    <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_imu" 
-            args="0 0 0 0 0 0 base_link imu_link" />
+    <!-- <include file="$(find imu_bias_compensator)/launch/imu_republisher.launch" /> -->
+
+    <!-- <include file="$(find imu_filter_madgwick)/launch/imu_filter_madgwick.launch" /> -->
     
-    <!-- Run warthog_bringup -->
-    <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/warthog_bringup.launch" /> -->
+    <include file="$(find imu_pkg)/launch/imu_ins.launch" />
 
-    <!-- launch lms1xx lidar -->
-    <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/laser.launch" /> -->
+    <!-- <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_imu" 
+            args="0 0 0 0 0 0 base_link imu_link" /> -->
 
-    <!-- launch um6 imu -->
-    <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/imu.launch" /> -->
+     <node pkg="tf2_ros"
+           type="static_transform_publisher"
+           name="base_link_to_lidar"
+           args="0.4 0 0.3 0 0 0 base_link rslidar" />
 
-    <!-- launch gps -->
+  
+    <include if="$(arg use_lidar)" file="$(find outdoor_waypoint_nav)/launch/include/laser.launch" />
+
+  
     <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/gps.launch" /> -->
 
-    <!-- Launch robot_localization and navsat -->
-    <include file="$(find outdoor_waypoint_nav)/launch/include/localization_run.launch"/>
 
-    <!-- Run gmapping to create map -->
+    <include file="$(find outdoor_waypoint_nav)/launch/include/localization_run.launch">
+        <arg name="use_gps" value="$(arg use_gps)" />
+    </include>
+
+
     <!-- <include file="$(find warthog_slam)/launch/gmapping.launch" /> -->
 
-    <!-- Launch hector_slam for laser odometry and mapping -->
+
     <!-- include file="$(find hector_mapping_nav)/launch/scanmatch_nav.launch" /-->
 
-    <!-- Run warthog_navigation to enable move_base -->
-    <include file="$(find warthog_slam)/launch/move_base_nav.launch" />
 
-    <!-- launch safety node to allow the user to disable velocity commands to the robot -->
-    <include file="$(find outdoor_waypoint_nav)/launch/include/safety_node.launch" />
+    <!-- <include file="$(find warthog_slam)/launch/move_base_nav.launch">
+      <arg name="use_lidar" value="$(arg use_lidar)" />
+    </include> -->
 
-    <!-- Run rviz using the outdoor-specific configuration -->
-    <node if="$(arg launch_rviz)" name="rviz" pkg="rviz" type="rviz" args="-d $(arg rviz_config)" />
+
+    <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/safety_node.launch" /> -->
+
+
+    <node if="$(arg launch_rviz)"
+          name="rviz"
+          pkg="rviz"
+          type="rviz"
+          args="-d $(arg rviz_config)" />
+
 
 </launch>

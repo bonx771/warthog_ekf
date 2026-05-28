@@ -1,21 +1,52 @@
 <?xml version="1.0"?>
 <launch>
+  <arg name="use_gps" default="false" />
 
-  <group ns="/outdoor_waypoint_nav"> 
-  <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_params.yaml" />
-  <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/navsat_params.yaml" />
-  
-  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true"/>
+  <group ns="/outdoor_waypoint_nav">
+    <rosparam if="$(arg use_gps)" command="load" file="$(find outdoor_waypoint_nav)/params/navsat_params.yaml" />
 
-  <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
-    <remap from="odometry/filtered" to="odometry/filtered_map"/>
-  </node>
+    <node pkg="robot_localization"
+          type="ekf_localization_node"
+          name="ekf_se_odom"
+          clear_params="true">
+      <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_se_odom.yaml" />
+    </node>
 
-  <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
-      <remap from="odometry/filtered" to="odometry/filtered_map"/>
-      <remap from="gps/fix" to="/gps/fix"/>
-      <remap from="imu/data" to="/imu/data"/>
-  </node>
+<!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
+      <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_se_map.yaml" />
+      <remap from="odometry/filtered" to="odometry/filtered_map" />
+    </node> -->
+
+
+    <!-- <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" output="screen">
+      <remap from="gps/fix" to="/gps/fix" />
+      <remap from="imu/data" to="/imu/data_covariance" />
+    </node> -->
+
+    <node pkg="outdoor_waypoint_nav"
+          type="encoder_odometry_node.py"
+          name="encoder_odometry_node"
+          output="screen">
+      <param name="wheel_odom_topic" value="/warthog_velocity_controller/odom" />
+      <param name="filtered_odom_topic" value="odometry/filtered" />
+      <param name="output_topic" value="/odometry/encoder" />
+      <param name="imu_topic" value="/imu/data_new" />
+      <param name="align_yaw_to_imu" value="true" />
+      <param name="imu_anchor_timeout_sec" value="5.0" />
+    </node>
+
+    <node pkg="outdoor_waypoint_nav"
+          type="path_node.py"
+          name="path_node"
+          output="screen">
+      <param name="encoder_odom_topic" value="/odometry/encoder" />
+      <param name="encoder_path_topic" value="/odometry/encoder_path" />
+      <param name="filtered_odom_topic" value="odometry/filtered" />
+      <param name="filtered_path_topic" value="odometry/filtered_path" />
+    </node>
+
+
+
   </group>
 
 </launch>

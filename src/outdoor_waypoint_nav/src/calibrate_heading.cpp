@@ -79,7 +79,13 @@ int main(int argc, char **argv)
     ROS_WARN("PLEASE ENSURE YOU HAVE MIN. %.1f m OF CLEAR SPACE IN FRONT OF YOUR ROBOT FOR CALIBRATION",(x_vel*x_vel_time));    
 
     // set publish rate and calculate no. of messages to count
-    int pubRate = 10;
+    int pubRate = 30;
+    ros::param::param<int>("/outdoor_waypoint_nav/calibrate_cmd_rate", pubRate, 30);
+    if(pubRate <= 0)
+    {
+        ROS_WARN("Invalid calibrate_cmd_rate=%d, falling back to 30 Hz.", pubRate);
+        pubRate = 30;
+    }
     int numVelMsgs = x_vel_time * pubRate;
     ros::Rate rate(pubRate);
 

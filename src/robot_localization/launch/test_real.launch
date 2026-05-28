@@ -11,7 +11,7 @@
         args="0 0 0 0 0 0 base_link imu_link" />
   
   <node pkg="tf2_ros" type="static_transform_publisher" name="base_link_to_gps" 
-        args="0 0 0 0 0 0 base_link gps_link" />
+        args="-0.5 0.3 0 0 0 0 base_link gps_link" />
 
   <!-- ===================== EKF LOCAL ===================== -->
   <node pkg="robot_localization"

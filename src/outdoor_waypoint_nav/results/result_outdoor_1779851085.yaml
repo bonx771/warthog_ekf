@@ -1,0 +1,18 @@
+angular_vel_rads: 0.25
+end_pos_ekf:
+  x: -0.1491384981485887
+  y: -0.36180851177109197
+grade: CHẤP NHẬN
+gt_start_pos: null
+heading_error_deg: -18.566
+linear_vel_ms: 0.5
+loop_closure_error_m: 0.391268
+loop_closure_error_pct: 3.2606
+mode: outdoor
+side_length_m: 3.0
+start_pos:
+  x: 0.0005778180661743061
+  y: -0.0003174674093537502
+timestamp: 1779851085
+total_path_m: 12.0
+verdict: Dùng được nhưng nên kết hợp GPS hiệu chỉnh

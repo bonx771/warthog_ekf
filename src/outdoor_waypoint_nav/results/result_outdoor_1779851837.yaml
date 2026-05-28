@@ -1,0 +1,18 @@
+angular_vel_rads: 0.25
+end_pos_ekf:
+  x: -0.4951332593599979
+  y: -0.2610177552093699
+grade: YẾU
+gt_start_pos: null
+heading_error_deg: -39.2418
+linear_vel_ms: 0.5
+loop_closure_error_m: 0.559702
+loop_closure_error_pct: 4.6642
+mode: outdoor
+side_length_m: 3.0
+start_pos:
+  x: -2.1715647550861085e-05
+  y: 1.3406407360701594e-06
+timestamp: 1779851837
+total_path_m: 12.0
+verdict: Cần hiệu chỉnh IMU/encoder trước khi dẫn đường

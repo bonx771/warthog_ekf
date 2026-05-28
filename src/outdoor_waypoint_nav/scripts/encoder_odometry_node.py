@@ -7,6 +7,7 @@ from collections import deque
 import rospy
 from geometry_msgs.msg import Quaternion
 from nav_msgs.msg import Odometry
+from sensor_msgs.msg import Imu
 from tf.transformations import euler_from_quaternion, quaternion_from_euler
 
 
@@ -48,6 +49,11 @@ class EncoderOdometryNode:
             "~filtered_odom_topic", "odometry/filtered"
         )
         self.output_topic = rospy.get_param("~output_topic", "/odometry/encoder")
+        self.imu_topic = rospy.get_param("~imu_topic", "/imu/data_new")
+        self.align_yaw_to_imu = bool(rospy.get_param("~align_yaw_to_imu", True))
+        self.imu_anchor_timeout_sec = float(
+            rospy.get_param("~imu_anchor_timeout_sec", 5.0)
+        )
         self.default_frame_id = rospy.get_param("~default_frame_id", "odom")
         self.default_child_frame_id = rospy.get_param(
             "~default_child_frame_id", "base_link"
@@ -91,18 +97,27 @@ class EncoderOdometryNode:
         self.wheel_anchor_yaw = _yaw_from_quaternion(
             self.wheel_anchor_msg.pose.pose.orientation
         )
+        self.imu_anchor_yaw = None
+
+        if self.align_yaw_to_imu:
+            self.imu_anchor_yaw = self._wait_for_imu_anchor_yaw()
+            if self.imu_anchor_yaw is not None:
+                self.filtered_anchor_yaw = self.imu_anchor_yaw
 
         anchor_dt = (
             self.wheel_anchor_msg.header.stamp - self.filtered_anchor_msg.header.stamp
         ).to_sec()
         rospy.loginfo(
-            "Anchored encoder odom: filtered=(%.3f, %.3f, %.3f deg), wheel=(%.3f, %.3f, %.3f deg), dt=%.3f s",
+            "Anchored encoder odom: filtered=(%.3f, %.3f, %.3f deg), wheel=(%.3f, %.3f, %.3f deg), imu=%s, dt=%.3f s",
             self.filtered_anchor_x,
             self.filtered_anchor_y,
             math.degrees(self.filtered_anchor_yaw),
             self.wheel_anchor_x,
             self.wheel_anchor_y,
             math.degrees(self.wheel_anchor_yaw),
+            "%.3f deg" % math.degrees(self.imu_anchor_yaw)
+            if self.imu_anchor_yaw is not None
+            else "not used",
             anchor_dt,
         )
         rospy.loginfo(
@@ -121,6 +136,26 @@ class EncoderOdometryNode:
         resolved_topic = rospy.resolve_name(topic_name)
         rospy.loginfo("Waiting for %s on %s", description, resolved_topic)
         return rospy.wait_for_message(topic_name, Odometry)
+
+    def _wait_for_imu_anchor_yaw(self):
+        resolved_topic = rospy.resolve_name(self.imu_topic)
+        rospy.loginfo("Waiting for initial IMU yaw on %s", resolved_topic)
+        try:
+            if self.imu_anchor_timeout_sec > 0.0:
+                msg = rospy.wait_for_message(
+                    self.imu_topic, Imu, timeout=self.imu_anchor_timeout_sec
+                )
+            else:
+                msg = rospy.wait_for_message(self.imu_topic, Imu)
+        except rospy.ROSException as exc:
+            rospy.logwarn(
+                "Could not get initial IMU yaw from %s: %s. Encoder yaw will use filtered yaw.",
+                resolved_topic,
+                exc,
+            )
+            return None
+
+        return _yaw_from_quaternion(msg.orientation)
 
     def _select_wheel_anchor(self, filtered_anchor_msg):
         if self.wheel_history:

@@ -69,7 +69,7 @@ def extract_result_timestamp(yaml_path):
     return int(os.path.getmtime(yaml_path))
 
 
-def ideal_square(start_x, start_y, start_yaw, side):
+def ideal_square(start_x, start_y, start_yaw, side, turn_direction=1):
     """Tạo tọa độ hình vuông lý tưởng từ điểm xuất phát."""
     pts = [(start_x, start_y)]
     yaw = start_yaw
@@ -77,10 +77,60 @@ def ideal_square(start_x, start_y, start_yaw, side):
         x = pts[-1][0] + side * math.cos(yaw)
         y = pts[-1][1] + side * math.sin(yaw)
         pts.append((x, y))
-        yaw += math.pi / 2   # quay trái 90°
+        yaw += turn_direction * math.pi / 2
     xs = [p[0] for p in pts]
     ys = [p[1] for p in pts]
     return xs, ys
+
+
+def normalize_angle(angle):
+    return math.atan2(math.sin(angle), math.cos(angle))
+
+
+def cumulative_distance(xs, ys):
+    dist = [0.0]
+    for i in range(1, len(xs)):
+        dist.append(dist[-1] + math.hypot(xs[i] - xs[i - 1], ys[i] - ys[i - 1]))
+    return np.array(dist)
+
+
+def index_at_distance(dist, target):
+    return int(np.argmin(np.abs(dist - target)))
+
+
+def estimate_heading_between_dist(xs, ys, dist, start_dist, end_dist):
+    if len(xs) < 2:
+        return None
+    i0 = index_at_distance(dist, start_dist)
+    i1 = index_at_distance(dist, end_dist)
+    if i0 == i1:
+        return None
+    dx = xs[i1] - xs[i0]
+    dy = ys[i1] - ys[i0]
+    if math.hypot(dx, dy) < 0.1:
+        return None
+    return math.atan2(dy, dx)
+
+
+def estimate_square_heading(xs, ys, side):
+    """Ước lượng heading cạnh đầu và chiều quay từ chính EKF path."""
+    dist = cumulative_distance(xs, ys)
+    if len(dist) < 2:
+        return 0.0, 1
+
+    edge_sample = min(2.0, max(0.5, side * 0.75))
+    h1 = estimate_heading_between_dist(xs, ys, dist, 0.5, edge_sample)
+    if h1 is None:
+        h1 = 0.0
+
+    h2 = estimate_heading_between_dist(
+        xs, ys, dist, side + 0.5, side + edge_sample
+    )
+    if h2 is None:
+        return h1, 1
+
+    turn_direction = 1 if normalize_angle(h2 - h1) > 0.0 else -1
+    return h1, turn_direction
 
 
 def compute_error_over_time(ekf_xs, ekf_ys, ekf_ts,
@@ -155,16 +205,16 @@ def plot_all(yaml_path):
     ax1.set_aspect("equal")
     ax1.grid(True, alpha=0.4)
 
-    # Hình vuông lý tưởng
-    # Ước lượng start_yaw từ hướng đầu tiên của EKF path
-    start_yaw_est = 0.0
-    if has_ekf and len(ekf_xs) > 5:
-        dx0 = ekf_xs[5] - ekf_xs[0]
-        dy0 = ekf_ys[5] - ekf_ys[0]
-        if abs(dx0) + abs(dy0) > 0.01:
-            start_yaw_est = math.atan2(dy0, dx0)
-    # Hình vuông lý tưởng bắt đầu từ gốc (0, 0)
-    ix, iy = ideal_square(0.0, 0.0, start_yaw_est, side)
+    # Hình vuông lý tưởng bám theo hướng và chiều quay thật của EKF path.
+    # turn_direction trong YAML là dấu cmd_vel, có thể ngược với chiều trên plot.
+    if has_ekf:
+        start_yaw, turn_direction = estimate_square_heading(
+            ekf_xs - sx, ekf_ys - sy, side
+        )
+    else:
+        start_yaw = result.get("start_yaw_rad", 0.0)
+        turn_direction = result.get("turn_direction", 1)
+    ix, iy = ideal_square(0.0, 0.0, start_yaw, side, turn_direction)
     ax1.plot(ix, iy, "--", color=C_IDEAL, lw=1.5,
              label=f"Lý tưởng ({side}m×4)", alpha=0.7)
 
@@ -193,8 +243,8 @@ def plot_all(yaml_path):
                  label="EKF (odometry/filtered)")
 
     # Điểm xuất phát (0, 0) và kết thúc (đã normalize)
-    ex_n = ex - (ekf_xs[0] if has_ekf else sx)
-    ey_n = ey - (ekf_ys[0] if has_ekf else sy)
+    ex_n = ex - ekf_x0
+    ey_n = ey - ekf_y0
     ax1.scatter([0.0], [0.0], c=C_START, s=120, zorder=5, label="Xuất phát (0,0)")
     ax1.scatter([ex_n], [ey_n], c=C_END, s=120, zorder=5, marker="X", label="Kết thúc (EKF)")
     # Mũi tên loop closure error

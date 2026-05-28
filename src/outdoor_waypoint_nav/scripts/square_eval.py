@@ -58,7 +58,7 @@ class SquareEval:
         self.angular_vel      = rospy.get_param("~angular_vel",      0.3)
         self.turn_dir         = rospy.get_param("~turn_direction",   1)    # 1=trái, -1=phải
         self.pause_side       = rospy.get_param("~pause_after_side", 1.0)
-        self.pause_turn       = rospy.get_param("~pause_after_turn", 0.5)
+        self.pause_turn       = rospy.get_param("~pause_after_turn", 3.0)
         self.output_dir       = rospy.get_param("~output_dir",       "/tmp/ekf_eval")
         self.mode             = rospy.get_param("~mode",             "outdoor")
         self.gt_topic         = rospy.get_param("~gt_topic",         "/gazebo/model_states")
@@ -149,10 +149,9 @@ class SquareEval:
         """Góc đã quay kể từ đầu lượt quay (rad, luôn dương)."""
         if self.seg_start_yaw is None or self.ekf_yaw is None:
             return 0.0
-        # Dùng sai số góc ngắn nhất để nhiễu âm nhỏ không bị biến thành ~2π.
-        diff = _normalize_angle(self.ekf_yaw - self.seg_start_yaw)
-        diff *= self.turn_dir
-        return max(0.0, diff)
+        # Chỉ đo độ lớn góc quay; dấu cmd_vel và dấu yaw EKF có thể ngược nhau
+        # trên xe thật.
+        return abs(_normalize_angle(self.ekf_yaw - self.seg_start_yaw))
 
     def _stop(self):
         self.cmd_pub.publish(Twist())
@@ -323,7 +322,10 @@ class SquareEval:
             "total_path_m": total_path,
             "linear_vel_ms": self.linear_vel,
             "angular_vel_rads": self.angular_vel,
+            "turn_direction": self.turn_dir,
             "start_pos": {"x": self.start_pos[0], "y": self.start_pos[1]},
+            "start_yaw_rad": self.start_yaw,
+            "start_yaw_deg": round(math.degrees(self.start_yaw), 4),
             "end_pos_ekf": {"x": self.ekf_pos[0], "y": self.ekf_pos[1]},
             "gt_start_pos": {"x": self.gt_start_pos[0], "y": self.gt_start_pos[1]}
                              if self.gt_start_pos else None,

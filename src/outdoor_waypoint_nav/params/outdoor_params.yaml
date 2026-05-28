@@ -3,7 +3,7 @@
 
 turn_direction: 1
 pause_after_side: 2.0   # tăng hơn sim để EKF ổn định sau mỗi cạnh
-pause_after_turn: 1.5
+pause_after_turn: 3
 
 mode: "outdoor"
 gt_topic: ""

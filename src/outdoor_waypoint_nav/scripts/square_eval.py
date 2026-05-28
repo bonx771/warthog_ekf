@@ -218,7 +218,7 @@ class SquareEval:
 
         elif self.state == State.TURN:
             turned = self._yaw_turned()
-            target = math.pi / 2 - 0.04   # 90° - 2.3° dung sai
+            target = math.pi / 2 - 0.01   # 90° - 2.3° dung sai
             if turned < target:
                 self._publish_turn()
             else:

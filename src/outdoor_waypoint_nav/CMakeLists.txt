@@ -69,5 +69,6 @@ catkin_install_python(PROGRAMS
   scripts/path_node.py
   scripts/plot_results.py
   scripts/square_eval.py
+  scripts/tracking_control.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )

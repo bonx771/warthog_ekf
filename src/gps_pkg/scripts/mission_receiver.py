@@ -8,20 +8,13 @@ from datetime import datetime
 from std_msgs.msg import String
 
 # ===================== CONFIG =====================
-SAVE_DIR = os.path.expanduser("~/warthog_ekf/src/gps_pkg/missions_txt")
-# Nếu muốn lưu thẳng trong gps_pkg thì đổi thành:
-# SAVE_DIR = os.path.expanduser("~/warthog_ekf/src/gps_pkg")
+SAVE_DIR = os.path.expanduser("~/warthog_ekf/src/outdoor_waypoint_nav/waypoint_files/points_outdoor.txt")
 
 # ===================== SAVE TXT =====================
 def save_mission_to_txt(data):
     try:
-        os.makedirs(SAVE_DIR, exist_ok=True)
-
-        timestamp = data.get("timestamp", int(datetime.now().timestamp() * 1000))
-        dt_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-        filename = f"mission_{dt_str}_{timestamp}.txt"
-        filepath = os.path.join(SAVE_DIR, filename)
+        os.makedirs(os.path.dirname(SAVE_DIR), exist_ok=True)
+        filepath = SAVE_DIR
 
         with open(filepath, "w", encoding="utf-8") as f:
             for wp in data.get("waypoints", []):

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<launch>
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
+  <node pkg="gps_pkg"
+        type="mission_receiver.py"
+        name="mission_receiver"
+        output="screen" />
+</launch>

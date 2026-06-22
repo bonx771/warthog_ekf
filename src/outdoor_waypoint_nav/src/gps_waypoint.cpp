@@ -36,6 +36,7 @@ double waypoint_marker_scale = 0.7;
 double waypoint_marker_activation_radius = 0.675;
 double max_waypoint_goal_yaw_delta = 0.60;
 double waypoint_heading_preview_radius = 1.0;
+double waypoint_advance_radius = 0.0;
 bool oscillation_recovery_enabled = true;
 int oscillation_recovery_max_attempts = 2;
 double oscillation_recovery_reverse_distance = 1.0;
@@ -728,6 +729,7 @@ int main(int argc, char** argv)
     ros::param::param<double>("/outdoor_waypoint_nav/waypoint_marker_activation_radius", waypoint_marker_activation_radius, 0.675);
     ros::param::param<double>("/outdoor_waypoint_nav/max_waypoint_goal_yaw_delta", max_waypoint_goal_yaw_delta, 0.60);
     ros::param::param<double>("/outdoor_waypoint_nav/waypoint_heading_preview_radius", waypoint_heading_preview_radius, 1.0);
+    ros::param::param<double>("/outdoor_waypoint_nav/waypoint_advance_radius", waypoint_advance_radius, 0.0);
     ros::param::param<bool>("/outdoor_waypoint_nav/oscillation_recovery_enabled", oscillation_recovery_enabled, true);
     ros::param::param<int>("/outdoor_waypoint_nav/oscillation_recovery_max_attempts", oscillation_recovery_max_attempts, 2);
     ros::param::param<double>("/outdoor_waypoint_nav/oscillation_recovery_reverse_distance", oscillation_recovery_reverse_distance, 1.0);
@@ -820,6 +822,7 @@ int main(int argc, char** argv)
         int recovery_attempt_count = 0;
         while(ros::ok() && !waypoint_reached)
         {
+            bool waypoint_reached_by_radius = false;
             double current_robot_yaw = 0.0;
             const bool have_current_yaw = tryGetRobotYawInFrame(tf_listener, goal_frame, current_robot_yaw);
 
@@ -893,6 +896,25 @@ int main(int argc, char** argv)
                             distance_to_waypoint,
                             waypoint_marker_activation_radius);
                     }
+
+                    if(!final_point &&
+                       waypoint_advance_radius > 0.0 &&
+                       distance_to_waypoint <= waypoint_advance_radius)
+                    {
+                        waypoint_reached_by_radius = true;
+                        ROS_INFO(
+                            "Waypoint %d/%d entered advance radius (%.3f m <= %.3f m). "
+                            "Sending the next waypoint without waiting for SUCCEEDED.",
+                            currentWaypointIndex,
+                            totalWaypoints,
+                            distance_to_waypoint,
+                            waypoint_advance_radius);
+                    }
+                }
+
+                if(waypoint_reached_by_radius)
+                {
+                    break;
                 }
 
                 if(consumeSafetyReplanRequest())
@@ -942,6 +964,17 @@ int main(int argc, char** argv)
                 {
                     break;
                 }
+            }
+
+            if(waypoint_reached_by_radius)
+            {
+                reachedWaypoints++;
+                if(!marker_turned_green)
+                {
+                    publishReachedWaypointMarker(pubWaypointMarkers, map_point, currentWaypointIndex);
+                }
+                waypoint_reached = true;
+                break;
             }
 
             if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)

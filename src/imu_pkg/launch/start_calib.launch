@@ -6,7 +6,7 @@
   <arg name="countdown_sec" default="480.0" />
   <arg name="finish_wait_timeout_sec" default="60.0" />
   <arg name="response_required" default="false" />
-  <arg name="auto_send" default="false" />
+  <arg name="auto_send" default="true" />
   <arg name="shutdown_on_finish" default="true" />
   <arg name="countdown_log_period_sec" default="10.0" />
   <arg name="log_all_frames" default="false" />

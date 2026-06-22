@@ -78,7 +78,7 @@
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
 
     <remap from="odom" to="/outdoor_waypoint_nav/odometry/filtered_map" />
-    <remap from="cmd_vel" to="/cmd_vel_intermediate" />
+    <remap from="cmd_vel" to="/cmd_vel" />
     <remap if="$(arg use_lidar)" from="scan" to="/front/scan" />
   </node>
 

@@ -89,7 +89,7 @@ int main(int argc, char** argv)
 		MoveBaseClient ac2("/controller_2/move_base", true);
 
 	// Initiate publisher to remap topic send end of node message
-		ros::Publisher pubVel = n.advertise<geometry_msgs::Twist>("/cmd_vel_intermediate",1000);
+		ros::Publisher pubVel = n.advertise<geometry_msgs::Twist>("/cmd_vel",1000);
     
 	// Initiate subscribers
 		ros::Subscriber sub_cmd_vel1 = n.subscribe("/cmd_vel1", 1000, cmd_vel1_CB);

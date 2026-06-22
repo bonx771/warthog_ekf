@@ -28,12 +28,14 @@ include_directories(
 
 catkin_install_python(PROGRAMS
   scripts/imu_node.py
+  scripts/send_data.py
   scripts/start_calib.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
 install(FILES
   launch/imu_ins.launch
+  launch/send_data.launch
   launch/start_calib.launch
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
 )

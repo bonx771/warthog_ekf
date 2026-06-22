@@ -9,8 +9,8 @@
     <rosparam file="$(find warthog_slam)/params/base_local_planner_params.yaml" command="load" />
     <rosparam file="$(find warthog_slam)/params/move_base_params.yaml" command="load" />
 
-    <param name="controller_frequency" value="15.0" />
-    <param name="planner_frequency" value="8.0" />
+    <param name="controller_frequency" value="10.0" />
+    <param name="planner_frequency" value="5.0" />
     <param name="controller_patience" value="6.0" />
     <param name="planner_patience" value="3.0" />
     <param name="oscillation_timeout" value="5.0" />
@@ -29,28 +29,29 @@
     <param name="aggressive_reset/reset_distance" value="3.0" />
 
     <!-- Make waypoint-to-waypoint transitions less stop-and-rotate heavy in simulation. -->
-    <param name="TrajectoryPlannerROS/yaw_goal_tolerance" value="0.8" />
-    <param name="TrajectoryPlannerROS/latch_xy_goal_tolerance" value="false" />
-    <param name="TrajectoryPlannerROS/min_vel_x" value="0.05" />
-    <param name="TrajectoryPlannerROS/max_vel_theta" value="1.0" />
-    <param name="TrajectoryPlannerROS/min_vel_theta" value="-1.0" />
-    <param name="TrajectoryPlannerROS/min_in_place_vel_theta" value="0.18" />
-    <param name="TrajectoryPlannerROS/acc_lim_theta" value="6.0" />
-    <param name="TrajectoryPlannerROS/sim_time" value="1.5" />
-    <param name="TrajectoryPlannerROS/vx_samples" value="8" />
-    <param name="TrajectoryPlannerROS/vtheta_samples" value="24" />
-    <param name="TrajectoryPlannerROS/controller_frequency" value="15.0" />
-    <param name="TrajectoryPlannerROS/pdist_scale" value="2.0" />
-    <param name="TrajectoryPlannerROS/gdist_scale" value="0.35" />
-    <param name="TrajectoryPlannerROS/occdist_scale" value="2.0" />
-    <param name="TrajectoryPlannerROS/heading_scoring" value="true" />
-    <param name="TrajectoryPlannerROS/heading_lookahead" value="0.5" />
+    <param name="TrajectoryPlannerROS/yaw_goal_tolerance" value="1.5" />
+    <param name="TrajectoryPlannerROS/latch_xy_goal_tolerance" value="true" />
+    <param name="TrajectoryPlannerROS/max_vel_x" value="0.85" />
+    <param name="TrajectoryPlannerROS/min_vel_x" value="0.18" />
+    <param name="TrajectoryPlannerROS/max_vel_theta" value="0.65" />
+    <param name="TrajectoryPlannerROS/min_vel_theta" value="-0.65" />
+    <param name="TrajectoryPlannerROS/min_in_place_vel_theta" value="0.15" />
+    <param name="TrajectoryPlannerROS/acc_lim_theta" value="1.6" />
+    <param name="TrajectoryPlannerROS/sim_time" value="3.0" />
+    <param name="TrajectoryPlannerROS/vx_samples" value="10" />
+    <param name="TrajectoryPlannerROS/vtheta_samples" value="30" />
+    <param name="TrajectoryPlannerROS/controller_frequency" value="10.0" />
+    <param name="TrajectoryPlannerROS/pdist_scale" value="0.9" />
+    <param name="TrajectoryPlannerROS/gdist_scale" value="1.2" />
+    <param name="TrajectoryPlannerROS/occdist_scale" value="0.45" />
+    <param name="TrajectoryPlannerROS/heading_scoring" value="false" />
+    <param name="TrajectoryPlannerROS/heading_lookahead" value="1.2" />
 
     <rosparam param="global_costmap">
       global_frame: map
       robot_base_frame: base_link
-      update_frequency: 15.0
-      publish_frequency: 8.0
+      update_frequency: 5.0
+      publish_frequency: 3.0
       width: 100.0
       height: 100.0
       resolution: 0.1
@@ -63,17 +64,17 @@
         - {name: obstacles_layer, type: "costmap_2d::ObstacleLayer"}
         - {name: inflater_layer, type: "costmap_2d::InflationLayer"}
       inflater_layer:
-        inflation_radius: 1.5
-        cost_scaling_factor: 1.2
+        inflation_radius: 2.0
+        cost_scaling_factor: 0.8
     </rosparam>
 
     <rosparam param="local_costmap">
       global_frame: odom
       robot_base_frame: base_link
-      update_frequency: 15.0
-      publish_frequency: 8.0
-      width: 15.0
-      height: 15.0
+      update_frequency: 10.0
+      publish_frequency: 5.0
+      width: 30.0
+      height: 30.0
       resolution: 0.1
       static_map: false
       rolling_window: true
@@ -83,8 +84,8 @@
         - {name: obstacles_layer, type: "costmap_2d::ObstacleLayer"}
         - {name: inflater_layer, type: "costmap_2d::InflationLayer"}
       inflater_layer:
-        inflation_radius: 1.5
-        cost_scaling_factor: 1.2
+        inflation_radius: 2.0
+        cost_scaling_factor: 0.8
     </rosparam>
 
     <param name="base_global_planner" type="string" value="navfn/NavfnROS" />

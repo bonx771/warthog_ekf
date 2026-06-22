@@ -11,6 +11,7 @@
 #include <geometry_msgs/Twist.h>
 #include <sensor_msgs/LaserScan.h>
 #include <std_msgs/Bool.h>
+#include <std_msgs/Float64.h>
 #include <visualization_msgs/Marker.h>
 #include <tf/transform_listener.h>
 #include <math.h>
@@ -44,6 +45,17 @@ double oscillation_recovery_linear_speed = 0.30;
 double oscillation_recovery_angular_speed = 0.45;
 sensor_msgs::LaserScan latest_recovery_scan;
 bool have_recovery_scan = false;
+bool safety_replan_enabled = true;
+bool safety_replan_requested = false;
+std::string safety_replan_topic = "/outdoor_waypoint_nav/replan_requested";
+double safety_replan_cooldown = 0.0;
+ros::Time last_safety_replan_time(0);
+bool auto_replan_current_goal_enabled = true;
+double auto_replan_current_goal_interval = 1.5;
+ros::Time last_auto_replan_time(0);
+std::string preferred_avoidance_turn_topic = "/outdoor_waypoint_nav/preferred_avoidance_turn_direction";
+double preferred_avoidance_turn_deadband_deg = 8.0;
+double preferred_avoidance_turn_sign = 1.0;
 
 
 int countWaypointsInFile(std::string path_local)
@@ -162,6 +174,58 @@ void scanCB(const sensor_msgs::LaserScan::ConstPtr& scan_msg)
 {
     latest_recovery_scan = *scan_msg;
     have_recovery_scan = true;
+}
+
+void safetyReplanCB(const std_msgs::Bool::ConstPtr& request_msg)
+{
+    if(request_msg->data)
+    {
+        safety_replan_requested = true;
+    }
+}
+
+bool consumeSafetyReplanRequest()
+{
+    if(!safety_replan_enabled || !safety_replan_requested)
+    {
+        return false;
+    }
+
+    const ros::Time now = ros::Time::now();
+    if(safety_replan_cooldown > 0.0 &&
+       last_safety_replan_time.toSec() > 0.0 &&
+       (now - last_safety_replan_time).toSec() < safety_replan_cooldown)
+    {
+        safety_replan_requested = false;
+        return false;
+    }
+
+    safety_replan_requested = false;
+    last_safety_replan_time = now;
+    return true;
+}
+
+bool shouldAutoReplanCurrentGoal()
+{
+    if(!auto_replan_current_goal_enabled || auto_replan_current_goal_interval <= 0.0)
+    {
+        return false;
+    }
+
+    const ros::Time now = ros::Time::now();
+    if(last_auto_replan_time.toSec() <= 0.0)
+    {
+        last_auto_replan_time = now;
+        return false;
+    }
+
+    if((now - last_auto_replan_time).toSec() < auto_replan_current_goal_interval)
+    {
+        return false;
+    }
+
+    last_auto_replan_time = now;
+    return true;
 }
 
 bool chooseRecoveryTurnDirection(double& turn_direction)
@@ -414,6 +478,49 @@ bool tryGetRobotPoseInFrame(
     }
 }
 
+void publishPreferredAvoidanceTurn(
+    ros::Publisher& preferred_turn_pub,
+    tf::TransformListener& listener,
+    const geometry_msgs::PointStamped& current_waypoint,
+    const geometry_msgs::PointStamped& next_waypoint,
+    bool final_point,
+    bool)
+{
+    RobotPose2D robot_pose;
+    std_msgs::Float64 preferred_turn_msg;
+    preferred_turn_msg.data = 0.0;
+
+    if(!tryGetRobotPoseInFrame(listener, goal_frame, robot_pose))
+    {
+        preferred_turn_pub.publish(preferred_turn_msg);
+        return;
+    }
+
+    const bool should_lookahead = !final_point;
+
+    const geometry_msgs::PointStamped& target_waypoint =
+        should_lookahead ? next_waypoint : current_waypoint;
+    const double target_dx = target_waypoint.point.x - robot_pose.x;
+    const double target_dy = target_waypoint.point.y - robot_pose.y;
+    if(std::sqrt((target_dx * target_dx) + (target_dy * target_dy)) < 1e-3)
+    {
+        preferred_turn_pub.publish(preferred_turn_msg);
+        return;
+    }
+
+    const double desired_yaw = std::atan2(target_dy, target_dx);
+    const double yaw_error = normalizeAngle(desired_yaw - robot_pose.yaw);
+    const double deadband_rad = preferred_avoidance_turn_deadband_deg * M_PI / 180.0;
+    if(std::fabs(yaw_error) > deadband_rad)
+    {
+        preferred_turn_msg.data =
+            (yaw_error > 0.0 ? 1.0 : -1.0) *
+            (preferred_avoidance_turn_sign >= 0.0 ? 1.0 : -1.0);
+    }
+
+    preferred_turn_pub.publish(preferred_turn_msg);
+}
+
 void publishStop(ros::Publisher& cmd_pub)
 {
     geometry_msgs::Twist stop_cmd;
@@ -628,12 +735,23 @@ int main(int argc, char** argv)
     ros::param::param<double>("/outdoor_waypoint_nav/oscillation_recovery_forward_distance", oscillation_recovery_forward_distance, 1.5);
     ros::param::param<double>("/outdoor_waypoint_nav/oscillation_recovery_linear_speed", oscillation_recovery_linear_speed, 0.30);
     ros::param::param<double>("/outdoor_waypoint_nav/oscillation_recovery_angular_speed", oscillation_recovery_angular_speed, 0.45);
+    ros::param::param<bool>("/outdoor_waypoint_nav/safety_replan_enabled", safety_replan_enabled, true);
+    ros::param::param<std::string>("/outdoor_waypoint_nav/safety_replan_topic", safety_replan_topic, "/outdoor_waypoint_nav/replan_requested");
+    ros::param::param<double>("/outdoor_waypoint_nav/safety_replan_cooldown", safety_replan_cooldown, 0.0);
+    ros::param::param<bool>("/outdoor_waypoint_nav/auto_replan_current_goal_enabled", auto_replan_current_goal_enabled, true);
+    ros::param::param<double>("/outdoor_waypoint_nav/auto_replan_current_goal_interval", auto_replan_current_goal_interval, 1.5);
+    ros::param::param<std::string>("/outdoor_waypoint_nav/preferred_avoidance_turn_topic", preferred_avoidance_turn_topic, "/outdoor_waypoint_nav/preferred_avoidance_turn_direction");
+    ros::param::param<double>("/outdoor_waypoint_nav/preferred_avoidance_turn_deadband_deg", preferred_avoidance_turn_deadband_deg, 8.0);
+    ros::param::param<double>("/outdoor_waypoint_nav/preferred_avoidance_turn_sign", preferred_avoidance_turn_sign, 1.0);
     if(waypoint_marker_topic != "/outdoor_waypoint_nav/collected_waypoints")
     {
         pubWaypointMarkers.shutdown();
         pubWaypointMarkers = n.advertise<visualization_msgs::Marker>(waypoint_marker_topic, 100, true);
     }
+    ros::Publisher pubPreferredAvoidanceTurn =
+        n.advertise<std_msgs::Float64>(preferred_avoidance_turn_topic, 10);
     ros::Subscriber subScan = n.subscribe("/front/scan", 20, scanCB);
+    ros::Subscriber subSafetyReplan = n.subscribe(safety_replan_topic, 10, safetyReplanCB);
     numWaypoints = countWaypointsInFile(path_local);
     totalWaypoints = static_cast<int>(numWaypoints);
     ROS_INFO("Starting waypoint following for %d waypoint(s).", totalWaypoints);
@@ -718,10 +836,20 @@ int main(int argc, char** argv)
 
             ROS_INFO("Sending waypoint %d/%d", currentWaypointIndex, totalWaypoints);
             ac.sendGoal(goal);
+            last_auto_replan_time = ros::Time::now();
 
             bool preview_goal_sent = final_point;
             while(ros::ok())
             {
+                ros::spinOnce();
+                publishPreferredAvoidanceTurn(
+                    pubPreferredAvoidanceTurn,
+                    tf_listener,
+                    map_point,
+                    map_next,
+                    final_point,
+                    preview_goal_sent);
+
                 geometry_msgs::PointStamped robot_point;
                 if(tryGetRobotPointInFrame(tf_listener, waypoint_marker_frame, robot_point))
                 {
@@ -744,6 +872,7 @@ int main(int argc, char** argv)
                             have_preview_robot_yaw,
                             preview_robot_yaw);
                         ac.sendGoal(preview_goal);
+                        last_auto_replan_time = ros::Time::now();
                         preview_goal_sent = true;
                         ROS_INFO(
                             "Waypoint %d/%d entered heading preview radius (%.3f m <= %.3f m).",
@@ -764,6 +893,49 @@ int main(int argc, char** argv)
                             distance_to_waypoint,
                             waypoint_marker_activation_radius);
                     }
+                }
+
+                if(consumeSafetyReplanRequest())
+                {
+                    double replan_robot_yaw = 0.0;
+                    const bool have_replan_robot_yaw = tryGetRobotYawInFrame(tf_listener, goal_frame, replan_robot_yaw);
+                    move_base_msgs::MoveBaseGoal replanned_goal = buildGoal(
+                        have_prev_point,
+                        map_prev,
+                        map_point,
+                        !final_point,
+                        map_next,
+                        final_point,
+                        preview_goal_sent,
+                        have_replan_robot_yaw,
+                        replan_robot_yaw);
+                    ac.sendGoal(replanned_goal);
+                    last_auto_replan_time = ros::Time::now();
+                    ROS_WARN(
+                        "Safety avoidance requested replan. Resent waypoint %d/%d so move_base replans from the current robot pose.",
+                        currentWaypointIndex,
+                        totalWaypoints);
+                }
+                else if(shouldAutoReplanCurrentGoal())
+                {
+                    double replan_robot_yaw = 0.0;
+                    const bool have_replan_robot_yaw = tryGetRobotYawInFrame(tf_listener, goal_frame, replan_robot_yaw);
+                    move_base_msgs::MoveBaseGoal refreshed_goal = buildGoal(
+                        have_prev_point,
+                        map_prev,
+                        map_point,
+                        !final_point,
+                        map_next,
+                        final_point,
+                        preview_goal_sent,
+                        have_replan_robot_yaw,
+                        replan_robot_yaw);
+                    ac.sendGoal(refreshed_goal);
+                    ROS_INFO_THROTTLE(
+                        5.0,
+                        "Refreshing waypoint %d/%d goal so move_base redraws the plan from the current robot pose.",
+                        currentWaypointIndex,
+                        totalWaypoints);
                 }
 
                 if(ac.waitForResult(ros::Duration(0.1)))
@@ -864,7 +1036,64 @@ int main(int argc, char** argv)
                 current_robot_yaw);
             ROS_INFO("Sending return goal to waypoint 1/%d", totalWaypoints);
             ac.sendGoal(return_goal);
-            ac.waitForResult();
+            last_auto_replan_time = ros::Time::now();
+            while(ros::ok())
+            {
+                ros::spinOnce();
+                publishPreferredAvoidanceTurn(
+                    pubPreferredAvoidanceTurn,
+                    tf_listener,
+                    map_point,
+                    map_next,
+                    false,
+                    false);
+
+                if(consumeSafetyReplanRequest())
+                {
+                    double replan_robot_yaw = 0.0;
+                    const bool have_replan_robot_yaw = tryGetRobotYawInFrame(tf_listener, goal_frame, replan_robot_yaw);
+                    move_base_msgs::MoveBaseGoal replanned_return_goal = buildGoal(
+                        true,
+                        UTMtoMapPoint(latLongtoUTM(waypointVect.back().first, waypointVect.back().second)),
+                        map_point,
+                        true,
+                        map_next,
+                        false,
+                        false,
+                        have_replan_robot_yaw,
+                        replan_robot_yaw);
+                    ac.sendGoal(replanned_return_goal);
+                    last_auto_replan_time = ros::Time::now();
+                    ROS_WARN(
+                        "Safety avoidance requested replan. Resent return goal to waypoint 1/%d from the current robot pose.",
+                        totalWaypoints);
+                }
+                else if(shouldAutoReplanCurrentGoal())
+                {
+                    double replan_robot_yaw = 0.0;
+                    const bool have_replan_robot_yaw = tryGetRobotYawInFrame(tf_listener, goal_frame, replan_robot_yaw);
+                    move_base_msgs::MoveBaseGoal refreshed_return_goal = buildGoal(
+                        true,
+                        UTMtoMapPoint(latLongtoUTM(waypointVect.back().first, waypointVect.back().second)),
+                        map_point,
+                        true,
+                        map_next,
+                        false,
+                        false,
+                        have_replan_robot_yaw,
+                        replan_robot_yaw);
+                    ac.sendGoal(refreshed_return_goal);
+                    ROS_INFO_THROTTLE(
+                        5.0,
+                        "Refreshing return goal to waypoint 1/%d so move_base redraws the plan from the current robot pose.",
+                        totalWaypoints);
+                }
+
+                if(ac.waitForResult(ros::Duration(0.1)))
+                {
+                    break;
+                }
+            }
 
             if(ac.getState() == actionlib::SimpleClientGoalState::SUCCEEDED)
             {

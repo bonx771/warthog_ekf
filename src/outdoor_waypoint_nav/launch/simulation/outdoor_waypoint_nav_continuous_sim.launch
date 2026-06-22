@@ -27,7 +27,7 @@
   <!-- Run warthog_navigation to start move_base -->
     <include file="$(find warthog_slam)/launch/move_base_nav_continuous.launch" />
 
-  <!-- launch safety node to allow the user to disable velocity commands to the robot -->
-  <include file="$(find outdoor_waypoint_nav)/launch/include/safety_node.launch" />
+  <!-- safety_node bypassed: move_base controllers now publish directly to /cmd_vel. -->
+  <!-- <include file="$(find outdoor_waypoint_nav)/launch/include/safety_node.launch" /> -->
 
 </launch>

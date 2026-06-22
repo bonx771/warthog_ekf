@@ -16,7 +16,7 @@
   <!-- Run move_base with a global map frame and local odom frame for GPS waypoint following in simulation -->
     <include file="$(find warthog_slam)/launch/move_base_gps_sim.launch" />
 
-  <!-- launch safety node to allow the user to disable velocity commands to the robot -->
+  <!-- Filter move_base commands through safety_node before they reach /cmd_vel. -->
   <include file="$(find outdoor_waypoint_nav)/launch/include/safety_node.launch" />
 
 </launch>

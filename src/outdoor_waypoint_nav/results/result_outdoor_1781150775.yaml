@@ -1,0 +1,36 @@
+angular_vel_rads: 0.25
+controller: tracking_control
+end_pos_ekf:
+  x: 0.015753708945416077
+  y: 0.08573399011606027
+grade: XUẤT SẮC
+gt_start_pos: null
+heading_error_deg: -2.3131
+linear_vel_ms: 0.5
+loop_closure_error_m: 0.087111
+loop_closure_error_pct: 0.7259
+max_cross_track_error_m: 0.04067
+max_heading_correction_deg: 22.8633
+mean_cross_track_error_m: 0.015178
+mode: outdoor
+side_end_cross_track_errors_m:
+- 0.005262
+- 0.009448
+- 0.012325
+- 0.012072
+side_length_m: 3.0
+start_pos:
+  x: 0.0001641077097388577
+  y: 2.9290552039961682e-05
+start_yaw_deg: 31.4088
+start_yaw_rad: 0.5481877306525753
+timestamp: 1781150775
+total_path_m: 12.0
+turn_direction: 1
+turn_end_errors_deg:
+- 0.8381
+- 0.793
+- 0.9322
+- 0.8164
+verdict: Đủ điều kiện dẫn đường chính xác cao
+yaw_response_sign: 1.0

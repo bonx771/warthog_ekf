@@ -8,6 +8,7 @@ set(CMAKE_C_STANDARD 11)
 
 find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
+  nav_msgs
   roscpp
   rospy
   sensor_msgs
@@ -62,6 +63,8 @@ catkin_install_python(PROGRAMS
   scripts/gps_covariance_relay.py
   scripts/imu_covariance_log.py
   scripts/imu_covariance_relay.py
+  scripts/inovation.py
+  scripts/inovation_sim.py
   scripts/joy_launch_control.py
   scripts/joy_launch_control_continuous.py
   scripts/joy_launch_control_mapping.py

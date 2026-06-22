@@ -13,14 +13,7 @@
     <origin xyz="0.4 0.0 0.4" rpy="0 0 0" />
   </xacro:VLP-16> -->
 
-  <!-- LMS1xx Laser Scan -->
-  <xacro:include filename="$(find warthog_simulation)/urdf/sick_lms1xx_mount.urdf.xacro" />
-  <xacro:sick_lms1xx_mount prefix="front"
-        parent_link="top_chassis_link"
-        topic="front/scan">
-    <origin xyz="0.4 0.0 0.4"
-            rpy="0 0 0" />
-  </xacro:sick_lms1xx_mount>
+  <!-- /front/scan is provided by warthog_description/urdf/warthog.gazebo. -->
 
   <!-- Realsense D435 -->
   <xacro:include filename="$(find warthog_simulation)/urdf/realsense.urdf.xacro"/>

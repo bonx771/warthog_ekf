@@ -11,7 +11,7 @@
   <param name="/outdoor_waypoint_nav/waypoint_marker_activation_radius" value="0.675" type="double" />
   <param name="/outdoor_waypoint_nav/max_waypoint_goal_yaw_delta" value="0.35" type="double" />
   <param name="/outdoor_waypoint_nav/waypoint_heading_preview_radius" value="0.7" type="double" />
-  <param name="/outdoor_waypoint_nav/waypoint_advance_radius" value="0.5" type="double" />
+  <param name="/outdoor_waypoint_nav/waypoint_advance_radius" value="1.0" type="double" />
   <param name="/outdoor_waypoint_nav/oscillation_recovery_enabled" value="false" type="bool" />
   <param name="/outdoor_waypoint_nav/oscillation_recovery_max_attempts" value="2" type="int" />
   <param name="/outdoor_waypoint_nav/oscillation_recovery_reverse_distance" value="0.0" type="double" />

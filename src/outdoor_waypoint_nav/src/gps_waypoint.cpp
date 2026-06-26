@@ -57,6 +57,16 @@ ros::Time last_auto_replan_time(0);
 std::string preferred_avoidance_turn_topic = "/outdoor_waypoint_nav/preferred_avoidance_turn_direction";
 double preferred_avoidance_turn_deadband_deg = 8.0;
 double preferred_avoidance_turn_sign = 1.0;
+bool return_heading_pid_enabled = true;
+double return_heading_pid_kp = 1.4;
+double return_heading_pid_ki = 0.02;
+double return_heading_pid_kd = 0.08;
+double return_heading_pid_tolerance_deg = 5.0;
+double return_heading_pid_max_angular_speed = 0.8;
+double return_heading_pid_min_angular_speed = 0.12;
+double return_heading_pid_integral_limit = 1.0;
+double return_heading_pid_settle_time = 0.4;
+double return_heading_pid_timeout = 12.0;
 
 
 int countWaypointsInFile(std::string path_local)
@@ -533,6 +543,143 @@ void publishStop(ros::Publisher& cmd_pub)
     }
 }
 
+bool waitForRobotYawInFrame(
+    tf::TransformListener& listener,
+    const std::string& target_frame,
+    double timeout,
+    double& yaw)
+{
+    ros::Rate rate(20.0);
+    const ros::Time start_time = ros::Time::now();
+
+    while(ros::ok() && ((ros::Time::now() - start_time).toSec() < timeout))
+    {
+        ros::spinOnce();
+        if(tryGetRobotYawInFrame(listener, target_frame, yaw))
+        {
+            return true;
+        }
+        rate.sleep();
+    }
+
+    return tryGetRobotYawInFrame(listener, target_frame, yaw);
+}
+
+bool alignYawToTargetPID(
+    tf::TransformListener& listener,
+    ros::Publisher& cmd_pub,
+    const std::string& target_frame,
+    double target_yaw)
+{
+    const double tolerance_rad = return_heading_pid_tolerance_deg * M_PI / 180.0;
+    const double max_angular_speed = std::max(0.01, std::fabs(return_heading_pid_max_angular_speed));
+    const double min_angular_speed =
+        std::min(max_angular_speed, std::max(0.0, std::fabs(return_heading_pid_min_angular_speed)));
+    const double integral_limit = std::max(0.0, return_heading_pid_integral_limit);
+    const double settle_time = std::max(0.0, return_heading_pid_settle_time);
+    const double timeout = std::max(1.0, return_heading_pid_timeout);
+
+    double previous_error = 0.0;
+    double error_integral = 0.0;
+    bool have_previous_error = false;
+    ros::Time previous_time = ros::Time::now();
+    ros::Time settled_since(0);
+    const ros::Time start_time = ros::Time::now();
+
+    ROS_INFO(
+        "Return heading PID started. Target yaw: %.1f deg, tolerance: %.1f deg.",
+        target_yaw * 180.0 / M_PI,
+        return_heading_pid_tolerance_deg);
+
+    ros::Rate rate(30.0);
+    while(ros::ok() && ((ros::Time::now() - start_time).toSec() < timeout))
+    {
+        ros::spinOnce();
+
+        RobotPose2D current_pose;
+        if(!tryGetRobotPoseInFrame(listener, target_frame, current_pose))
+        {
+            publishStop(cmd_pub);
+            rate.sleep();
+            continue;
+        }
+
+        const ros::Time now = ros::Time::now();
+        const double dt = std::max(1e-3, (now - previous_time).toSec());
+        const double error = normalizeAngle(target_yaw - current_pose.yaw);
+        const double abs_error = std::fabs(error);
+
+        if(abs_error <= tolerance_rad)
+        {
+            publishStop(cmd_pub);
+            if(settled_since.toSec() <= 0.0)
+            {
+                settled_since = now;
+            }
+
+            if((now - settled_since).toSec() >= settle_time)
+            {
+                ROS_INFO(
+                    "Return heading PID finished. Final yaw error: %.2f deg.",
+                    error * 180.0 / M_PI);
+                return true;
+            }
+
+            previous_time = now;
+            previous_error = error;
+            have_previous_error = true;
+            rate.sleep();
+            continue;
+        }
+
+        settled_since = ros::Time(0);
+
+        error_integral += error * dt;
+        if(integral_limit > 0.0)
+        {
+            error_integral = std::max(-integral_limit, std::min(integral_limit, error_integral));
+        }
+
+        const double error_derivative = have_previous_error ? (normalizeAngle(error - previous_error) / dt) : 0.0;
+        double angular_cmd =
+            (return_heading_pid_kp * error) +
+            (return_heading_pid_ki * error_integral) +
+            (return_heading_pid_kd * error_derivative);
+
+        angular_cmd = std::max(-max_angular_speed, std::min(max_angular_speed, angular_cmd));
+        if(std::fabs(angular_cmd) < min_angular_speed)
+        {
+            angular_cmd = (error >= 0.0 ? 1.0 : -1.0) * min_angular_speed;
+        }
+
+        geometry_msgs::Twist cmd;
+        cmd.angular.z = angular_cmd;
+        cmd_pub.publish(cmd);
+
+        previous_time = now;
+        previous_error = error;
+        have_previous_error = true;
+        rate.sleep();
+    }
+
+    publishStop(cmd_pub);
+
+    RobotPose2D final_pose;
+    if(tryGetRobotPoseInFrame(listener, target_frame, final_pose))
+    {
+        ROS_WARN(
+            "Return heading PID timed out after %.1fs. Final yaw error: %.2f deg.",
+            timeout,
+            normalizeAngle(target_yaw - final_pose.yaw) * 180.0 / M_PI);
+    }
+    else
+    {
+        ROS_WARN("Return heading PID timed out after %.1fs and final yaw could not be read.", timeout);
+    }
+
+    return false;
+}
+
 bool driveDistanceInFrame(
     tf::TransformListener& listener,
     ros::Publisher& cmd_pub,
@@ -745,6 +892,16 @@ int main(int argc, char** argv)
     ros::param::param<std::string>("/outdoor_waypoint_nav/preferred_avoidance_turn_topic", preferred_avoidance_turn_topic, "/outdoor_waypoint_nav/preferred_avoidance_turn_direction");
     ros::param::param<double>("/outdoor_waypoint_nav/preferred_avoidance_turn_deadband_deg", preferred_avoidance_turn_deadband_deg, 8.0);
     ros::param::param<double>("/outdoor_waypoint_nav/preferred_avoidance_turn_sign", preferred_avoidance_turn_sign, 1.0);
+    ros::param::param<bool>("/outdoor_waypoint_nav/return_heading_pid_enabled", return_heading_pid_enabled, true);
+    ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_kp", return_heading_pid_kp, 1.4);
+    ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_ki", return_heading_pid_ki, 0.02);
+    ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_kd", return_heading_pid_kd, 0.08);
+    ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_tolerance_deg", return_heading_pid_tolerance_deg, 5.0);
+    ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_max_angular_speed", return_heading_pid_max_angular_speed, 0.8);
+    ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_min_angular_speed", return_heading_pid_min_angular_speed, 0.12);
+    ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_integral_limit", return_heading_pid_integral_limit, 1.0);
+    ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_settle_time", return_heading_pid_settle_time, 0.4);
+    ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_timeout", return_heading_pid_timeout, 12.0);
     if(waypoint_marker_topic != "/outdoor_waypoint_nav/collected_waypoints")
     {
         pubWaypointMarkers.shutdown();
@@ -761,6 +918,16 @@ int main(int argc, char** argv)
     //Reading waypoints from text file and output results
     waypointVect = getWaypoints(path_local);
 
+    double initial_robot_yaw = 0.0;
+    bool have_initial_robot_yaw = waitForRobotYawInFrame(tf_listener, goal_frame, 5.0, initial_robot_yaw);
+    if(have_initial_robot_yaw)
+    {
+        ROS_INFO("Captured initial robot yaw: %.1f deg.", initial_robot_yaw * 180.0 / M_PI);
+    }
+    else
+    {
+        ROS_WARN("Could not capture initial robot yaw before driving. Will retry before first goal.");
+    }
 
     // Iterate through vector of waypoints for setting goals
     for(iter = waypointVect.begin(); iter < waypointVect.end(); iter++)
@@ -825,6 +992,12 @@ int main(int argc, char** argv)
             bool waypoint_reached_by_radius = false;
             double current_robot_yaw = 0.0;
             const bool have_current_yaw = tryGetRobotYawInFrame(tf_listener, goal_frame, current_robot_yaw);
+            if(!have_initial_robot_yaw && have_current_yaw)
+            {
+                initial_robot_yaw = current_robot_yaw;
+                have_initial_robot_yaw = true;
+                ROS_INFO("Captured initial robot yaw before first goal: %.1f deg.", initial_robot_yaw * 180.0 / M_PI);
+            }
 
             move_base_msgs::MoveBaseGoal goal = buildGoal(
                 have_prev_point,
@@ -897,18 +1070,34 @@ int main(int argc, char** argv)
                             waypoint_marker_activation_radius);
                     }
 
-                    if(!final_point &&
-                       waypoint_advance_radius > 0.0 &&
-                       distance_to_waypoint <= waypoint_advance_radius)
+                    const bool advance_to_next_waypoint = !final_point;
+                    const bool handoff_final_waypoint_to_return =
+                        final_point && totalWaypoints > 1;
+                    if(waypoint_advance_radius > 0.0 &&
+                       distance_to_waypoint <= waypoint_advance_radius &&
+                       (advance_to_next_waypoint || handoff_final_waypoint_to_return))
                     {
                         waypoint_reached_by_radius = true;
-                        ROS_INFO(
-                            "Waypoint %d/%d entered advance radius (%.3f m <= %.3f m). "
-                            "Sending the next waypoint without waiting for SUCCEEDED.",
-                            currentWaypointIndex,
-                            totalWaypoints,
-                            distance_to_waypoint,
-                            waypoint_advance_radius);
+                        if(handoff_final_waypoint_to_return)
+                        {
+                            ROS_INFO(
+                                "Last waypoint %d/%d entered advance radius (%.3f m <= %.3f m). "
+                                "Handing off to return-to-start goal without waiting for SUCCEEDED.",
+                                currentWaypointIndex,
+                                totalWaypoints,
+                                distance_to_waypoint,
+                                waypoint_advance_radius);
+                        }
+                        else
+                        {
+                            ROS_INFO(
+                                "Waypoint %d/%d entered advance radius (%.3f m <= %.3f m). "
+                                "Sending the next waypoint without waiting for SUCCEEDED.",
+                                currentWaypointIndex,
+                                totalWaypoints,
+                                distance_to_waypoint,
+                                waypoint_advance_radius);
+                        }
                     }
                 }
 
@@ -1039,6 +1228,7 @@ int main(int argc, char** argv)
 
         ROS_INFO("Completed waypoint list. Returning to waypoint 1/%d before finishing.", totalWaypoints);
 
+        const geometry_msgs::PointStamped map_return_prev = map_point;
         UTM_point = latLongtoUTM(latiReturn, longiReturn);
         UTM_next = latLongtoUTM(latiReturnNext, longiReturnNext);
         map_point = UTMtoMapPoint(UTM_point);
@@ -1059,7 +1249,7 @@ int main(int argc, char** argv)
             const bool have_current_yaw = tryGetRobotYawInFrame(tf_listener, goal_frame, current_robot_yaw);
             move_base_msgs::MoveBaseGoal return_goal = buildGoal(
                 true,
-                UTMtoMapPoint(latLongtoUTM(waypointVect.back().first, waypointVect.back().second)),
+                map_return_prev,
                 map_point,
                 true,
                 map_next,
@@ -1087,7 +1277,7 @@ int main(int argc, char** argv)
                     const bool have_replan_robot_yaw = tryGetRobotYawInFrame(tf_listener, goal_frame, replan_robot_yaw);
                     move_base_msgs::MoveBaseGoal replanned_return_goal = buildGoal(
                         true,
-                        UTMtoMapPoint(latLongtoUTM(waypointVect.back().first, waypointVect.back().second)),
+                        map_return_prev,
                         map_point,
                         true,
                         map_next,
@@ -1107,7 +1297,7 @@ int main(int argc, char** argv)
                     const bool have_replan_robot_yaw = tryGetRobotYawInFrame(tf_listener, goal_frame, replan_robot_yaw);
                     move_base_msgs::MoveBaseGoal refreshed_return_goal = buildGoal(
                         true,
-                        UTMtoMapPoint(latLongtoUTM(waypointVect.back().first, waypointVect.back().second)),
+                        map_return_prev,
                         map_point,
                         true,
                         map_next,
@@ -1177,6 +1367,29 @@ int main(int argc, char** argv)
         if(!returned_to_start)
         {
             return 0;
+        }
+
+        if(return_heading_pid_enabled)
+        {
+            if(have_initial_robot_yaw)
+            {
+                ac.cancelAllGoals();
+                publishStop(pubRecoveryCmd);
+                ros::Duration(0.2).sleep();
+                const bool heading_aligned = alignYawToTargetPID(
+                    tf_listener,
+                    pubRecoveryCmd,
+                    goal_frame,
+                    initial_robot_yaw);
+                if(!heading_aligned)
+                {
+                    ROS_WARN("Return heading alignment did not fully converge, but waypoint following will finish.");
+                }
+            }
+            else
+            {
+                ROS_WARN("Return heading PID skipped because the initial robot yaw was not available.");
+            }
         }
     }
 

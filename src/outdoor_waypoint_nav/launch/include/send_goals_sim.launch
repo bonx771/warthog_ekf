@@ -27,5 +27,15 @@
   <param name="/outdoor_waypoint_nav/preferred_avoidance_turn_topic" value="/outdoor_waypoint_nav/preferred_avoidance_turn_direction" type="string" />
   <param name="/outdoor_waypoint_nav/preferred_avoidance_turn_deadband_deg" value="8.0" type="double" />
   <param name="/outdoor_waypoint_nav/preferred_avoidance_turn_sign" value="1.0" type="double" />
+  <param name="/outdoor_waypoint_nav/return_heading_pid_enabled" value="true" type="bool" /> <!-- Bật PID xoay về đúng góc ban đầu sau khi quay lại waypoint 1. -->
+  <param name="/outdoor_waypoint_nav/return_heading_pid_kp" value="1.4" type="double" /> <!-- Hệ số P: tăng thì xoay bám góc mạnh hơn. -->
+  <param name="/outdoor_waypoint_nav/return_heading_pid_ki" value="0.02" type="double" /> <!-- Hệ số I nhỏ để bù sai số tĩnh, tránh để lớn vì dễ quá đà. -->
+  <param name="/outdoor_waypoint_nav/return_heading_pid_kd" value="0.08" type="double" /> <!-- Hệ số D giúp hãm khi gần đúng góc. -->
+  <param name="/outdoor_waypoint_nav/return_heading_pid_tolerance_deg" value="5.0" type="double" /> <!-- Sai số góc chấp nhận khi kết thúc PID (độ). -->
+  <param name="/outdoor_waypoint_nav/return_heading_pid_max_angular_speed" value="0.8" type="double" /> <!-- Tốc độ quay tối đa khi PID căn góc (rad/s). -->
+  <param name="/outdoor_waypoint_nav/return_heading_pid_min_angular_speed" value="0.12" type="double" /> <!-- Tốc độ quay tối thiểu để robot không bị ì khi sai số còn lớn (rad/s). -->
+  <param name="/outdoor_waypoint_nav/return_heading_pid_integral_limit" value="1.0" type="double" /> <!-- Giới hạn tích phân I để tránh tích lũy quá nhiều. -->
+  <param name="/outdoor_waypoint_nav/return_heading_pid_settle_time" value="0.4" type="double" /> <!-- Thời gian phải giữ trong ngưỡng sai số trước khi coi là xong (s). -->
+  <param name="/outdoor_waypoint_nav/return_heading_pid_timeout" value="12.0" type="double" /> <!-- Timeout căn góc, quá thời gian này sẽ dừng và kết thúc node (s). -->
 
 </launch>

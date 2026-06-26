@@ -9,6 +9,7 @@ import sys
 import threading
 import textwrap
 import time
+from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Joy
 from std_msgs.msg import Bool
 
@@ -41,6 +42,9 @@ velocity_paused = False
 launch_process = None
 launch_label = ""
 launch_output_thread = None
+cmd_vel_pub = None
+cmd_vel_intermediate_pub = None
+warthog_cmd_vel_pub = None
 
 def getParameter():
     global collect_btn_num
@@ -132,6 +136,7 @@ def waypoint_following_status_CB(waypoint_following_status_msg):
     send_complete = waypoint_following_status_msg.data
 
 def launch_subscribers():
+    global cmd_vel_pub, cmd_vel_intermediate_pub, warthog_cmd_vel_pub
     rospy.init_node('joy_launch_control')
     rospy.Subscriber("/joy_teleop/joy", Joy, _make_joy_cb(main_prev_buttons))
     if keyboard_waypoint_control_enabled:
@@ -139,6 +144,9 @@ def launch_subscribers():
     rospy.Subscriber("/outdoor_waypoint_nav/calibrate_status",Bool, calibrate_status_CB )
     rospy.Subscriber("/outdoor_waypoint_nav/collection_status",Bool, collection_status_CB )
     rospy.Subscriber("/outdoor_waypoint_nav/waypoint_following_status",Bool, waypoint_following_status_CB )
+    cmd_vel_pub = rospy.Publisher('/cmd_vel', Twist, queue_size=1)
+    cmd_vel_intermediate_pub = rospy.Publisher('/cmd_vel_intermediate', Twist, queue_size=1)
+    warthog_cmd_vel_pub = rospy.Publisher('/warthog_velocity_controller/cmd_vel', Twist, queue_size=1)
 
 def print_instructions():
     return
@@ -161,6 +169,21 @@ def relay_launch_output(process, label):
 
     process.stdout.close()
 
+
+def publish_zero_velocity(repeat=10, interval=0.02):
+    global cmd_vel_pub, cmd_vel_intermediate_pub, warthog_cmd_vel_pub
+    zero_twist = Twist()
+    for _ in range(repeat):
+        for pub in (cmd_vel_pub, cmd_vel_intermediate_pub, warthog_cmd_vel_pub):
+            if pub is None:
+                continue
+            try:
+                pub.publish(zero_twist)
+            except Exception:
+                pass
+        rospy.sleep(interval)
+
+
 def shutdown_launch_process():
     global launch_process
     global launch_label
@@ -170,7 +193,14 @@ def shutdown_launch_process():
 
     if launch_process.poll() is None:
         try:
-            os.killpg(os.getpgid(launch_process.pid), signal.SIGTERM)
+            publish_zero_velocity()
+            os.killpg(os.getpgid(launch_process.pid), signal.SIGINT)
+            rospy.sleep(0.2)
+            if launch_process.poll() is None:
+                os.killpg(os.getpgid(launch_process.pid), signal.SIGTERM)
+                rospy.sleep(0.2)
+            if launch_process.poll() is None:
+                os.killpg(os.getpgid(launch_process.pid), signal.SIGKILL)
         except OSError:
             pass
     launch_process = None
@@ -238,8 +268,10 @@ def check_buttons():
     # Check abort button
     if current_events[3]:
         rospy.logerr("STOP BUTTON SELECTED, blocking velocity commands...")
+        publish_zero_velocity()
         os.system("rosnode kill safety_node")
         rospy.sleep(1) # Sleep for 1 second to allow time for node to shutdown
+        publish_zero_velocity()
         sys.stdout.write("\nPress %s to continue following waypoints\n\n" % continue_btn_sym)
         sys.stdout.flush()
         velocity_paused = True

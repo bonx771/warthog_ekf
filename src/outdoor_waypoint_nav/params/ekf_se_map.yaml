@@ -37,7 +37,7 @@ odom0_relative: false
 
 odom1: /outdoor_waypoint_nav/odometry/gps
 odom1_config: [true,  true,  false,
-                false, false, fals  
+                false, false, false,  
                 false, false, false,
                 false, false, false,
                 false, false, false]

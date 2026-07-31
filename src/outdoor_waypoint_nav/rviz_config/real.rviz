@@ -393,8 +393,8 @@ Visualization Manager:
       Head Length: 0.2
       Length: 0.3
       Line Style: Lines
-      Line Width: 0.03
-      Name: Path Plan
+      Line Width: 0.05
+      Name: Global Plan
       Offset:
         X: 0
         Y: 0
@@ -403,7 +403,29 @@ Visualization Manager:
       Radius: 0.03
       Shaft Diameter: 0.1
       Shaft Length: 0.1
-      Topic: /move_base/TrajectoryPlannerROS/global_plan
+      Topic: /move_base/NavfnROS/plan
+      Unreliable: false
+      Value: true
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz/Path
+      Color: 0; 255; 255
+      Enabled: true
+      Head Diameter: 0.3
+      Head Length: 0.2
+      Length: 0.3
+      Line Style: Lines
+      Line Width: 0.06
+      Name: Local Plan
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
+      Pose Style: None
+      Radius: 0.03
+      Shaft Diameter: 0.1
+      Shaft Length: 0.1
+      Topic: /move_base/TrajectoryPlannerROS/local_plan
       Unreliable: false
       Value: true
     - Alpha: 1

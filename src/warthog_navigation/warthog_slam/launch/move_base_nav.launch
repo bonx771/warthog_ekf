@@ -4,6 +4,7 @@
 
   <arg name="use_lidar" default="false" />
   <arg name="odom_topic" default="/outdoor_waypoint_nav/odometry/filtered_map" />
+  <arg name="cmd_vel_topic" default="/cmd_vel" />
 
   <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
     <rosparam if="$(arg use_lidar)" file="$(find warthog_slam)/params/costmap_common_params.yaml" command="load" ns="global_costmap" />
@@ -90,7 +91,7 @@
     <param name="base_local_planner" value="base_local_planner/TrajectoryPlannerROS"/>
 
     <remap from="odom" to="$(arg odom_topic)" />
-    <remap from="cmd_vel" to="/cmd_vel" />
+    <remap from="cmd_vel" to="$(arg cmd_vel_topic)" />
     <remap if="$(arg use_lidar)" from="scan" to="/front/scan" />
   </node>
 </launch>

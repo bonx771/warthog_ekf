@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <launch>
-  <arg name="use_gps" default="false" />
+  <arg name="use_gps" default="true" />
 
   <group ns="/outdoor_waypoint_nav">
     <rosparam if="$(arg use_gps)" command="load" file="$(find outdoor_waypoint_nav)/params/navsat_params.yaml" />
@@ -12,16 +12,16 @@
       <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_se_odom.yaml" />
     </node>
 
-<!-- <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
+<node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
       <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_se_map.yaml" />
       <remap from="odometry/filtered" to="odometry/filtered_map" />
-    </node> -->
+    </node>
 
 
-    <!-- <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" output="screen">
+    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" output="screen">
       <remap from="gps/fix" to="/gps/fix" />
-      <remap from="imu/data" to="/imu/data_covariance" />
-    </node> -->
+      <remap from="imu/data" to="/imu/data_new" />
+    </node>
 
     <node pkg="outdoor_waypoint_nav"
           type="encoder_odometry_node.py"

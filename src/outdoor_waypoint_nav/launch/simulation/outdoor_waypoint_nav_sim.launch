@@ -9,7 +9,8 @@
 
   <!-- Launch robot_localization and navsat node -->
     <include file="$(find outdoor_waypoint_nav)/launch/include/localization_run_sim.launch"/>
-
+  <!-- Record GPS trajectory to waypoint file -->
+    <include file="$(find outdoor_waypoint_nav)/launch/include/record_gps_waypoints.launch"/>
   <!-- Run rviz -->
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find outdoor_waypoint_nav)/rviz_config/model.rviz" />
 

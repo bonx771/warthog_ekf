@@ -38,11 +38,19 @@
       <param name="gps_odom_topic" value="odometry/gps" />
       <param name="motion_odom_topic" value="odometry/filtered_odom" />
       <param name="output_topic" value="odometry/gps_filter" />
-      <param name="linear_stop_threshold" value="0.03" />
-      <param name="angular_stop_threshold" value="0.01" />
-      <param name="stop_confirm_duration" value="0.75" />
-      <param name="stationary_xy_covariance" value="1000000.0" />
-      <param name="stationary_z_covariance" value="1000000.0" />
+      <param name="linear_stop_threshold" value="0.015" />
+      <param name="angular_stop_threshold" value="0.005" />
+      <param name="stop_confirm_duration" value="1.5" />
+      <param name="stationary_xy_covariance" value="4.0" />
+      <param name="stationary_z_covariance" value="9.0" />
+      <param name="stationary_hold_xy_covariance" value="100.0" />
+      <param name="stationary_hold_z_covariance" value="100.0" />
+      <param name="stationary_collection_duration" value="5.0" />
+      <param name="stationary_correction_publish_count" value="2" />
+      <param name="stationary_sample_window" value="50" />
+      <param name="stationary_min_samples" value="30" />
+      <param name="stationary_outlier_rejection_m" value="2.0" />
+      <param name="release_blend_duration" value="1.0" />
       <param name="copy_motion_orientation" value="true" />
     </node>
 

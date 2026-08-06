@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <launch>
   <arg name="use_gps" default="true" />
+  <arg name="ekf_odom_params" default="$(find outdoor_waypoint_nav)/params/ekf_se_odom.yaml" />
+  <arg name="ekf_map_params" default="$(find outdoor_waypoint_nav)/params/ekf_se_map.yaml" />
 
   <group ns="/outdoor_waypoint_nav">
     <rosparam if="$(arg use_gps)" command="load" file="$(find outdoor_waypoint_nav)/params/navsat_params.yaml" />
@@ -9,18 +11,39 @@
           type="ekf_localization_node"
           name="ekf_se_odom"
           clear_params="true">
-      <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_se_odom.yaml" />
+      <rosparam command="load" file="$(arg ekf_odom_params)" />
     </node>
 
+    <node pkg="topic_tools"
+          type="relay"
+          name="ekf_odom_for_map_filter"
+          args="/outdoor_waypoint_nav/odometry/filtered /outdoor_waypoint_nav/odometry/filtered_odom" />
+
 <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_map" clear_params="true">
-      <rosparam command="load" file="$(find outdoor_waypoint_nav)/params/ekf_se_map.yaml" />
+      <rosparam command="load" file="$(arg ekf_map_params)" />
       <remap from="odometry/filtered" to="odometry/filtered_map" />
     </node>
 
 
-    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" output="screen">
+    <node pkg="robot_localization" type="navsat_transform_node" name="navsat_transform" clear_params="true" output="screen">
+      <remap from="odometry/filtered" to="odometry/filtered_map"/>
       <remap from="gps/fix" to="/gps/fix" />
       <remap from="imu/data" to="/imu/data_new" />
+    </node>
+
+    <node pkg="outdoor_waypoint_nav"
+          type="stationary_gps_gate.py"
+          name="stationary_gps_gate"
+          output="screen">
+      <param name="gps_odom_topic" value="odometry/gps" />
+      <param name="motion_odom_topic" value="odometry/filtered_odom" />
+      <param name="output_topic" value="odometry/gps_filter" />
+      <param name="linear_stop_threshold" value="0.03" />
+      <param name="angular_stop_threshold" value="0.01" />
+      <param name="stop_confirm_duration" value="0.75" />
+      <param name="stationary_xy_covariance" value="1000000.0" />
+      <param name="stationary_z_covariance" value="1000000.0" />
+      <param name="copy_motion_orientation" value="true" />
     </node>
 
     <node pkg="outdoor_waypoint_nav"

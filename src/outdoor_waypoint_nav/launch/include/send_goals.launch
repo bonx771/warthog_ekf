@@ -18,13 +18,17 @@
   <param name="/outdoor_waypoint_nav/oscillation_recovery_forward_distance" value="1.5" type="double" />
   <param name="/outdoor_waypoint_nav/oscillation_recovery_linear_speed" value="0.50" type="double" />
   <param name="/outdoor_waypoint_nav/oscillation_recovery_angular_speed" value="0.55" type="double" />
-  <param name="/outdoor_waypoint_nav/safety_replan_enabled" value="true" type="bool" />
+  <param name="/outdoor_waypoint_nav/safety_replan_enabled" value="false" type="bool" />
   <param name="/outdoor_waypoint_nav/safety_replan_topic" value="/outdoor_waypoint_nav/replan_requested" type="string" />
   <param name="/outdoor_waypoint_nav/safety_replan_cooldown" value="0.0" type="double" />
-  <param name="/outdoor_waypoint_nav/auto_replan_current_goal_enabled" value="true" type="bool" />
-  <param name="/outdoor_waypoint_nav/auto_replan_current_goal_interval" value="1.5" type="double" />
+  <param name="/outdoor_waypoint_nav/auto_replan_current_goal_enabled" value="false" type="bool" />
+  <param name="/outdoor_waypoint_nav/auto_replan_current_goal_interval" value="0.0" type="double" />
   <param name="/outdoor_waypoint_nav/preferred_avoidance_turn_topic" value="/outdoor_waypoint_nav/preferred_avoidance_turn_direction" type="string" />
   <param name="/outdoor_waypoint_nav/preferred_avoidance_turn_deadband_deg" value="8.0" type="double" />
   <param name="/outdoor_waypoint_nav/preferred_avoidance_turn_sign" value="1.0" type="double" />
+  <param name="/outdoor_waypoint_nav/waypoint_cmd_topic" value="/cmd_vel" type="string" />
+  <param name="/outdoor_waypoint_nav/waypoint_pre_align_enabled" value="false" type="bool" />
+  <param name="/outdoor_waypoint_nav/waypoint_pre_align_angle_threshold" value="0.35" type="double" />
+  <param name="/outdoor_waypoint_nav/waypoint_pre_align_min_goal_distance" value="0.80" type="double" />
 
 </launch>

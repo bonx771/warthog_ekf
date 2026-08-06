@@ -61,6 +61,7 @@ install(DIRECTORY params
 catkin_install_python(PROGRAMS
   scripts/camera_node.py
   scripts/encoder_odometry_node.py
+  scripts/filtered_collect_gps_waypoints.py
   scripts/gps_covariance_relay.py
   scripts/imu_covariance_log.py
   scripts/imu_covariance_relay.py
@@ -73,6 +74,7 @@ catkin_install_python(PROGRAMS
   scripts/path_node.py
   scripts/plot_results.py
   scripts/square_eval.py
+  scripts/stationary_gps_gate.py
   scripts/tracking_control.py
   scripts/return_home.py
   scripts/record_gps_waypoints.py

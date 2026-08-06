@@ -7,7 +7,7 @@ frame_id: "imu_link"
 state_topic: "/imu/data_new"
 yaw_sign: -1.0
 
-orientation_covariance_diagonal: [1.0, 1.0, 0.8]
+orientation_covariance_diagonal: [0.2, 0.2, 0.1]
 angular_velocity_covariance_diagonal: [0.05, 0.05, 0.0002]
 linear_acceleration_covariance_diagonal: [0.1, 0.1, 0.1]
 

@@ -17,6 +17,18 @@
 float y_pos, x_pos, x_vel, x_vel_time, frequency, delay, yaw_offset, magnetic_declination_radians;
 bool zero_altitude, broadcast_utm_transform, publish_filtered_gps, use_odometry_yaw, wait_for_datum;
 
+double normalizeAngle(double angle)
+{
+    while(angle > M_PI)
+    {
+        angle -= 2.0 * M_PI;
+    }
+    while(angle < -M_PI)
+    {
+        angle += 2.0 * M_PI;
+    }
+    return angle;
+}
 
 void getParams()
 {
@@ -35,6 +47,9 @@ void getParams()
 
 void writeParams(std::string path_to_param_file, double heading_err)
 {
+    const double corrected_declination =
+        normalizeAngle(static_cast<double>(magnetic_declination_radians) + heading_err);
+
     // Open file
     std::ofstream paramsFile (path_to_param_file.c_str());
     
@@ -43,8 +58,8 @@ void writeParams(std::string path_to_param_file, double heading_err)
         paramsFile << std::fixed << std::setprecision(0) << "  frequency: " << frequency << std::endl;
         paramsFile << std::fixed << std::setprecision(1) << "  delay: " << delay << std::endl;
     
-        // Adding heading error to magnetic declination parameter to correct initial poor estimate
-        paramsFile << std::fixed << std::setprecision(5) << "  magnetic_declination_radians: " << (magnetic_declination_radians + heading_err)<< std::endl;
+        // Keep the accumulated heading correction bounded so repeated calibration cannot wrap several turns.
+        paramsFile << std::fixed << std::setprecision(5) << "  magnetic_declination_radians: " << corrected_declination << std::endl;
         paramsFile << std::fixed << std::setprecision(5) << "  yaw_offset: " << yaw_offset << std::endl;
         paramsFile << "  zero_altitude: " << std::boolalpha << zero_altitude << std::endl;
         paramsFile << "  broadcast_utm_transform: " << std::boolalpha << broadcast_utm_transform << std::endl;

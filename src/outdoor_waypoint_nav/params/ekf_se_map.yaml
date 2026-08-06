@@ -13,16 +13,9 @@ odom_frame: odom
 base_link_frame: base_link
 world_frame: map
 
-# Inputs:
-# - odometry/filtered (resolves to /outdoor_waypoint_nav/odometry/filtered)
-# - odometry/gps (resolves to /outdoor_waypoint_nav/odometry/gps)
-# - /imu/data_covariance
-# Output (remapped in localization_run.launch):
-# - /outdoor_waypoint_nav/odometry/filtered_map
-#
-# Local filtered odometry keeps short-term motion smooth between GPS updates.
-
-odom0: /outdoor_waypoint_nav/odometry/filtered
+# EKF2 still uses EKF1 for short-term velocity/yaw-rate. This alias avoids the
+# odometry/filtered -> odometry/filtered_map remap from feeding EKF2 its own output.
+odom0: /outdoor_waypoint_nav/odometry/filtered_odom
 odom0_config: [false, false, false,
                 false, false, false,
                 true,  true, false,
@@ -35,23 +28,25 @@ odom0_relative: false
 
 # GPS anchors the global x/y position in map.
 
-odom1: /outdoor_waypoint_nav/odometry/gps
+# GPS x/y after stationary gating. Raw navsat output is still available at
+# /outdoor_waypoint_nav/odometry/gps for debugging.
+odom1: /outdoor_waypoint_nav/odometry/gps_filter
 odom1_config: [true,  true,  false,
                 false, false, false,  
                 false, false, false,
                 false, false, false,
                 false, false, false]
-odom1_queue_size: 10
+odom1_queue_size: 5
 odom1_nodelay: true
 odom1_differential: false
 odom1_relative: false
-odom1_pose_rejection_threshold: 2.0
+odom1_pose_rejection_threshold: 3.0
 
 # # IMU stabilizes global yaw and yaw rate.
 
-imu0: /imu/data_covariance
+imu0: /imu/data_new
 imu0_config: [false, false, false,
-              false, false, false,
+              false, false, true,
               false, false, false,
               false, false, true,
               false, false, false]
@@ -60,18 +55,22 @@ imu0_differential: false
 imu0_relative: false
 imu0_queue_size: 20
 imu0_remove_gravitational_acceleration: true
+imu0_pose_rejection_threshold: 1.2
+imu0_twist_rejection_threshold: 1.2
 
 use_control: false
 
 
-process_noise_covariance: [0.1,   0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
-                            0,    0.1,  0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
-                            0,    0,    0.1, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+# State order: x, y, z, roll, pitch, yaw, vx, vy, vz, vroll, vpitch, vyaw, ax, ay, az.
+# Warthog should not develop lateral velocity while stationary, so keep vy process noise tight.
+process_noise_covariance: [0.01,   0,    0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                            0,    0.01,  0,    0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
+                            0,    0,    0.01, 0,    0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                             0,    0,    0,    0.1,  0,    0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                             0,    0,    0,    0,    0.1,  0,    0,     0,     0,    0,    0,    0,    0,    0,    0,
                             0,    0,    0,    0,    0,    0.1, 0,     0,     0,    0,    0,    0,    0,    0,    0,
                             0,    0,    0,    0,    0,    0,    0.1,   0,     0,    0,    0,    0,    0,    0,    0,
-                            0,    0,    0,    0,    0,    0,    0,     0.1,   0,    0,    0,    0,    0,    0,    0,
+                            0,    0,    0,    0,    0,    0,    0,     1e-4,  0,    0,    0,    0,    0,    0,    0,
                             0,    0,    0,    0,    0,    0,    0,     0,     0.1,  0,    0,    0,    0,    0,    0,
                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0.1,  0,    0,    0,    0,    0,
                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,    0.1,  0,    0,    0,    0,
@@ -80,14 +79,14 @@ process_noise_covariance: [0.1,   0,    0,    0,    0,    0,    0,     0,     0,
                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,   0,    0,    0,    0.1,   0,
                             0,    0,    0,    0,    0,    0,    0,     0,     0,    0,   0,    0,    0,    0,    0.1]
 
-initial_estimate_covariance: [1e-9, 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
-                              0,    1e-9, 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+initial_estimate_covariance: [0.1, 0,    0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
+                              0,    0.1, 0,    0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
                               0,    0,    1e-9, 0,    0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
                               0,    0,    0,    1.0,  0,    0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
                               0,    0,    0,    0,    1.0,  0,    0,    0,    0,    0,     0,     0,     0,    0,    0,
                               0,    0,    0,    0,    0,    1e-9, 0,    0,    0,    0,     0,     0,     0,    0,    0,
                               0,    0,    0,    0,    0,    0,    1e-9,  0,    0,    0,     0,     0,     0,    0,    0,
-                              0,    0,    0,    0,    0,    0,    0,    1.0,  0,    0,     0,     0,     0,    0,    0,
+                              0,    0,    0,    0,    0,    0,    0,    1e-4, 0,    0,     0,     0,     0,    0,    0,
                               0,    0,    0,    0,    0,    0,    0,    0,    1.0,  0,     0,     0,     0,    0,    0,
                               0,    0,    0,    0,    0,    0,    0,    0,    0,    1.0,   0,     0,     0,    0,    0,
                               0,    0,    0,    0,    0,    0,    0,    0,    0,    0,     1.0,   0,     0,    0,    0,

@@ -51,12 +51,16 @@ bool safety_replan_requested = false;
 std::string safety_replan_topic = "/outdoor_waypoint_nav/replan_requested";
 double safety_replan_cooldown = 0.0;
 ros::Time last_safety_replan_time(0);
-bool auto_replan_current_goal_enabled = true;
+bool auto_replan_current_goal_enabled = false;
 double auto_replan_current_goal_interval = 1.5;
 ros::Time last_auto_replan_time(0);
 std::string preferred_avoidance_turn_topic = "/outdoor_waypoint_nav/preferred_avoidance_turn_direction";
 double preferred_avoidance_turn_deadband_deg = 8.0;
 double preferred_avoidance_turn_sign = 1.0;
+std::string waypoint_cmd_topic = "/cmd_vel";
+bool waypoint_pre_align_enabled = false;
+double waypoint_pre_align_angle_threshold = 0.35;
+double waypoint_pre_align_min_goal_distance = 0.80;
 bool return_heading_pid_enabled = true;
 double return_heading_pid_kp = 1.4;
 double return_heading_pid_ki = 0.02;
@@ -680,6 +684,48 @@ bool alignYawToTargetPID(
     return false;
 }
 
+void alignTowardWaypointIfNeeded(
+    tf::TransformListener& listener,
+    ros::Publisher& cmd_pub,
+    const geometry_msgs::PointStamped& waypoint,
+    int waypoint_index,
+    int total_waypoints)
+{
+    RobotPose2D robot_pose;
+    if(!tryGetRobotPoseInFrame(listener, goal_frame, robot_pose))
+    {
+        return;
+    }
+
+    const double dx = waypoint.point.x - robot_pose.x;
+    const double dy = waypoint.point.y - robot_pose.y;
+    const double distance = std::sqrt((dx * dx) + (dy * dy));
+    const double desired_yaw = std::atan2(dy, dx);
+    const double yaw_error = normalizeAngle(desired_yaw - robot_pose.yaw);
+
+    ROS_INFO(
+        "Waypoint %d/%d robot-to-goal: dist=%.2fm bearing=%.1fdeg yaw=%.1fdeg err=%.1fdeg.",
+        waypoint_index,
+        total_waypoints,
+        distance,
+        desired_yaw * 180.0 / M_PI,
+        robot_pose.yaw * 180.0 / M_PI,
+        yaw_error * 180.0 / M_PI);
+
+    if(!waypoint_pre_align_enabled ||
+       distance <= waypoint_pre_align_min_goal_distance ||
+       std::fabs(yaw_error) <= waypoint_pre_align_angle_threshold)
+    {
+        return;
+    }
+
+    ROS_INFO(
+        "Pre-aligning toward waypoint %d/%d before sending move_base goal.",
+        waypoint_index,
+        total_waypoints);
+    alignYawToTargetPID(listener, cmd_pub, goal_frame, desired_yaw);
+}
+
 bool driveDistanceInFrame(
     tf::TransformListener& listener,
     ros::Publisher& cmd_pub,
@@ -847,7 +893,8 @@ int main(int argc, char** argv)
         "/outdoor_waypoint_nav/collected_waypoints",
         100,
         true);
-    ros::Publisher pubRecoveryCmd = n.advertise<geometry_msgs::Twist>("/cmd_vel_intermediate", 10);
+    ros::param::param<std::string>("/outdoor_waypoint_nav/waypoint_cmd_topic", waypoint_cmd_topic, "/cmd_vel");
+    ros::Publisher pubRecoveryCmd = n.advertise<geometry_msgs::Twist>(waypoint_cmd_topic, 10);
 
     //wait for the action server to come up
     while(!ac.waitForServer(ros::Duration(5.0)))
@@ -887,11 +934,14 @@ int main(int argc, char** argv)
     ros::param::param<bool>("/outdoor_waypoint_nav/safety_replan_enabled", safety_replan_enabled, true);
     ros::param::param<std::string>("/outdoor_waypoint_nav/safety_replan_topic", safety_replan_topic, "/outdoor_waypoint_nav/replan_requested");
     ros::param::param<double>("/outdoor_waypoint_nav/safety_replan_cooldown", safety_replan_cooldown, 0.0);
-    ros::param::param<bool>("/outdoor_waypoint_nav/auto_replan_current_goal_enabled", auto_replan_current_goal_enabled, true);
+    ros::param::param<bool>("/outdoor_waypoint_nav/auto_replan_current_goal_enabled", auto_replan_current_goal_enabled, false);
     ros::param::param<double>("/outdoor_waypoint_nav/auto_replan_current_goal_interval", auto_replan_current_goal_interval, 1.5);
     ros::param::param<std::string>("/outdoor_waypoint_nav/preferred_avoidance_turn_topic", preferred_avoidance_turn_topic, "/outdoor_waypoint_nav/preferred_avoidance_turn_direction");
     ros::param::param<double>("/outdoor_waypoint_nav/preferred_avoidance_turn_deadband_deg", preferred_avoidance_turn_deadband_deg, 8.0);
     ros::param::param<double>("/outdoor_waypoint_nav/preferred_avoidance_turn_sign", preferred_avoidance_turn_sign, 1.0);
+    ros::param::param<bool>("/outdoor_waypoint_nav/waypoint_pre_align_enabled", waypoint_pre_align_enabled, false);
+    ros::param::param<double>("/outdoor_waypoint_nav/waypoint_pre_align_angle_threshold", waypoint_pre_align_angle_threshold, 0.35);
+    ros::param::param<double>("/outdoor_waypoint_nav/waypoint_pre_align_min_goal_distance", waypoint_pre_align_min_goal_distance, 0.80);
     ros::param::param<bool>("/outdoor_waypoint_nav/return_heading_pid_enabled", return_heading_pid_enabled, true);
     ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_kp", return_heading_pid_kp, 1.4);
     ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_ki", return_heading_pid_ki, 0.02);
@@ -973,6 +1023,13 @@ int main(int argc, char** argv)
             goal_frame.c_str(),
             map_point.point.x,
             map_point.point.y);
+
+        alignTowardWaypointIfNeeded(
+            tf_listener,
+            pubRecoveryCmd,
+            map_point,
+            currentWaypointIndex,
+            totalWaypoints);
 
         bool have_prev_point = false;
         geometry_msgs::PointStamped map_prev;

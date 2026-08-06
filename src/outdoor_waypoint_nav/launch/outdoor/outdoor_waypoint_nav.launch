@@ -4,8 +4,10 @@
 
     <arg name="launch_rviz" default="true" />
     <arg name="rviz_config" default="$(find outdoor_waypoint_nav)/rviz_config/real.rviz" />
-    <arg name="use_lidar" default="true" />
+    <arg name="use_lidar" default="false" />
     <arg name="use_gps" default="true" />
+    <arg name="ekf_odom_params" default="$(find outdoor_waypoint_nav)/params/ekf_se_odom.yaml" />
+    <arg name="ekf_map_params" default="$(find outdoor_waypoint_nav)/params/ekf_se_map.yaml" />
 
     <include if="$(arg use_gps)" file="$(find gps_pkg)/launch/navsat_transform_gps.launch"></include>
 
@@ -23,6 +25,11 @@
            name="base_link_to_lidar"
            args="0.4 0 0.3 0 0 0 base_link rslidar" />
 
+     <node pkg="tf2_ros"
+           type="static_transform_publisher"
+           name="base_link_to_gps"
+           args="0 0 0 0 0 0 base_link gps_link" />
+
   
     <include if="$(arg use_lidar)" file="$(find outdoor_waypoint_nav)/launch/include/laser.launch" />
 
@@ -32,6 +39,8 @@
 
     <include file="$(find outdoor_waypoint_nav)/launch/include/localization_run.launch">
         <arg name="use_gps" value="$(arg use_gps)" />
+        <arg name="ekf_odom_params" value="$(arg ekf_odom_params)" />
+        <arg name="ekf_map_params" value="$(arg ekf_map_params)" />
     </include>
 
 
@@ -43,11 +52,13 @@
 
     <include file="$(find warthog_slam)/launch/move_base_nav.launch">
       <arg name="use_lidar" value="$(arg use_lidar)" />
-      <arg name="cmd_vel_topic" value="/cmd_vel_intermediate" />
+      <arg name="cmd_vel_topic" value="/cmd_vel" />
     </include>
 
-
-    <include file="$(find outdoor_waypoint_nav)/launch/include/safety_node.launch" />
+    <node pkg="topic_tools"
+          type="relay"
+          name="cmd_vel_to_warthog_controller"
+          args="/cmd_vel /warthog_velocity_controller/cmd_vel" />
 
 
     <node if="$(arg launch_rviz)"

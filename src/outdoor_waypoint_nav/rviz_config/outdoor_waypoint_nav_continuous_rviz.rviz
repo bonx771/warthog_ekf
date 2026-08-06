@@ -225,7 +225,7 @@ Visualization Manager:
       Length: 0.5
       Name: GPS Odom
       Position Tolerance: 0.1
-      Topic: /outdoor_waypoint_nav/odometry/gps
+      Topic: /outdoor_waypoint_nav/odometry/gps_filter
       Value: true
     - Angle Tolerance: 0.1
       Class: rviz/Odometry

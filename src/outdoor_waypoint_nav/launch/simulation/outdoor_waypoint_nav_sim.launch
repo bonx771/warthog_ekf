@@ -18,6 +18,8 @@
     <include file="$(find warthog_slam)/launch/move_base_gps_sim.launch" />
 
   <!-- Filter move_base commands through safety_node before they reach /cmd_vel. -->
-  <include file="$(find outdoor_waypoint_nav)/launch/include/safety_node.launch" />
+  <include file="$(find outdoor_waypoint_nav)/launch/include/safety_node.launch">
+    <arg name="use_lidar" value="true" />
+  </include>
 
 </launch>

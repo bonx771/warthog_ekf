@@ -33,7 +33,9 @@ bool goal_slowdown_enabled = true;
 bool waypoint_align_enabled = true;
 bool waypoint_align_active = false;
 bool waypoint_align_committed = false;
+bool safety_scan_enabled = true;
 bool safety_require_fresh_scan = true;
+bool safety_command_timeout_stop_enabled = true;
 bool obstacle_block_active = false;
 bool safety_replan_enabled = true;
 
@@ -456,7 +458,10 @@ void controlTimerCB(const ros::TimerEvent&)
 
     if(!command_is_fresh)
     {
-        publishStop();
+        if(safety_enabled && safety_command_timeout_stop_enabled)
+        {
+            publishStop();
+        }
         resetObstacleBlockTracking();
         return;
     }
@@ -478,8 +483,8 @@ void controlTimerCB(const ros::TimerEvent&)
 
     geometry_msgs::Twist output = latest_cmd;
 
-    const bool fresh_scan = scanIsFresh();
-    if(safety_require_fresh_scan && !fresh_scan)
+    const bool fresh_scan = safety_scan_enabled && scanIsFresh();
+    if(safety_scan_enabled && safety_require_fresh_scan && !fresh_scan)
     {
         publishStop();
         resetObstacleBlockTracking();
@@ -501,7 +506,7 @@ void controlTimerCB(const ros::TimerEvent&)
         return;
     }
 
-    if(fresh_scan && output.linear.x > 0.0)
+    if(safety_scan_enabled && fresh_scan && output.linear.x > 0.0)
     {
         const double obstacle_range = frontMinimumRange();
         const double speed_scale = forwardSpeedScale(obstacle_range);
@@ -565,6 +570,14 @@ int main(int argc, char** argv)
         "/outdoor_waypoint_nav/safety_command_timeout",
         command_timeout,
         0.5);
+    ros::param::param<bool>(
+        "/outdoor_waypoint_nav/safety_command_timeout_stop_enabled",
+        safety_command_timeout_stop_enabled,
+        true);
+    ros::param::param<bool>(
+        "/outdoor_waypoint_nav/safety_scan_enabled",
+        safety_scan_enabled,
+        true);
     ros::param::param<bool>(
         "/outdoor_waypoint_nav/safety_require_fresh_scan",
         safety_require_fresh_scan,
@@ -700,6 +713,12 @@ int main(int argc, char** argv)
             scan_timeout);
         scan_timeout = 0.0;
     }
+    if(!safety_scan_enabled && safety_require_fresh_scan)
+    {
+        ROS_WARN(
+            "safety_node: scan safety is disabled, ignoring fresh scan "
+            "requirement.");
+    }
     if(safety_replan_blocked_duration < 0.0)
     {
         ROS_WARN(
@@ -720,22 +739,30 @@ int main(int argc, char** argv)
     tf_listener = new tf::TransformListener(ros::Duration(10.0));
 
     ros::Subscriber cmd_sub = nh.subscribe(input_cmd_topic, 10, cmdCB);
-    ros::Subscriber scan_sub = nh.subscribe(scan_topic, 10, scanCB);
+    ros::Subscriber scan_sub;
+    if(safety_scan_enabled)
+    {
+        scan_sub = nh.subscribe(scan_topic, 10, scanCB);
+    }
     ros::Subscriber goal_sub = nh.subscribe(goal_topic, 10, goalCB);
     ros::Timer control_timer =
         nh.createTimer(ros::Duration(0.05), controlTimerCB);
 
     ROS_INFO(
-        "safety_node: active. input=%s output=%s scan=%s slowdown=%.2fm "
-        "stop=%.2fm sector=+/-%.1fdeg scan_timeout=%.2fs "
-        "goal_slowdown=%s waypoint_align=%s replan=%s",
+        "safety_node: active. input=%s output=%s safety=%s timeout_stop=%s "
+        "scan_safety=%s scan=%s slowdown=%.2fm stop=%.2fm "
+        "sector=+/-%.1fdeg scan_timeout=%.2fs goal_slowdown=%s "
+        "waypoint_align=%s replan=%s",
         input_cmd_topic.c_str(),
         output_cmd_topic.c_str(),
+        safety_enabled ? "on" : "off",
+        safety_command_timeout_stop_enabled ? "on" : "off",
+        safety_scan_enabled ? "on" : "off",
         scan_topic.c_str(),
         slowdown_distance,
         stop_distance,
         sector_half_angle_deg,
-        safety_require_fresh_scan ? scan_timeout : 0.0,
+        (safety_scan_enabled && safety_require_fresh_scan) ? scan_timeout : 0.0,
         goal_slowdown_enabled ? "on" : "off",
         waypoint_align_enabled ? "on" : "off",
         safety_replan_enabled ? "on" : "off");

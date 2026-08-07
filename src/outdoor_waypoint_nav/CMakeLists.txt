@@ -60,6 +60,7 @@ install(DIRECTORY params
 
 catkin_install_python(PROGRAMS
   scripts/camera_node.py
+  scripts/danh_gia_sai_so_dinh_vi_thuc_te.py
   scripts/encoder_odometry_node.py
   scripts/filtered_collect_gps_waypoints.py
   scripts/gps_covariance_relay.py

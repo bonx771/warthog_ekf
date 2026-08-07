@@ -61,6 +61,7 @@ std::string waypoint_cmd_topic = "/cmd_vel";
 bool waypoint_pre_align_enabled = false;
 double waypoint_pre_align_angle_threshold = 0.35;
 double waypoint_pre_align_min_goal_distance = 0.80;
+bool return_to_start_enabled = true;
 bool return_heading_pid_enabled = true;
 double return_heading_pid_kp = 1.4;
 double return_heading_pid_ki = 0.02;
@@ -71,6 +72,19 @@ double return_heading_pid_min_angular_speed = 0.12;
 double return_heading_pid_integral_limit = 1.0;
 double return_heading_pid_settle_time = 0.4;
 double return_heading_pid_timeout = 12.0;
+bool direct_waypoint_drive_enabled = false;
+double direct_waypoint_goal_tolerance = 1.0;
+double direct_waypoint_final_goal_tolerance = 0.45;
+double direct_waypoint_cruise_speed = 0.45;
+double direct_waypoint_min_speed = 0.12;
+double direct_waypoint_slow_radius = 2.0;
+double direct_waypoint_angular_kp = 1.25;
+double direct_waypoint_max_angular_speed = 0.60;
+double direct_waypoint_min_turn_speed = 0.16;
+double direct_waypoint_in_place_angle_threshold = 1.55;
+double direct_waypoint_progress_timeout = 20.0;
+double direct_waypoint_progress_epsilon = 0.05;
+double direct_waypoint_control_frequency = 20.0;
 
 
 int countWaypointsInFile(std::string path_local)
@@ -178,6 +192,11 @@ double normalizeAngle(double angle)
     }
 
     return angle;
+}
+
+double clampDouble(double value, double min_value, double max_value)
+{
+    return std::max(min_value, std::min(max_value, value));
 }
 
 bool scanReadingIsUsable(const sensor_msgs::LaserScan& scan, float range)
@@ -726,6 +745,168 @@ void alignTowardWaypointIfNeeded(
     alignYawToTargetPID(listener, cmd_pub, goal_frame, desired_yaw);
 }
 
+bool driveDirectToWaypoint(
+    tf::TransformListener& listener,
+    ros::Publisher& cmd_pub,
+    ros::Publisher& marker_pub,
+    const geometry_msgs::PointStamped& waypoint,
+    int waypoint_index,
+    int total_waypoints)
+{
+    const bool final_waypoint = waypoint_index >= total_waypoints;
+    const double configured_tolerance =
+        (final_waypoint && direct_waypoint_final_goal_tolerance > 0.0) ?
+            direct_waypoint_final_goal_tolerance :
+            direct_waypoint_goal_tolerance;
+    const double fallback_tolerance =
+        (waypoint_advance_radius > 0.0) ? waypoint_advance_radius : 1.0;
+    const double goal_tolerance = std::max(
+        0.05,
+        configured_tolerance > 0.0 ? configured_tolerance : fallback_tolerance);
+    const double cruise_speed = std::max(0.0, direct_waypoint_cruise_speed);
+    const double min_speed = std::min(cruise_speed, std::max(0.0, direct_waypoint_min_speed));
+    const double slow_radius = std::max(goal_tolerance + 0.05, direct_waypoint_slow_radius);
+    const double max_angular_speed = std::max(0.01, std::fabs(direct_waypoint_max_angular_speed));
+    const double min_turn_speed =
+        std::min(max_angular_speed, std::max(0.0, std::fabs(direct_waypoint_min_turn_speed)));
+    const double in_place_angle_threshold =
+        std::max(0.2, std::min(M_PI, std::fabs(direct_waypoint_in_place_angle_threshold)));
+    const double control_frequency = std::max(1.0, direct_waypoint_control_frequency);
+
+    bool marker_turned_green = false;
+    double best_distance = 1e9;
+    ros::Time last_progress_time = ros::Time::now();
+    ros::Rate rate(control_frequency);
+
+    ROS_INFO(
+        "Direct waypoint drive started for waypoint %d/%d. Goal tolerance: %.2fm.",
+        waypoint_index,
+        total_waypoints,
+        goal_tolerance);
+
+    while(ros::ok())
+    {
+        ros::spinOnce();
+
+        RobotPose2D robot_pose;
+        if(!tryGetRobotPoseInFrame(listener, goal_frame, robot_pose))
+        {
+            publishStop(cmd_pub);
+            rate.sleep();
+            continue;
+        }
+
+        const double dx = waypoint.point.x - robot_pose.x;
+        const double dy = waypoint.point.y - robot_pose.y;
+        const double distance = std::sqrt((dx * dx) + (dy * dy));
+
+        if(!marker_turned_green && distance <= waypoint_marker_activation_radius)
+        {
+            publishReachedWaypointMarker(marker_pub, waypoint, waypoint_index);
+            marker_turned_green = true;
+            ROS_INFO(
+                "Waypoint %d/%d entered marker activation radius (%.3f m <= %.3f m).",
+                waypoint_index,
+                total_waypoints,
+                distance,
+                waypoint_marker_activation_radius);
+        }
+
+        if(distance <= goal_tolerance)
+        {
+            if(!marker_turned_green)
+            {
+                publishReachedWaypointMarker(marker_pub, waypoint, waypoint_index);
+            }
+            publishStop(cmd_pub);
+            ROS_INFO(
+                "Direct waypoint drive reached waypoint %d/%d (%.3f m <= %.3f m).",
+                waypoint_index,
+                total_waypoints,
+                distance,
+                goal_tolerance);
+            return true;
+        }
+
+        const ros::Time now = ros::Time::now();
+        if((best_distance - distance) >= direct_waypoint_progress_epsilon)
+        {
+            best_distance = distance;
+            last_progress_time = now;
+        }
+
+        if(direct_waypoint_progress_timeout > 0.0 &&
+           (now - last_progress_time).toSec() > direct_waypoint_progress_timeout)
+        {
+            publishStop(cmd_pub);
+            ROS_WARN(
+                "Direct waypoint drive timed out for waypoint %d/%d. Best distance %.2fm, current distance %.2fm.",
+                waypoint_index,
+                total_waypoints,
+                best_distance,
+                distance);
+            return false;
+        }
+
+        const double desired_yaw = std::atan2(dy, dx);
+        const double yaw_error = normalizeAngle(desired_yaw - robot_pose.yaw);
+        const double abs_yaw_error = std::fabs(yaw_error);
+
+        geometry_msgs::Twist cmd;
+        double angular_cmd = clampDouble(
+            direct_waypoint_angular_kp * yaw_error,
+            -max_angular_speed,
+            max_angular_speed);
+
+        if(abs_yaw_error > in_place_angle_threshold)
+        {
+            cmd.linear.x = 0.0;
+            if(std::fabs(angular_cmd) < min_turn_speed)
+            {
+                angular_cmd = (yaw_error >= 0.0 ? 1.0 : -1.0) * min_turn_speed;
+            }
+        }
+        else
+        {
+            double speed = cruise_speed;
+            if(distance < slow_radius)
+            {
+                const double slow_scale = clampDouble(
+                    (distance - goal_tolerance) / std::max(0.01, slow_radius - goal_tolerance),
+                    0.0,
+                    1.0);
+                speed = min_speed + ((cruise_speed - min_speed) * slow_scale);
+            }
+
+            const double heading_scale = clampDouble(
+                1.0 - (0.65 * abs_yaw_error / in_place_angle_threshold),
+                0.25,
+                1.0);
+            cmd.linear.x = speed * heading_scale;
+        }
+
+        cmd.angular.z = angular_cmd;
+        cmd_pub.publish(cmd);
+
+        ROS_INFO_THROTTLE(
+            1.0,
+            "Direct waypoint %d/%d: dist=%.2fm bearing=%.1fdeg yaw=%.1fdeg err=%.1fdeg cmd=(%.2f, %.2f).",
+            waypoint_index,
+            total_waypoints,
+            distance,
+            desired_yaw * 180.0 / M_PI,
+            robot_pose.yaw * 180.0 / M_PI,
+            yaw_error * 180.0 / M_PI,
+            cmd.linear.x,
+            cmd.angular.z);
+
+        rate.sleep();
+    }
+
+    publishStop(cmd_pub);
+    return false;
+}
+
 bool driveDistanceInFrame(
     tf::TransformListener& listener,
     ros::Publisher& cmd_pub,
@@ -942,6 +1123,7 @@ int main(int argc, char** argv)
     ros::param::param<bool>("/outdoor_waypoint_nav/waypoint_pre_align_enabled", waypoint_pre_align_enabled, false);
     ros::param::param<double>("/outdoor_waypoint_nav/waypoint_pre_align_angle_threshold", waypoint_pre_align_angle_threshold, 0.35);
     ros::param::param<double>("/outdoor_waypoint_nav/waypoint_pre_align_min_goal_distance", waypoint_pre_align_min_goal_distance, 0.80);
+    ros::param::param<bool>("/outdoor_waypoint_nav/return_to_start_enabled", return_to_start_enabled, true);
     ros::param::param<bool>("/outdoor_waypoint_nav/return_heading_pid_enabled", return_heading_pid_enabled, true);
     ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_kp", return_heading_pid_kp, 1.4);
     ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_ki", return_heading_pid_ki, 0.02);
@@ -952,6 +1134,19 @@ int main(int argc, char** argv)
     ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_integral_limit", return_heading_pid_integral_limit, 1.0);
     ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_settle_time", return_heading_pid_settle_time, 0.4);
     ros::param::param<double>("/outdoor_waypoint_nav/return_heading_pid_timeout", return_heading_pid_timeout, 12.0);
+    ros::param::param<bool>("/outdoor_waypoint_nav/direct_waypoint_drive_enabled", direct_waypoint_drive_enabled, false);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_goal_tolerance", direct_waypoint_goal_tolerance, 1.0);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_final_goal_tolerance", direct_waypoint_final_goal_tolerance, 0.45);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_cruise_speed", direct_waypoint_cruise_speed, 0.45);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_min_speed", direct_waypoint_min_speed, 0.12);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_slow_radius", direct_waypoint_slow_radius, 2.0);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_angular_kp", direct_waypoint_angular_kp, 1.25);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_max_angular_speed", direct_waypoint_max_angular_speed, 0.60);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_min_turn_speed", direct_waypoint_min_turn_speed, 0.16);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_in_place_angle_threshold", direct_waypoint_in_place_angle_threshold, 1.55);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_progress_timeout", direct_waypoint_progress_timeout, 20.0);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_progress_epsilon", direct_waypoint_progress_epsilon, 0.05);
+    ros::param::param<double>("/outdoor_waypoint_nav/direct_waypoint_control_frequency", direct_waypoint_control_frequency, 20.0);
     if(waypoint_marker_topic != "/outdoor_waypoint_nav/collected_waypoints")
     {
         pubWaypointMarkers.shutdown();
@@ -1030,6 +1225,32 @@ int main(int argc, char** argv)
             map_point,
             currentWaypointIndex,
             totalWaypoints);
+
+        if(direct_waypoint_drive_enabled)
+        {
+            ac.cancelAllGoals();
+            const bool reached_directly = driveDirectToWaypoint(
+                tf_listener,
+                pubRecoveryCmd,
+                pubWaypointMarkers,
+                map_point,
+                currentWaypointIndex,
+                totalWaypoints);
+
+            if(reached_directly)
+            {
+                reachedWaypoints++;
+                continue;
+            }
+
+            ROS_ERROR("Direct waypoint drive failed for waypoint %d/%d.", currentWaypointIndex, totalWaypoints);
+            ROS_INFO("Exiting node...");
+            std_msgs::Bool node_ended;
+            node_ended.data = true;
+            pubWaypointNodeEnded.publish(node_ended);
+            ros::shutdown();
+            return 0;
+        }
 
         bool have_prev_point = false;
         geometry_msgs::PointStamped map_prev;
@@ -1128,14 +1349,28 @@ int main(int argc, char** argv)
                     }
 
                     const bool advance_to_next_waypoint = !final_point;
+                    const bool finish_final_waypoint =
+                        final_point && (totalWaypoints == 1 || !return_to_start_enabled);
                     const bool handoff_final_waypoint_to_return =
-                        final_point && totalWaypoints > 1;
+                        final_point && totalWaypoints > 1 && return_to_start_enabled;
                     if(waypoint_advance_radius > 0.0 &&
                        distance_to_waypoint <= waypoint_advance_radius &&
-                       (advance_to_next_waypoint || handoff_final_waypoint_to_return))
+                       (advance_to_next_waypoint || finish_final_waypoint || handoff_final_waypoint_to_return))
                     {
                         waypoint_reached_by_radius = true;
-                        if(handoff_final_waypoint_to_return)
+                        if(finish_final_waypoint)
+                        {
+                            ROS_INFO(
+                                "Final waypoint %d/%d entered advance radius (%.3f m <= %.3f m). "
+                                "Finishing without waiting for move_base SUCCEEDED.",
+                                currentWaypointIndex,
+                                totalWaypoints,
+                                distance_to_waypoint,
+                                waypoint_advance_radius);
+                            ac.cancelAllGoals();
+                            publishStop(pubRecoveryCmd);
+                        }
+                        else if(handoff_final_waypoint_to_return)
                         {
                             ROS_INFO(
                                 "Last waypoint %d/%d entered advance radius (%.3f m <= %.3f m). "
@@ -1276,7 +1511,7 @@ int main(int argc, char** argv)
         }
     } // End for loop iterating through waypoint vector
 
-    if(totalWaypoints > 1 && reachedWaypoints == totalWaypoints)
+    if(return_to_start_enabled && totalWaypoints > 1 && reachedWaypoints == totalWaypoints)
     {
         const double latiReturn = waypointVect.front().first;
         const double longiReturn = waypointVect.front().second;
@@ -1451,7 +1686,7 @@ int main(int argc, char** argv)
     }
 
     ROS_INFO("Final status: reached %d/%d waypoint(s).", reachedWaypoints, totalWaypoints);
-    if(totalWaypoints > 1)
+    if(return_to_start_enabled && totalWaypoints > 1)
     {
         ROS_INFO("Waypoint following complete: %d/%d waypoint(s) reached, returned to waypoint 1.", reachedWaypoints, totalWaypoints);
     }
